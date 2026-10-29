@@ -1,0 +1,1125 @@
+/* ═══════════════════════════════════════════════════════
+   css/style.css  —  methodica-math-percent-02-02
+   Canvas: 1280 × 710 px   (720 reference engine)
+   ═══════════════════════════════════════════════════════ */
+
+/* ─── Local fonts (Assistant) ───────────────────────────
+   ONE shared copy for the whole unit, at ../../unit-assets/fonts/.
+   Previously each part carried its own byte-identical set of seven
+   weights (7 parts x 7 files = 2,436,448 B); the four unused weights
+   are gone and the rest is shared.
+
+   Only 400 / 600 / 700 are declared, because only those are used: a
+   sweep of all seven stylesheets found no font-weight declaration
+   outside these blocks other than 400, 600 and 700, and no
+   bold/bolder/lighter keyword and no inline font-weight anywhere in
+   the HTML or JS. UA-default bold (<b>, <strong>, <h*>) maps to 700,
+   which is declared. Re-run that sweep before adding a weight back.
+
+   The Google Fonts <link> in index.html is still there and still
+   needed - NOT as a fallback for these files, but because it also
+   fetches Open Sans 700, which is used by .s2-slider-value in part 01
+   and is not self-hosted. Do not remove that link without either
+   self-hosting Open Sans or re-speccing that one rule.
+   ───────────────────────────────────────────────────────── */
+/* ─── Back button — white pill, bottom-right of bar (never shown on the
+   first screen) ── */
+/* Back button — one shared position rule (not per-screen IDs) so every
+   screen's Back sits at the exact same spot, per the same size/position
+   consistency rule as .btn-continue. */
+.scq-back {
+  position: absolute;
+  bottom: 17.5px;
+  right: 24px;
+  z-index: 12;
+  width: auto; min-width: 140px; height: 39px; padding: 0 40px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--subject-700); border-radius: 1000px; background: #fff;
+  color: var(--subject-700);
+  font-family: Calibri, Arial, sans-serif; font-size: 20px; font-weight: 400;
+  cursor: pointer; direction: rtl; white-space: nowrap;
+}
+.scq-back:hover { font-weight: 600; border-width: 1.5px; }
+
+/* ─── Shared: Continue Button — gradient pill, bottom-left of bar.
+   Also serves the confirmed primary actions that reuse this class:
+   Submit / "צדקתי?" / "שנמשיך?". This is the ONLY consumer of
+   --primary-action-gradient (see the token blocks at the top of this
+   file for why that property is role-named rather than subject-named). ── */
+.btn-continue {
+  position: absolute;
+  bottom: 17.5px; left: 24px;  /* true 39px-pill centering: (74-39)/2 = 17.5px */
+  z-index: 12;                /* above the ::after white bar (z-index 9) */
+  min-width: 140px;
+  height: 39px;
+  padding: 0 40px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--primary-action-gradient);
+  color: #fff;
+  border: none; border-radius: 1000px;
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 20px; font-weight: 400;
+  cursor: pointer; direction: rtl;
+  text-align: center; white-space: nowrap;
+}
+.btn-continue:not(:disabled):hover { font-weight: 600; }
+.btn-continue.hidden { display: none !important; }
+.btn-continue:disabled {
+  background: #AEAEAE;
+  color: #303030;
+  cursor: not-allowed;
+  opacity: 1;
+}
+
+/* ─── Nav-button width consistency (Foundation rule, ported from
+   methodica-science-mass-measure-01-01's style.css — same fix applies
+   here): W(label) = max(box floor, intrinsic width of the SAME label
+   at the HOVER weight). Any button whose hover changes font-weight
+   must never resize/reflow between Default and Hover.
+   Mechanism: .nav-label stacks an invisible copy of the label at the
+   hover weight (a ::before fed by attr(data-label)) into the same grid
+   cell as the visible <span>, so the box always reserves the heavier
+   measurement. Not a DOM node (attr()-driven) and visibility:hidden
+   keeps it out of the accessibility tree — data-label always mirrors
+   the visible text, never authored separately from it (see
+   setNavLabel() in main.js for every place a button's label changes
+   at runtime). */
+.nav-label { display: inline-grid; }
+.nav-label::before {
+  content: attr(data-label);
+  grid-area: 1 / 1;
+  font-weight: 600;
+  block-size: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.nav-label > span { grid-area: 1 / 1; }
+/* ═══════════════════════════════════════════════════════
+   SHARED COMPONENTS — ported verbatim from part 01's own css/style.css
+   (the classes below are template-generic: SingleChoiceQuestion,
+   MultipleChoiceQuestion, ValueInputQuestion, image zoom, hint popup,
+   feedback popup, data tables), since this is a standalone bundle with
+   no shared stylesheet across parts. Kept in the SAME order as part
+   01's file for easier future diffing.
+   ═══════════════════════════════════════════════════════ */
+
+/* TEMPLATE — TransitionScreen (title + subtitle, then the companion
+   character's video). This part's own S0 reuses this shape verbatim
+   (per its own section comment below) — ported here because it is a
+   GENERIC/shared template class (introduced by part 01's own S1),
+   not part of the S0-S7 screen-specific CSS block that was otherwise
+   fully copied over. `.s1-bubble*` (speech-bubble caption) is NOT
+   ported: S0 doesn't use it, so it would be dead CSS here. */
+.s1-content {
+  position: absolute;
+  inset: 0 0 74px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+
+.s1-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.s1-title {
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 40px;
+  font-weight: 700;
+  color: #303030;
+  margin: 0;
+}
+
+.s1-subtitle {
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 28px;
+  font-weight: 400;
+  color: #303030;
+  margin: 0;
+}
+
+/* Video wrap is the ONLY layout-participating element here, so it stays
+   exactly centered by .s1-content. */
+.s1-video-wrap {
+  position: relative;
+  width: 640px;
+  height: 360px;
+  flex-shrink: 0;
+}
+
+.s1-video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.scq-question {
+  position: absolute; top: 139px; right: 40px;
+  width: 1188px; height: auto;
+}
+
+.scq-img {
+  position: absolute; left: 0; top: 0;
+  width: 380px; height: 380px; padding: 8px;
+}
+
+.scq-img-inner {
+  width: 100%; height: 100%;
+  position: relative;
+  background: #f2f2f2; border: 0.5px solid rgba(174, 174, 174, 0.5);
+  border-radius: 16px; overflow: hidden;
+}
+
+.scq-img-inner img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+}
+
+.scq-qtext {
+  position: absolute; right: 0; top: 0;
+  width: 792px; height: auto;
+  display: flex; flex-direction: column; justify-content: flex-start; gap: 0;
+  padding-top: 16px;
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 24px; font-weight: 700; color: var(--subject-500);
+  text-align: right; direction: rtl; line-height: normal;
+}
+
+.scq-answers {
+  position: absolute; right: 0; top: 100px;
+  /* fit-content + a 604px ceiling: the column sizes itself to its
+     WIDEST option and `align-items: stretch` gives every other capsule
+     that same width, so a screen never renders a slab wider than its
+     longest distractor needs. The cap preserves the long-sentence
+     screens, whose text still wraps at 604 exactly as before. Producer
+     instruction 2026-08-19 — see part 01 css for the full reasoning. */
+  width: fit-content; max-width: 604px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+
+.scq-opt {
+  /* auto, NOT fixed — the column decides the shared width and a fixed
+     width here would block its `stretch`. */
+  width: auto; min-height: 46px;
+  border: 2px solid var(--subject-500); border-radius: 1000px;
+  background: #fff; padding: 7px 20px;
+  display: flex; align-items: center; gap: 10px;
+  direction: rtl; cursor: pointer;
+  font-family: Calibri, Arial, sans-serif;
+  overflow: visible;
+}
+
+.scq-opt-text {
+  flex: 1; text-align: right;
+  font-size: 22px; font-weight: 400; color: #222; line-height: 1.1;
+}
+
+.scq-opt:focus-visible { outline: 2px solid var(--subject-700); outline-offset: 2px; }
+
+.scq-opt:disabled { cursor: default; }
+
+.scq-opt.correct { background: #edf8ed; border: 2px solid #609e12; }
+
+.scq-opt.wrong   { background: #fff0f4; border: 2px solid #b20010; }
+
+.scq-radio {
+  width: 22px; height: 22px; flex-shrink: 0;
+  border: 2px solid var(--subject-500); border-radius: 1000px;
+  position: relative; box-sizing: border-box;
+  order: -1;
+}
+
+.scq-opt.selected .scq-radio { background: var(--subject-500); }
+
+.scq-opt.correct  .scq-radio { background: #609e12; border-color: #609e12; }
+
+.scq-opt.wrong    .scq-radio { background: #b20010; border-color: #b20010; }
+
+.scq-opt.correct .scq-radio::after,
+.scq-opt.wrong .scq-radio::after {
+  content: ''; position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  background-repeat: no-repeat; background-position: center; background-size: contain;
+}
+
+.scq-opt.correct .scq-radio::after {
+  width: 13px; height: 11px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 12' fill='none'%3E%3Cpath d='M4.52036 12C4.12296 12.0002 3.74183 11.8126 3.46106 11.4787L0.258452 7.67744C-0.0861507 7.26814 -0.0861507 6.60467 0.258452 6.19536C0.603165 5.78619 1.16194 5.78619 1.50666 6.19536L4.52036 9.77374L12.4933 0.306878C12.8381 -0.102293 13.3968 -0.102293 13.7415 0.306878C14.0862 0.716179 14.0862 1.37966 13.7415 1.78896L5.57966 11.4787C5.29889 11.8126 4.91776 12.0002 4.52036 12Z' fill='white'/%3E%3C/svg%3E");
+}
+
+.scq-opt.wrong .scq-radio::after {
+  width: 11px; height: 11px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14' fill='none'%3E%3Cpath d='M13.6743 0.325691C13.4657 0.117151 13.1828 0 12.8879 0C12.5929 0 12.31 0.117151 12.1014 0.325691L7 5.42709L1.8986 0.325691C1.69 0.117151 1.40711 0 1.11215 0C0.817183 0 0.534294 0.117151 0.325691 0.325691C0.117151 0.534294 0 0.817183 0 1.11215C0 1.40711 0.117151 1.69 0.325691 1.8986L5.42709 7L0.325691 12.1014C0.117151 12.31 0 12.5929 0 12.8879C0 13.1828 0.117151 13.4657 0.325691 13.6743C0.534294 13.8829 0.817183 14 1.11215 14C1.40711 14 1.69 13.8829 1.8986 13.6743L7 8.57291L12.1014 13.6743C12.31 13.8829 12.5929 14 12.8879 14C13.1828 14 13.4657 13.8829 13.6743 13.6743C13.8829 13.4657 14 13.1828 14 12.8879C14 12.5929 13.8829 12.31 13.6743 12.1014L8.57291 7L13.6743 1.8986C13.8829 1.69 14 1.40711 14 1.11215C14 0.817183 13.8829 0.534294 13.6743 0.325691Z' fill='white'/%3E%3C/svg%3E");
+}
+
+.mcq-check {
+  width: 20px; height: 20px; flex-shrink: 0;
+  border: 2px solid var(--subject-500); border-radius: 2px;
+  position: relative; box-sizing: border-box;
+  background: transparent;
+  order: -1;
+}
+
+.scq-opt.selected .mcq-check { background: var(--subject-500); border-color: var(--subject-500); }
+
+.scq-opt.correct  .mcq-check { background: #609e12; border-color: #609e12; }
+
+.scq-opt.wrong    .mcq-check { background: #b20010; border-color: #b20010; }
+
+.scq-opt.selected .mcq-check::after,
+.scq-opt.correct .mcq-check::after,
+.scq-opt.wrong .mcq-check::after {
+  content: ''; position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: 13px; height: 9px;
+  background-repeat: no-repeat; background-position: center; background-size: contain;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12.7274 9.18767' fill='none'%3E%3Cpath d='M4.10955 9.18763C3.74828 9.18778 3.4018 9.04418 3.14655 8.78851L0.23509 5.87812C-0.0781857 5.56475 -0.0781857 5.05677 0.23509 4.74339C0.548465 4.43012 1.05645 4.43012 1.36982 4.74339L4.10955 7.48312L11.3577 0.234956C11.6711 -0.0783188 12.1791 -0.0783188 12.4925 0.234956C12.8057 0.548332 12.8057 1.05631 12.4925 1.36969L5.07255 8.78851C4.81731 9.04418 4.47083 9.18778 4.10955 9.18763Z' fill='white'/%3E%3C/svg%3E");
+}
+
+.scq-popup {
+  position: absolute;
+  left: 2px; bottom: 76px;
+  width: 426px;
+  height: auto;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.18);
+  display: flex; flex-direction: column; gap: 4px;
+  direction: rtl; z-index: 50;
+  cursor: move;
+}
+
+.scq-popup.hidden { display: none !important; }
+
+.scq-popup-header {
+  display: flex; align-items: flex-start; gap: 8px;
+  direction: ltr;
+  width: 100%;
+}
+
+.scq-popup-title {
+  flex: 1;
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 20px; font-weight: 700;
+  text-align: right; direction: rtl;
+  line-height: normal; margin: 0;
+  padding-top: 4px;
+}
+
+.scq-popup-body { direction: rtl; }
+
+.scq-popup-body p {
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 20px; font-weight: 400; color: #222;
+  text-align: right; direction: rtl;
+  line-height: normal; margin: 0 0 4px;
+}
+
+.scq-popup-body p:last-child { margin-bottom: 0; }
+/* Feedback popups (correct AND wrong) render at 20px throughout —
+   prose, equations, fractions and tables alike (producer instruction,
+   2026-08-20). The shared maths classes carry their own smaller sizes
+   for on-screen use (.frac at 18px in parts 03/05/06, .s19-eq-sign at
+   16px in part 01), so this is scoped to .scq-popup-body rather than
+   changing those base rules — an on-screen fraction or equation sign
+   keeps the size its own layout was built around. */
+.scq-popup-body .frac,
+.scq-popup-body .eq-row,
+.scq-popup-body .s19-eq-sign,
+.scq-popup-body .eq-table th,
+.scq-popup-body .eq-table td { font-size: 20px; }
+
+.eq-table {
+  width: 322px;
+  table-layout: fixed;
+  border-collapse: collapse;
+  margin: 8px 0;
+  direction: rtl;
+  font-family: Calibri, Arial, sans-serif; font-size: 20px;
+}
+
+.eq-table th, .eq-table td {
+  height: 38px;
+  border: 1px solid #c9ced8;
+  padding: 6px 12px;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.eq-table th { background: #f2f2f2; color: #303030; font-weight: 600; }
+
+.eq-table td { background: #fff; color: #303030; font-weight: 400; }
+
+/* Stacked fraction + inline equation row — this part's own `s8Frac()`
+   helper and several explanation bodies (S2, S4, S5, S6...) emit
+   .frac/.frac-num/.frac-den and .s19-eq-row/.s19-eq-sign markup, but
+   this stylesheet never carried the rules for it (ported from part 01
+   in JS only, per main.js's own header comment). Without these, the
+   markup rendered as flat unstyled text with no fraction bar and no
+   spacing around the ·/= signs — e.g. "20%·150=20100·150=0.2·150=30"
+   instead of a stacked 20/100 fraction with spaced operators. Sized to
+   this part's own 20px popup-prose ambient size (not port01's 16px
+   .s19-eq-sign, which sits below this project's 18px text-size floor). */
+.frac {
+  display: inline-flex; flex-direction: column; align-items: center;
+  vertical-align: middle; font-size: 20px; line-height: 1.15;
+}
+.frac-num, .frac-den { display: block; padding: 0 3px; }
+.frac-num { border-bottom: 2px solid currentColor; }
+.s19-eq-row { display: inline-flex; align-items: center; gap: 6px; }
+.s19-eq-sign { font-size: 20px; }
+
+.img-zoom-btn {
+  position: absolute; top: 10px; right: 10px; z-index: 5;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: #fff; border: 2px solid var(--subject-500);
+  display: flex; align-items: center; justify-content: center;
+  padding: 0; cursor: pointer; color: var(--subject-500);
+}
+
+.img-zoom-btn:hover { background: var(--subject-500); color: #fff; }
+
+.img-zoom-btn:focus-visible { outline: 2px solid var(--subject-700); outline-offset: 2px; }
+
+.img-zoom-btn__icon { width: 20px; height: 20px; display: block; }
+
+.zoom-img-inner { display: block; width: 100%; height: 100%; }
+
+.img-zoom-modal {
+  position: absolute; inset: 0;
+  z-index: 60;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.img-zoom-modal.hidden { display: none !important; }
+
+.img-zoom-backdrop {
+  position: absolute; inset: 0;
+  background: rgba(255, 255, 255, 0.78);
+}
+
+/* Standard clone-based zoom modal — the generic 660×660 spec from
+   _global-components.md. NOTE for anyone diffing against part 01: there,
+   this same class carries 480×640 / padding 60px 24px 24px, because part
+   01 has a SECOND, screen-specific zoom variant (its S2 widget-
+   reparenting modal) that borrowed the shared class name, and part 01
+   then reinstates the generic size for every other consumer via an
+   `#img-zoom-modal .img-zoom-panel` override further down its file. This
+   part has only the standard modal, so the documented generic values are
+   stated directly here instead of being set wrong and overridden. */
+.img-zoom-panel {
+  position: relative; z-index: 1;
+  width: 660px; height: 660px;
+  background: #fff; border-radius: 24px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  box-sizing: border-box;
+  padding: 24px;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* `.img-zoom-panel`'s own `align-items:center` means a flex ITEM's height
+   never auto-stretches to the panel's content box, so the stage needs an
+   explicit height:100% (of the panel's own definite content box) for the
+   cloned wrapper's own `height:100%` to have something concrete to resolve
+   against — a percentage against an indefinite parent height computes as
+   if unset. Ported from part 01 along with the classes it governs. */
+#img-zoom-stage {
+  width: 100%; height: 100%;
+  max-width: 100%; max-height: 100%;
+  display: flex; align-items: center; justify-content: center;
+}
+#img-zoom-stage img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; display: block; }
+/* The cloned `.zoom-img-inner` keeps its base `width/height:100%` in the
+   stage, but the `<img>` inside sizes to its own intrinsic dimensions (per
+   the rule above) — and a plain block box with auto width doesn't center
+   itself in a wider parent; under this project's inherited `direction:rtl`
+   it would sit on the RTL start edge (physical RIGHT), giving a lopsided
+   zoom with empty space on the left (producer-caught in part 01). Centering
+   belongs on the WRAPPER, since `.zoom-img-inner` is what's stretched to
+   the stage's full box. Every zoom consumer in THIS part uses
+   `.zoom-img-inner`; part 01's `#img-zoom-stage .scq-img-inner` companion
+   rule is deliberately NOT ported, because it hardcodes haknaya1.jpg's own
+   941/1672 ratio for part 01's S9/S10/S15 and would distort any other
+   image (the same landmine these screens' own comments call out). */
+#img-zoom-stage .zoom-img-inner { display: flex; align-items: center; justify-content: center; }
+
+.img-zoom-close-btn {
+  position: absolute; top: 16px; left: 16px; /* top-left per spec, regardless of RTL */
+  width: 44px; height: 44px; border-radius: 50%;
+  background: #fff; border: 2px solid var(--subject-500);
+  display: flex; align-items: center; justify-content: center;
+  padding: 0; cursor: pointer; color: var(--subject-500);
+}
+
+.img-zoom-close-btn:hover { background: var(--subject-500); color: #fff; }
+
+.img-zoom-close-btn:focus-visible { outline: 2px solid var(--subject-700); outline-offset: 2px; }
+
+.img-zoom-close-btn svg { width: 15px; height: 15px; display: block; }
+
+.s9-text-col {
+  position: absolute; right: 0; top: 0;
+  width: 792px;
+  display: flex; flex-direction: column; gap: 16px;
+  direction: rtl;
+}
+
+.s9-text-col .scq-qtext { position: static; width: auto; padding-top: 0; }
+
+/* 24px, not 22 (producer instruction, 2026-08-19, applied project-wide):
+   every instruction/context line leading up to a question, and the
+   question itself, is 24px regardless of bold/color weight. */
+.s9-intro {
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 24px; font-weight: 400; color: #222;
+  text-align: right; direction: rtl; line-height: 1.4;
+  margin: 0;
+}
+
+.viq-input-frac {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  align-self: flex-start;
+  margin-top: 8px;
+}
+
+/* Bordered field wrapper — holds the raw input plus its correct/incorrect
+   icon (720-templates → _question-template-defaults.md → "Correct/incorrect
+   icon system": ValueInputQuestion uses the Type 1 bare 16px icon, INSIDE
+   the input's own coloured border, ~6px gap after the value). Ported from
+   part 01's own refactor of this same block: the border/background that used
+   to live directly on .viq-input-box now lives here so the icon can share
+   the same box, and the input itself becomes borderless/transparent.
+   Verified against Figma eSbp4bKHgBky0rakDb8l9N nodes 1027:26058 (incorrect)
+   / 1027:26063 (correct) — both render as a WHITE box (Natural/100 #FFFFFF)
+   with the state colour on the border and on the icon only. */
+.viq-field {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 6px;
+  width: 96px; height: 52px;
+  box-sizing: border-box;
+  border: 1.5px solid rgba(174, 174, 174, 0.5); border-radius: 10px;
+  background: #fff;
+  /* Value-then-icon must hold regardless of the ambient direction of
+     whatever row/table embeds this field (S4's table is intentionally RTL) —
+     otherwise RTL flex reverses the child order and the icon renders on the
+     wrong side of the value. */
+  direction: ltr;
+}
+
+.viq-field:focus-within { border-color: var(--subject-500); }
+
+.viq-field.correct { border-color: #609e12; }
+
+.viq-field.error { border-color: #b20010; }
+
+.viq-input-box {
+  /* Not flex-grow: the value and its icon must sit as one tight, centred
+     group (Figma's "Slot" — text + icon, gap 6px, centred as a unit), not
+     stretched apart with the icon shoved to the box's far edge. */
+  flex: 0 0 auto; width: 4ch; min-width: 0; height: 100%;
+  border: none; background: transparent;
+  font-family: Calibri, Arial, sans-serif; font-weight: 700; font-size: 24px;
+  text-align: center; color: #303030;
+}
+
+.viq-input-box::-webkit-inner-spin-button,
+.viq-input-box::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+.viq-input-box { -moz-appearance: textfield; }
+
+.viq-input-box:focus { outline: none; }
+
+/* Resolved/locked state keeps the box WHITE. The grey #f7f7f7 fill this rule
+   used to carry was never in the design — Figma's correct/incorrect states
+   (nodes above) both bind the fill to Natural/100 #FFFFFF, and only the
+   border and icon carry the outcome colour. */
+.viq-input-box:disabled { color: #303030; opacity: 1; }
+
+.viq-input-ico {
+  flex: 0 0 16px; width: 16px; height: 16px;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+}
+/* No icon yet (default/typing state): collapse it entirely so the value stays
+   truly centred and no space is reserved for an icon that isn't there. */
+.viq-input-ico:empty { display: none; }
+.viq-input-ico svg { display: block; }
+
+.viq-input-line { width: 72px; height: 2px; background: #222; }
+
+.scq-hint {
+  position: absolute;
+  bottom: 17.5px; left: 264px;   /* ar: Continue/check button is 221px wide (24 + 221 + 16 gap + 3 safety), was 180px for the Hebrew label */
+  z-index: 12;
+  height: 39px; min-width: 140px;
+  padding: 0 20px;
+  background: #fff; border: 1px solid var(--subject-700); border-radius: 1000px;
+  color: var(--subject-500);
+  font-family: Calibri, Arial, sans-serif; font-size: 20px; font-weight: 400;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  cursor: pointer; direction: rtl;
+  flex-direction: row-reverse;   /* DOM is label→icon; icon must sit to the RIGHT of the label (matches 02-03) */
+}
+
+.scq-hint:hover { font-weight: 600; }
+
+.scq-hint:disabled {
+  border-color: #aeaeae; color: #aeaeae; cursor: default; font-weight: 400;
+}
+
+.scq-hint:disabled .scq-hint-icon { color: #aeaeae; }
+
+.scq-hint-icon { width: 26px; height: 22.288px; flex-shrink: 0; color: var(--subject-500); }
+
+.scq-hint-overlay {
+  position: absolute; inset: 0;
+  z-index: 60;
+  background: rgba(255, 255, 255, 0.78);
+  display: flex; align-items: center; justify-content: center;
+}
+
+.scq-hint-overlay.hidden { display: none !important; }
+
+.scq-hint-popup {
+  background: var(--subject-500); border-radius: 48px;
+  padding: 40px;
+  display: flex; flex-direction: column; align-items: center; gap: 24px;
+  width: 546px; max-width: 92%;
+}
+
+.scq-hint-text {
+  width: 462px; max-width: 100%; direction: rtl;
+  display: flex; flex-direction: column; gap: 24px;
+  color: #fff;
+}
+
+.scq-hint-title {
+  width: 100%; text-align: right; position: relative;
+  padding-right: 56px;
+  font-family: Calibri, Arial, sans-serif; font-weight: 700; font-size: 32px;
+  color: #fff; line-height: normal; margin: 0;
+}
+
+.scq-hint-title-icon {
+  position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+  width: 32px; height: 27.4px; display: block;
+}
+
+.scq-hint-body {
+  width: 100%; text-align: right;
+  font-family: Calibri, Arial, sans-serif; font-weight: 400; font-size: 24px;
+  color: #fff; line-height: normal;
+}
+
+.scq-hint-body p { margin: 0 0 12px; }
+
+.scq-hint-body p:last-child { margin-bottom: 0; }
+
+.scq-hint-close {
+  min-width: 196px; width: auto; padding: 16px 40px;
+  border: none; border-radius: 1000px; background: #fff;
+  color: #303030;
+  font-family: Calibri, Arial, sans-serif; font-size: 24px; font-weight: 400;
+  cursor: pointer; white-space: nowrap;
+}
+
+.scq-hint-close:hover { font-weight: 600; }
+
+.scq-popup-actions {
+  display: flex;
+  justify-content: flex-start;   /* RTL popup → anchors to the right edge */
+  align-items: center;
+  margin-top: 20px;
+}
+
+.scq-popup-actions:empty { margin-top: 0; }
+
+/* "מעבר לתשובה שלי" / "התשובה הנכונה" view toggle inside the feedback
+   popup. Same rule as parts 03/05/06/07 — it was missing here, so the
+   button was falling back to the browser's default button chrome. */
+.popup-action {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 39px;                  /* Figma exact; pinned, not derived */
+  padding: 7.5px 20px;
+  line-height: 22px;
+  flex: 0 0 auto; width: auto;
+  border: 1px solid #484848; border-radius: 1000px; background: #fff;
+  color: #222;
+  font-family: Calibri, Arial, sans-serif; font-size: 20px; font-weight: 400;
+  direction: rtl; white-space: nowrap;
+  cursor: pointer;               /* overrides .scq-popup's cursor: move */
+}
+
+.popup-action:hover { font-weight: 600; }
+
+.s26-input-row {
+  display: flex; flex-direction: row; align-items: center; gap: 12px;
+  direction: rtl; margin-top: 8px;
+}
+
+.s26-input-label {
+  font-family: Calibri, Arial, sans-serif; font-size: 22px; font-weight: 400; color: #222;
+}/* ═══════════════════════════════════════════════════════
+   SCREENS — S0 through S7 (moved from part 01's own S29-S36 during
+   the 2026-08-12 project-manager-requested split of the opening
+   teaching section from the first standard practice set; renumbered
+   S29→S0 ... S36→S7). Item refs renumbered fresh 001-005 (producer
+   confirmed: this part's own item sequence restarts independently,
+   same as every sibling part).
+   ═══════════════════════════════════════════════════════ */
+
+/* ═══════════════════════════════════════════════════════
+   Screen 45 (S0) — TransitionScreen kickoff (slide 44). Reuses S1/S3/
+   S17/S24's own `.s1-content`/`.s1-text` verbatim. Line 1 cancels the
+   shared `.s1-subtitle`'s own bold weight to match this slide's own
+   regular-weight run (source-formatting preserved per-run, not forced
+   uniform — see index.html's section comment).
+   ═══════════════════════════════════════════════════════ */
+#s0 { background: #fff; }
+.s1-subtitle--regular { font-weight: 400; }
+
+/* ═══════════════════════════════════════════════════════
+   Screen 46 (S1) — DropdownQuestion, first of the 5-question practice
+   set (slide 45). standard1.jpeg is a fresh landscape photo (555×303,
+   ~1.83 ratio) — sized via the aspect-ratio-driven frame + hairline
+   shadow technique already established in part 04 for its own
+   landscape content images, adapted to this part's absolute-positioned
+   `.scq-img`. `.zoom-img-inner` (not `.scq-img-inner`) avoids the
+   shared zoom-stage's hardcoded haknaya1.jpg ratio, same as every
+   S25+ screen with its own distinct image.
+   ═══════════════════════════════════════════════════════ */
+#s1 { background: #fff; }
+#s1 .scq-img { width: 480px; height: auto; aspect-ratio: 555 / 303; padding: 0; }
+#s1 .zoom-img-inner img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  display: block; border-radius: 16px;
+  box-shadow: 0 0 0 0.5px rgba(174, 174, 174, 0.5);
+}
+/* Wider image (480px vs the usual 273px) leaves less room for the text
+   column — 1188 - 480 - ~40 gap ≈ 660px. */
+#s1 .s9-text-col { width: 660px; }
+.s1-table { width: 380px; margin: 8px 0; }
+.s1-table th, .s1-table td { width: 50%; }
+
+/* ── Dropdown select (DropdownQuestion, 720-templates reference) ──
+   First use in this project. Design tokens cross-checked against a
+   validated production reference (methodica-science-mass-liquid-01-01
+   S10's own `.mdq-*` — renamed here to the skill doc's own generic
+   `.dq-*` prefix, first use in THIS project so no other screen-specific
+   prefix is warranted). Sized down from that reference's 180×42/24px to
+   fit this screen's own narrower table-cell slot. */
+.dq-dropdown-wrap { position: relative; display: inline-flex; }
+.dq-btn {
+  display: flex; flex-direction: row; align-items: center;
+  direction: ltr; /* chevron left, text right */
+  gap: 10px;
+  width: 150px; height: 40px;
+  padding: 0 12px;
+  background: #fff;
+  border: 1px solid rgba(174, 174, 174, 0.5);
+  border-radius: 10px;
+  cursor: pointer;
+  overflow: hidden;
+}
+.dq-btn:disabled { cursor: default; }
+.dq-btn[aria-expanded="true"] {
+  border: 1.5px solid var(--subject-500);
+  position: relative; z-index: 31;
+}
+.dq-chevron { flex-shrink: 0; width: 16px; height: 8px; display: block; }
+.dq-selected {
+  flex: 1; min-width: 0;
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 18px; font-weight: 400; color: #303030;
+  text-align: right; direction: rtl;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  line-height: normal;
+}
+.dq-btn[data-empty="true"] .dq-selected { opacity: 0.5; }
+.dq-btn.dq-correct { border: 1.5px solid #609e12; background: #edf8ed; }
+.dq-btn.dq-wrong { border: 1.5px solid rgba(220, 53, 69, 0.6); background: #fff5f5; }
+.dq-check-ico, .dq-wrong-ico { flex-shrink: 0; width: 13px; height: 11px; display: block; }
+
+.dq-list {
+  position: absolute;
+  top: calc(100% - 8px); left: 0;
+  width: 150px;
+  background: #fff;
+  border: 1px solid rgba(174, 174, 174, 0.5);
+  border-radius: 8px;
+  padding: 16px 8px 8px;
+  list-style: none; margin: 0;
+  z-index: 30;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.10);
+  direction: rtl;
+}
+/* Bottom table row (slots 3/4) sits close enough to the bottom nav bar
+   that the list opening downward (the default above) got clipped —
+   producer-caught with a screenshot. Flip these two specifically to
+   open UPWARD instead of trying to compact the layout enough to always
+   leave room below — a fixed-space compaction would silently break
+   again the next time this table's own content grows, the same "same
+   template, more content" risk already on record elsewhere in this
+   project. Padding mirrors the default (extra padding on the edge
+   nearest the button, now the BOTTOM, so the list still visually
+   connects to its own button). */
+#dq-list-3, #dq-list-4 {
+  top: auto; bottom: calc(100% - 8px);
+  padding: 8px 8px 16px;
+}
+.dq-list.hidden { display: none; }
+.dq-option {
+  padding: 8px 12px; border-radius: 8px;
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 18px; font-weight: 400; color: #303030;
+  text-align: center; cursor: pointer; white-space: nowrap;
+}
+.dq-option:hover { background: var(--subject-300); }
+.dq-option + .dq-option { position: relative; margin-top: 12px; }
+.dq-option + .dq-option::before {
+  content: ''; position: absolute;
+  top: -6px; left: 8px; right: 8px; height: 1px;
+  background: #d9d9d9; border-radius: 999px;
+}
+
+/* ═══════════════════════════════════════════════════════
+   Screen 47 (S2) — ValueInputQuestion, part ב of the same question
+   (slide 46). Producer request, 2026-08-12: moved the reference table
+   OUT of the left image slot and into the text column, directly under
+   "הצבנו בטבלת הפרופורציה." — the left slot now shows the SAME image
+   as S1/S3 (standard1.jpeg), same 480px aspect-ratio-driven frame.
+   `.s2-ref-table` sits as a normal flex child of `.s9-text-col`
+   (16px gap already pushes the qtext/input row down, no manual
+   positioning needed); `align-self: flex-start` pins it to the
+   physical RIGHT under this column's `direction:rtl` (same RTL
+   column/cross-axis convention as `.viq-input-frac`) — flex-end would
+   put it on the physical left.
+   `.s26-input-row`/`.s26-input-label` (bare classes from S26) are
+   reused verbatim, no override needed.
+   ═══════════════════════════════════════════════════════ */
+#s2 { background: #fff; }
+#s2 .scq-img { width: 480px; height: auto; aspect-ratio: 555 / 303; padding: 0; }
+#s2 .zoom-img-inner img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  display: block; border-radius: 16px;
+  box-shadow: 0 0 0 0.5px rgba(174, 174, 174, 0.5);
+}
+#s2 .s9-text-col { width: 660px; }
+/* Widened 260px→380px (same width as S1's own reference table) so
+   "כמות הנרשמים" fits its header cell on one line — producer-flagged
+   2026-08-12: the input row sat only ~11px above the bottom nav bar,
+   and the 2-line header wrap (not the flex gaps) was the real cause. */
+.s2-ref-table { width: 380px; margin: 4px 0; align-self: flex-start; }
+.s2-ref-table th, .s2-ref-table td { width: 50%; }
+
+/* Producer resolved the open question from the previous entry, 2026-08-11:
+   the feedback-popup table must match the ON-SCREEN table's style (light
+   `.eq-table`), not the other way around. S2's popup table was briefly
+   `.pq-table` (a dark-header spec, since removed) — now plain `.eq-table`
+   like every other feedback table in this project, keeping the whole
+   item's tables visually consistent. */
+
+/* ═══════════════════════════════════════════════════════
+   Screen 48 (S3) — SingleChoiceQuestion, part ג of the same question
+   (slide 47). Same image as S1 (standard1.jpeg, same 480px aspect-
+   ratio-driven frame). `.scq-answers` needs its own static-flow
+   override under `.s9-text-col` again (same as S28's own).
+   ═══════════════════════════════════════════════════════ */
+#s3 { background: #fff; }
+#s3 .scq-img { width: 480px; height: auto; aspect-ratio: 555 / 303; padding: 0; }
+#s3 .zoom-img-inner img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  display: block; border-radius: 16px;
+  box-shadow: 0 0 0 0.5px rgba(174, 174, 174, 0.5);
+}
+#s3 .s9-text-col { width: 660px; }
+/* No width — superseded 2026-08-19 by the shared `.scq-answers`
+   fit-content rule, which now sizes every screen's pills to its own
+   longest option (here "לא ניתן להחליט"). The old hand-set 302px
+   half-width from 2026-08-11 was this screen's version of the same
+   intent, just measured by hand. */
+#s3 .scq-answers { position: static; top: auto; align-self: flex-start; }
+
+/* ═══════════════════════════════════════════════════════
+   Screen 49 (S4) — ValueInputQuestion, 4-field table fill-in (slide
+   48). standard2.jpeg is 592×303 (~1.83 ratio) — close enough to
+   S1/S3's own 555/303 that the same aspect-ratio-driven frame
+   technique/measurements are reused verbatim (coincidence, not a
+   shared asset). 3-column table sized from the fresh PowerPoint
+   render's own proportions (סוג ציוד widest — "ציוד חבלים ובטיחות"
+   wraps to 2 lines — אחוז narrowest, נפח input column in between).
+   Row height increased from `.eq-table`'s own 38px default to fit
+   that 2-line label without clipping.
+   ═══════════════════════════════════════════════════════ */
+#s4 { background: #fff; }
+#s4 .scq-img { width: 480px; height: auto; aspect-ratio: 592 / 303; padding: 0; }
+#s4 .zoom-img-inner img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  display: block; border-radius: 16px;
+  box-shadow: 0 0 0 0.5px rgba(174, 174, 174, 0.5);
+}
+/* Tighter vertical rhythm: the 4-row table was running past the bottom
+   bar's top line (last row clipped). Block starts higher, column gaps
+   16 -> 10px, table margin 8 -> 4px and cell padding 8 -> 4px. */
+#s4 .scq-question { top: 120px; }
+#s4 .s9-text-col { width: 660px; gap: 10px; }
+.s4-table { width: 520px; margin: 4px 0; }
+.s4-table th:nth-child(1), .s4-table td:nth-child(1) { width: 45%; }
+.s4-table th:nth-child(2), .s4-table td:nth-child(2) { width: 20%; }
+.s4-table th:nth-child(3), .s4-table td:nth-child(3) { width: 35%; }
+.s4-table th, .s4-table td { height: auto; min-height: 48px; padding: 4px 8px; }
+/* Compact table variant of .viq-field — the box keeps its original 64×40
+   table footprint and the value shrinks to make room for the feedback icon
+   inside it (same shape as part 01's own .s15-table-input compact variant).
+   The modifier moves onto the FIELD, since that is what owns the box now. */
+/* 84px, not 64 (producer instruction, 2026-08-19, applied project-wide
+   to every compact table/equation input — see parts 01's
+   `.s15-table-input`/`.s16-compact-input` for the sibling fix and full
+   reasoning). This one didn't visibly clip at 3ch/18px (a 3-digit wrong
+   attempt exactly filled its box with zero margin), but zero margin is
+   still fragile and its 18px text didn't match Figma's 24px
+   DragOrValueInput spec — brought in line with the other two compact
+   variants for consistency: font-size/width no longer overridden,
+   falling back to the shared `.viq-input-box` default (24px, 4ch).
+   Fits comfortably: 166px available inside this table's own column vs.
+   an 84px field. */
+.viq-field.s4-table-input { width: 84px; height: 40px; }
+
+/* ═══════════════════════════════════════════════════════
+   Screen 50 (S5) — MultipleChoiceQuestion, slide 49. standard3.jpeg is
+   the first PORTRAIT content image in this project (379×565, ~1.49
+   ratio). Producer feedback, 2026-08-12: the image was too large and
+   the pill capsules too wide compared to this project's usual pill
+   width (reference: S28's own 604px-wide pills) — shrunk the image to
+   260px and reverted `.scq-answers`/`.scq-opt` to the project's default
+   604px (removed the 780px widening from the original build). The two
+   longest options still wrap to 2 lines at 604px — expected/accepted
+   per producer's own instruction ("if a line break is needed because
+   the text is long, do it; if not, don't" — not forced either way).
+   ═══════════════════════════════════════════════════════ */
+#s5 { background: #fff; }
+#s5 .scq-img { width: 260px; height: auto; aspect-ratio: 379 / 565; padding: 0; }
+#s5 .zoom-img-inner img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  display: block; border-radius: 16px;
+  box-shadow: 0 0 0 0.5px rgba(174, 174, 174, 0.5);
+}
+#s5 .s9-text-col { width: 800px; gap: 6px; }
+/* This screen has more stacked content (5-line intro + 2-line qstem +
+   instruction line + 4 options) than fits at the template's default
+   spacing — the last option overflowed into the bottom nav bar at
+   default gap/min-height values. Reverting the pills to 604px (below)
+   made a SECOND option wrap to 2 lines (more total text height than
+   the original 780px-wide build had), so this spacing needed
+   retightening a notch further than the first pass — verified via
+   measured bounding boxes after each change, not eyeballed. */
+#s5 .scq-answers { position: static; top: auto; align-self: flex-start; gap: 4px; }
+#s5 .scq-opt { min-height: 36px; padding: 5px 20px; }
+
+/* ═══════════════════════════════════════════════════════
+   Screen 51 (S6) — SingleChoiceQuestion, slide 50. NEW layout shape:
+   the context paragraph spans the full `.scq-question` width (1188px)
+   as a top banner, and ONLY the image+qstem+answers split into the
+   familiar left/right columns below it — confirmed via a fresh
+   PowerPoint export, not assumed. `.q-intro-wide` is this banner;
+   `#s6-img`/`#s6-text-col` get an explicit `top` offset (measured via
+   headless-Chrome bounding boxes, not eyeballed) to sit below it,
+   instead of the usual top:0 flush with `.scq-question`'s own edge.
+   Image is 697×389 (~1.79 ratio) — close enough to S1/S3's own
+   555/303 that the same 480px-wide / 660px-textcol split reused
+   verbatim (both already sum correctly against this 1188px container:
+   480 + 48 gap + 660 = 1188).
+   ═══════════════════════════════════════════════════════ */
+#s6 { background: #fff; }
+.q-intro-wide { position: absolute; top: 0; right: 0; width: 1188px; }
+#s6 .scq-img { position: absolute; left: 0; top: 108px; width: 480px; height: auto; aspect-ratio: 697 / 389; padding: 0; }
+#s6 .zoom-img-inner img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  display: block; border-radius: 16px;
+  box-shadow: 0 0 0 0.5px rgba(174, 174, 174, 0.5);
+}
+#s6 .s9-text-col { position: absolute; right: 0; top: 108px; width: 660px; }
+/* `.scq-answers` defaults to position:absolute (its own default
+   context) — needs its own static-flow override to join the flex
+   column after qtext/instruction, same as every other screen that
+   hosts `.scq-answers` inside `.s9-text-col` (S28's own precedent). */
+#s6 .scq-answers { position: static; top: auto; align-self: flex-start; }
+
+/* ═══════════════════════════════════════════════════════
+   Screen 52 (S7) — True/False Question, slide 51. Second use of the
+   `.q-intro-wide` top-banner layout (see S6 above). Image is a
+   PORTRAIT phone-screenshot mockup (254×455, ~1.79 ratio).
+   `.tf-row` — local variant of a 2-option toggle (720-templates skill:
+   "prefer a local variant over declaring no template fits" — this
+   project's own new True/False shape, not documented in the skill's
+   nine templates). Text sits RIGHTMOST (first in DOM, RTL), the toggle
+   pair to its left; within the pair, נכון renders right (closer to the
+   text) and לא נכון renders left — DOM order [text, נכון-btn, לא
+   נכון-btn] achieves this under RTL.
+   Producer correction 2026-08-12 (2nd pass): the נכון/לא נכון buttons
+   must be the SAME component/states as this project's own single-choice
+   answer pills — `.scq-opt`/`.scq-opt-text`/`.scq-radio` — not a custom
+   `.tf-btn` with its own invented color states. Confirmed against Figma
+   nodes 196:6213 (Default) / 462:6728 (Selected) / 196:6216 (Correct) /
+   196:6219 (Incorrect): the SAME border/background/radio-fill/checkmark-
+   or-X-icon system this project's `.scq-opt`/`.scq-radio` CSS (lines
+   ~1001-1042) already implements pixel-for-pixel — reused verbatim via
+   `class="scq-opt tf-opt"` rather than reimplementing colors that were
+   already correct elsewhere in this file. `.tf-opt` only narrows the
+   pill (604px default → ~150px) so two fit side by side per row; every
+   other property (border, radius, background, the `.scq-radio`
+   circle + its selected/correct/wrong fill and checkmark/X icon)
+   inherits from `.scq-opt`/`.scq-radio` unchanged.
+   Row-to-row and text↔toggle gaps: producer flagged (via an annotated
+   screenshot with a red box + leftward arrow) that the buttons sat too
+   close to their sentences — widened `.tf-row`'s own gap accordingly.
+   Row 5's own sentence gets an explicit `<br>` (not organic wrapping)
+   to guarantee exactly 2 lines, not 3, per producer instruction — an
+   explicit break is more reliable than relying on the exact pixel
+   width to land the wrap in the right place.
+   ═══════════════════════════════════════════════════════ */
+#s7 { background: #fff; }
+/* Producer, 2026-08-12 (3rd pass): enlarge to match this lomda's other
+   PORTRAIT question images — S28's own 273×486 is the closest analog,
+   and at 273px wide this asset's own 254:455 ratio lands at 489px tall,
+   near-identical. The vertical room that was missing before comes from
+   the producer's own explicit offer to push the image UP toward the
+   flag icon (negative top, i.e. above `.scq-question`'s own 139px
+   canvas origin) rather than keeping it flush with the text column. */
+#s7 .scq-img { position: absolute; left: -16px; top: -40px; width: 273px; height: auto; aspect-ratio: 254 / 455; padding: 0; }
+#s7 .zoom-img-inner img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  display: block; border-radius: 16px;
+  box-shadow: 0 0 0 0.5px rgba(174, 174, 174, 0.5);
+}
+#s7 .s9-text-col { position: absolute; right: 0; top: 164px; width: 900px; gap: 4px; }
+.tf-rows { display: flex; flex-direction: column; gap: 20px; width: 100%; }
+.tf-row {
+  display: flex; flex-direction: row; align-items: center;
+  gap: 40px; direction: rtl;
+}
+.tf-text {
+  flex: 1 0 0; min-width: 0;
+  font-family: Calibri, Arial, sans-serif; font-size: 24px; font-weight: 400; color: #303030;
+  text-align: right; line-height: normal;
+  /* Hanging indent: line 1 sits flush with the tf-num label (pulled
+     back out via the negative text-indent); any wrapped/broken line
+     after it inherits the padding-right without the offset, landing
+     flush under where the SENTENCE text itself starts, not under the
+     "N." label. Producer request, 2026-08-12 (row 5's own manual
+     `<br>`) — width matches this project's measured "N. " label. */
+  padding-right: 24px;
+  text-indent: -24px;
+}
+.tf-num { color: var(--subject-500); font-weight: 700; }
+.tf-toggle { display: flex; flex-direction: row; gap: 12px; flex-shrink: 0; align-items: center; }
+/* Narrows the shared `.scq-opt` pill (604px → 150px) so two fit side by
+   side per row; border/background/radio/icon states all inherit from
+   `.scq-opt`/`.scq-radio` (style.css ~L1001-1042) unchanged. */
+.tf-opt { width: 150px; min-height: 34px; padding: 4px 16px; gap: 8px; }
+.tf-opt .scq-opt-text { white-space: nowrap; }
+
+/* ═══ COMPONENT — Progress Question nav (720-templates skill →
+   _global-components.md → "Progress Question"). Ported verbatim from
+   this SAME lomda's own part 02 (methodica-math-percent-02-02/
+   css/style.css) — the CSS isn't in the skill doc itself (HTML/JS
+   contract only), so this sibling implementation fills that gap per
+   the skill's own "check a known-good sibling before inventing one"
+   rule. Covers S1-S7 (the 5-question practice set kicked off by
+   S0's "5 שאלות").
+   Icon: 24×24 circle, box-shadow ring (not border, doesn't consume
+   layout) when not-answered. Current = light violet fill + white
+   inner disc + violet ring + solid violet center dot. Correct/
+   incorrect: SAME solid var(--subject-500) circle — the check/X glyph
+   (real inline SVG DOM children, toggled via display:none/block) is
+   the ONLY thing distinguishing them, not color.
+   Label: #ececec + right-aligned when not visited; #222 + centered
+   once visited. Connector: #ececec when its left-hand (lower-numbered)
+   question isn't resolved yet, rgba(0,0,0,.6) once it is — neutral
+   black-alpha, NOT a subject color.
+   ═══════════════════════════════════════════════════════════ */
+.progress-question {
+  position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: flex-start; justify-content: center;
+  gap: 4px; direction: rtl; z-index: 20;
+}
+.progress-question__item {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 8px; width: 43px; flex: 0 0 auto;
+}
+.progress-question__connector {
+  display: flex; align-items: center; justify-content: center;
+  padding-top: 11.5px; width: 64px; flex: 0 0 auto;
+}
+.progress-question__connector-line {
+  width: 100%; height: 1.5px; border-radius: 2px;
+  background: #ececec;
+}
+.progress-question__connector--visited .progress-question__connector-line {
+  background: rgba(0, 0, 0, 0.6);
+}
+.progress-question__icon {
+  position: relative;
+  width: 24px; height: 24px; flex: 0 0 24px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 1.5px #ececec;
+}
+.progress-question__icon::after {
+  content: ''; position: absolute; inset: 0; margin: auto;
+  width: 7.2px; height: 7.2px; border-radius: 50%;
+  background: #d9d9d9; box-shadow: 0 0 0 1px #ececec;
+}
+.progress-question__icon-check,
+.progress-question__icon-x {
+  display: none;
+  position: absolute; inset: 0; margin: auto;
+  color: #fff;
+}
+.progress-question__icon-check { width: 12.7px; height: 9.2px; }
+.progress-question__icon-x { width: 10px; height: 10px; }
+
+.progress-question__icon--current {
+  background: #e1d9ff; box-shadow: none;
+}
+.progress-question__icon--current::before {
+  content: ''; position: absolute; inset: 0; margin: auto;
+  width: 19.2px; height: 19.2px; border-radius: 50%;
+  background: #fff; box-shadow: 0 0 0 2px var(--subject-500);
+}
+.progress-question__icon--current::after {
+  background: var(--subject-500); box-shadow: none;
+  z-index: 1;
+}
+
+.progress-question__icon--correct,
+.progress-question__icon--incorrect {
+  background: var(--subject-500); box-shadow: none;
+}
+.progress-question__icon--correct::after,
+.progress-question__icon--incorrect::after { content: none; }
+.progress-question__icon--correct .progress-question__icon-check { display: block; }
+.progress-question__icon--incorrect .progress-question__icon-x { display: block; }
+
+.progress-question__label {
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 15px; font-weight: 400; color: #ececec;
+  text-align: right; white-space: nowrap; line-height: normal;
+}
+.progress-question__label--visited { color: #222; text-align: center; }

@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>‎النسب المئوية 02 — الجزء 02</title>
+  <link rel="stylesheet" href="../unit-css/00-tokens.css?v=2">
+  <link rel="stylesheet" href="../unit-css/10-base.css?v=2">
+  <link rel="stylesheet" href="css/style.css?v=2">
+  <link rel="stylesheet" href="../unit-css/20-motion.css?v=2">
+  <link rel="stylesheet" href="../unit-css/25-report.css?v=2">
+</head>
+<!-- data-subject-theme activates the Math token override block in
+     css/style.css. :root holds the Science defaults; this one attribute
+     is the entire theme switch (figma-lomda-builder → subject-theming.md).
+     Must stay identical to part 01's <body> so both parts render in the
+     same subject theme. -->
+<body data-subject-theme="math">
+  <!-- ═══ כיסוי האתחול ═══
+       מסתיר את החלון שבו מסך 0 כבר גלוי (class="screen active" מקובע ב-markup
+       כאן למטה) אבל מסמך ה-state עוד לא נקרא. בלעדיו לומד שממשיך ממחשב אחר
+       רואה אווטאר בצבע הלא-נכון ואז החלפה — בדיוק ההבהוב שכלל 1 ב-CLAUDE.md
+       אוסר, כי הדמות נקראת מהמסמך ולא מ-localStorage מ-v4 והלאה.
+
+       אח של #app ולא בן שלו: scaleApp() מזיז ומקטין את #app, ובן היה יורש
+       את ה-transform. הסגנון inline ולא ב-styles.css במכוון — הכיסוי חייב
+       להיצבע בפריים הראשון, ו-inline הוא היחיד שלא תלוי בקאש של CSS.
+
+       ⚠️ הסקריפט שאחריו הוא רשת הביטחון, ואין לו שום תלות בקובץ JS: גם אם
+       40-resume.js או 50-loader.js נכשלים בטעינה, הכיסוי נופל אחרי 800ms.
+       ההסרה בנתיב הרגיל היא dropBootCover() מ-50-loader.js, שרצה מוקדם יותר
+       מזה ברוב הטעינות.
+       אם bootXAPI הספיק להדליק את window.__resumeInFlight (כלומר resume פעיל
+       והשחזור בדרך), הרשת ממתינה לו במקום לחשוף את מסך 0 באמצע — עד תקרה
+       קשיחה של 6 שניות, שאחריה היא חושפת בכל מקרה. הדגל נקרא הגנתית, ולכן
+       50-loader.js שנכשל בטעינה מחזיר בדיוק את התנהגות ה-800ms. -->
+  <div id="boot-cover" style="position:fixed;inset:0;z-index:9999;background:#fff"></div>
+  <script>
+  (function () {
+    var t0 = Date.now();
+    function tick() {
+      var c = document.getElementById('boot-cover');
+      if (!c || !c.parentNode) return;
+      if (window.__resumeInFlight && Date.now() - t0 < 6000) { setTimeout(tick, 100); return; }
+      c.parentNode.removeChild(c);
+    }
+    setTimeout(tick, 800);
+  })();
+  </script>
+
+  <div id="app">
+
+    <!-- Report / Issue button — global, outside all .screen divs.
+         Glyph is live inline SVG on currentColor (see the Report/Issue
+         block in css/style.css for why it is not a PNG). Ported verbatim
+         from part 01. -->
+    <button class="flag-btn" type="button" aria-label="هل وجدتم مشكلة؟">
+      <span class="flag-btn-icon">
+        <span class="flag-btn-glyph" aria-hidden="true">
+          <svg class="flag-btn-glyph-pole" viewBox="0 0 0.794329 17.0005" preserveAspectRatio="none" fill="none"><path d="M0.397164 17C0.177722 17 0 16.8239 0 16.6065V0.393501C0 0.176082 0.177722 0 0.397164 0C0.616607 0 0.794329 0.176082 0.794329 0.393501V16.607C0.794329 16.8245 0.616607 17.0005 0.397164 17.0005V17Z" fill="currentColor"/></svg>
+          <svg class="flag-btn-glyph-banner" viewBox="0 0 12 9.31542" preserveAspectRatio="none" fill="none"><path d="M2.76227 9.31542C1.91972 9.31542 1.06958 9.15545 0.213483 8.71363C0.0823588 8.64599 0 8.51124 0 8.36469V0.950975C0 0.814619 0.0715221 0.687925 0.188558 0.615989C0.305594 0.54459 0.45189 0.537611 0.574886 0.598811C0.577053 0.599884 0.578679 0.600958 0.580846 0.602032C2.31309 1.49586 4.05563 1.046 5.90003 0.569821C7.80946 0.0770055 9.78336 -0.431915 11.7865 0.601495C11.9176 0.669136 12 0.803882 12 0.950438V8.36415C12 8.4946 11.9344 8.617 11.8255 8.69001C11.7166 8.76302 11.5774 8.77805 11.4555 8.72974C11.443 8.7249 11.4311 8.71954 11.4197 8.71363C9.68745 7.8198 7.94491 8.26967 6.10051 8.7453C5.00709 9.02714 3.89199 9.31489 2.76281 9.31489L2.76227 9.31542ZM0.793787 8.11935C2.45559 8.87307 4.13094 8.44038 5.90003 7.98407C7.62469 7.53903 9.40191 7.08057 11.2062 7.75806V1.19631C9.54441 0.442591 7.86906 0.875281 6.09997 1.33159C4.37531 1.77663 2.59755 2.23509 0.793787 1.5576V8.11935Z" fill="currentColor"/></svg>
+        </span>
+      </span>
+      <span class="flag-btn-label">هل وجدتم مشكلة؟</span>
+    </button>
+
+    <!-- Standard shared image-zoom modal (720-templates → _global-components.md
+         → "Image zoom") — ONE instance for the whole part, outside all .screen
+         divs. Ported verbatim from part 01. -->
+    <div id="img-zoom-modal" class="img-zoom-modal hidden">
+      <div class="img-zoom-backdrop" data-zoom-close="true"></div>
+      <div class="img-zoom-panel" role="dialog" aria-modal="true" aria-label="تكبير الصورة" id="img-zoom-panel-label">
+        <button class="img-zoom-close-btn" type="button" aria-label="إغلاق" data-zoom-close="true">
+          <svg viewBox="0 0 15 15" fill="none" aria-hidden="true">
+            <path d="M1 1L14 14M14 1L1 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <div class="img-zoom-stage" id="img-zoom-stage"></div>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 45 (S0) — TransitionScreen kickoff ("מסך הזנקה" per
+         presenter notes), slide 44. NEW item ref -001 — closes out
+         item -009's two-part "שאלת חימום 2" (S23/S24) and opens the
+         first graded practice set. Producer correction (2026-08-11):
+         "6 שאלות" → "5 שאלות" — the slide's own text originally said 6;
+         the practice set is actually 5 questions, 4-correct threshold.
+         Reuses S1/S3/S13/S20's own `.s1-content`/`.s1-text`/
+         `.s1-video-wrap` shape verbatim.
+         Text is THREE lines, not a plain title+subtitle pair — the
+         source's own run-level formatting (checked directly, not
+         assumed uniform) shows line 1 regular-weight 20pt, the number
+         line alone at 40pt BOLD (an exact match for this project's own
+         `.s1-title` spec), and line 3 bold at a smaller size matching
+         `.s1-subtitle`'s own 28px/700 spec. Preserving that per-run
+         emphasis instead of forcing all three lines into one uniform
+         style (per this project's "preserve source bold/paragraph
+         structure per-run" rule) — new `.s1-subtitle--regular` modifier
+         cancels the bold only for line 1.
+         Continue button label is "אפשר להתחיל!" (not the generic
+         "המשך"), taken from the slide's own button text run.
+         Character video: real per-character clips supplied 2026-08-11
+         (`Character-1-Read.mp4` / `Character-2-Read.mp4` — capital-R
+         "Read", a DIFFERENT clip from the pre-existing lowercase
+         "-reading.mp4" pair, which part 01 no longer ships), decorative (no
+         sound, no player controls per producer instruction), swapped
+         at runtime via `S0_CHARACTER_VIDEOS` — same shape as S20's own
+         `S20_CHARACTER_VIDEOS`.
+         Ungated Continue (plain "מסך הזנקה", no other note).
+         Source: math-target-4.2-script.pptx, slide 44. Item ref:
+         methodica-math-percent-02-02-001.
+         ═══════════════════════════════════════════════════════ -->
+    <section class="screen active" data-screen="0" id="s0">
+      <!-- animation-system: header block (title+subtitle) float-in, group 1.
+           Video zone rule (Transition/companion-character screens) puts the
+           character video in the SAME group 1, fade-only, no stagger vs. the
+           header — per DECISIONS.md "Video zones". -->
+      <div class="s1-content">
+        <div class="s1-text" data-reveal="1">
+          <p class="s1-subtitle s1-subtitle--regular">أنهينا مرحلة التعلم، سننتقل إلى التمرين الأول ونجيب عن</p>
+          <h1 class="s1-title">5 أسئلة</h1>
+          <p class="s1-subtitle">يجب الإجابة بشكل صحيح عن 4 أسئلة على الأقل.</p>
+        </div>
+        <div class="s1-video-wrap" data-reveal="1" data-reveal-fade>
+          <video id="s0-video" class="s1-video" autoplay muted playsinline disablepictureinpicture controlsList="nodownload noremoteplayback noplaybackrate"></video>
+        </div>
+      </div>
+      <button class="btn-continue" id="s0-continue" onclick="advanceFromS0()"><span class="nav-label" data-label="يمكن البدء!"><span>يمكن البدء!</span></span></button>
+      <!-- Cross-part Back. Ships hidden and is unhidden by
+           PartNav.mountBack() (../unit-js/08-partnav.js) only when the learner
+           actually crossed into this part from another one — opening
+           this part directly leaves nothing to go back to, so the
+           button stays hidden. Target is the last screen of whichever
+           part the learner came through, which is recorded at the
+           crossing rather than inferred from the part number. -->
+      <button class="scq-back hidden" id="s0-back" type="button" onclick="goBackFromS0()">
+        <span class="nav-label" data-label="عودة"><span>عودة</span></span>
+      </button>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 46 (S1) — DropdownQuestion, first of the practice set
+         (S0's own "5 שאלות" — see its section comment for the count
+         correction) (slide 45), item -001, part א ("התאימו את הנתונים
+         לטבלת הפרופורציה" — match the data to the proportion table).
+         FIRST DropdownQuestion in this project — markup/CSS/JS built
+         fresh from 720-templates' own DropdownQuestion.md contract
+         (multi-blank variant, 4 independent slots, one correct value
+         each, shared option pool {x, 60, 65%, 100%}), cross-checked
+         against a validated production reference
+         (methodica-science-mass-liquid-01-01's own S10) for the design
+         tokens the skill doc leaves unstated as exact values — note
+         that reference's own icon-insertion point (`afterbegin`) is
+         DRIFT from this project's own established rule (_question-
+         template-defaults.md: `beforeend` for a direction:ltr-forced
+         row) and was NOT copied forward; `beforeend` is used here.
+         Image `standard1.jpeg` (ppt/media/image39.jpeg, presenter
+         note's own "תמונה: standard1") — a landscape photo (555×303
+         native, ~1.83 ratio), sized via the same aspect-ratio-driven
+         frame + hairline shadow technique already established in part
+         04 for its own landscape content images (S3/S4/S5's own
+         `.scq-img-inner` override), adapted to part 01's absolute-
+         positioned `.scq-img` rather than part 04's flex layout. Zoom
+         uses the generic `.zoom-img-inner` wrapper (this is a brand
+         new image, not haknaya1.jpg, so `.scq-img-inner`'s own
+         hardcoded 941:1672 zoom-stage ratio would distort it — same
+         landmine avoidance as every S21+ screen).
+         "שאלה אוריינית" (literacy question) badge from the source slide
+         is DELIBERATELY NOT built — same explicit producer instruction
+         already on record from part 04's own S3 (2026-08-11): it's an
+         internal/production-facing label, never learner-facing UI,
+         despite sitting on-canvas in the PPTX.
+         Correct mapping (confirmed via a fresh PowerPoint export, since
+         the raw text dump alone doesn't disambiguate which of the 3
+         near-duplicate table dumps is the on-screen table vs. the two
+         feedback-popup restatements): slot 1 (row 1, אחוז column) =
+         65%, slot 2 (row 1, כמות column) = x, slot 3 (row 2, אחוז) =
+         100%, slot 4 (row 2, כמות) = 60. Every slot shares the SAME
+         4-item option pool (confirmed by the slide's own "אפשרויות
+         לתפריט דרופדאון" list) — this is a placement/matching exercise,
+         not 4 independent fill-in-the-blanks with different pools.
+         Hint title is the generic "רמז" (S21 correction applied
+         proactively). Correct/wrong2 popup titles are NOT authored on
+         this slide (no "נכון"/"טעות" text anywhere in its own runs,
+         unlike every prior screen) — used this project's own
+         near-universal "נכון!" for correct (matches literally every
+         other screen), and DropdownQuestion.md's own documented
+         default wrong2 title ("לא מדויק. התשובה הנכונה מוצגת.") for the
+         final-wrong case, since no producer-specific override exists
+         to transcribe. Flag both to the producer if a screenshot
+         correction arrives, per this session's own repeated pattern of
+         proactive-then-corrected titles.
+         Source: math-target-4.2-script.pptx, slide 45. Item ref:
+         methodica-math-percent-02-02-001.
+         ═══════════════════════════════════════════════════════ -->
+    <section class="screen" data-screen="1" id="s1">
+      <!-- Progress Question nav (5-question practice set, S1-S7) —
+           shared markup repeated identically on every screen in the
+           set, per 720-templates -> _global-components.md -> "Progress
+           Question" reuse rule. Q1 first in DOM (renders physically
+           rightmost under direction:rtl). CSS/markup originally ported
+           verbatim from this lomda's own part 03 (methodica-math-
+           percent-02-03, part number as of the 2026-08-12 split — this
+           part's own Q1 maps to 3 screens (S1/S2/S3, item -001's own
+           א/ב/ג sub-parts)) — see the JS block for the multi-screen
+           aggregation rule. -->
+      <nav class="progress-question" aria-label="التنقُّل بين الأسئلة">
+        <div class="progress-question__item" data-question="1">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" fill="none" aria-hidden="true"><path d="M4.10942 9.18763C3.74814 9.18778 3.40167 9.04418 3.14642 8.78851L0.234956 5.87812C-0.0783188 5.56475 -0.0783188 5.05677 0.234956 4.74339C0.548332 4.43012 1.05631 4.43012 1.36969 4.74339L4.10942 7.48312L11.3576 0.234956C11.671 -0.0783188 12.1789 -0.0783188 12.4923 0.234956C12.8056 0.548332 12.8056 1.05631 12.4923 1.36969L5.07242 8.78851C4.81717 9.04418 4.47069 9.18778 4.10942 9.18763Z" fill="currentColor"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M9.76736 0.232637C9.61836 0.0836796 9.4163 0 9.20561 0C8.99492 0 8.79286 0.0836796 8.64386 0.232637L5 3.87649L1.35615 0.232637C1.20714 0.0836796 1.00508 0 0.794391 0C0.583702 0 0.381639 0.0836796 0.232637 0.232637C0.0836796 0.381639 0 0.583702 0 0.794391C0 1.00508 0.0836796 1.20714 0.232637 1.35615L3.87649 5L0.232637 8.64386C0.0836796 8.79286 0 8.99492 0 9.20561C0 9.4163 0.0836796 9.61836 0.232637 9.76736C0.381639 9.91632 0.583702 10 0.794391 10C1.00508 10 1.20714 9.91632 1.35615 9.76736L5 6.12351L8.64386 9.76736C8.79286 9.91632 8.99492 10 9.20561 10C9.4163 10 9.61836 9.91632 9.76736 9.76736C9.91632 9.61836 10 9.4163 10 9.20561C10 8.99492 9.91632 8.79286 9.76736 8.64386L6.12351 5L9.76736 1.35615C9.91632 1.20714 10 1.00508 10 0.794391C10 0.583702 9.91632 0.381639 9.76736 0.232637Z" fill="currentColor"/></svg></div>
+          <span class="progress-question__label">سؤال 1</span>
+        </div>
+        <div class="progress-question__connector" data-connector="1"><div class="progress-question__connector-line"></div></div>
+        <div class="progress-question__item" data-question="2">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" fill="none" aria-hidden="true"><path d="M4.10942 9.18763C3.74814 9.18778 3.40167 9.04418 3.14642 8.78851L0.234956 5.87812C-0.0783188 5.56475 -0.0783188 5.05677 0.234956 4.74339C0.548332 4.43012 1.05631 4.43012 1.36969 4.74339L4.10942 7.48312L11.3576 0.234956C11.671 -0.0783188 12.1789 -0.0783188 12.4923 0.234956C12.8056 0.548332 12.8056 1.05631 12.4923 1.36969L5.07242 8.78851C4.81717 9.04418 4.47069 9.18778 4.10942 9.18763Z" fill="currentColor"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M9.76736 0.232637C9.61836 0.0836796 9.4163 0 9.20561 0C8.99492 0 8.79286 0.0836796 8.64386 0.232637L5 3.87649L1.35615 0.232637C1.20714 0.0836796 1.00508 0 0.794391 0C0.583702 0 0.381639 0.0836796 0.232637 0.232637C0.0836796 0.381639 0 0.583702 0 0.794391C0 1.00508 0.0836796 1.20714 0.232637 1.35615L3.87649 5L0.232637 8.64386C0.0836796 8.79286 0 8.99492 0 9.20561C0 9.4163 0.0836796 9.61836 0.232637 9.76736C0.381639 9.91632 0.583702 10 0.794391 10C1.00508 10 1.20714 9.91632 1.35615 9.76736L5 6.12351L8.64386 9.76736C8.79286 9.91632 8.99492 10 9.20561 10C9.4163 10 9.61836 9.91632 9.76736 9.76736C9.91632 9.61836 10 9.4163 10 9.20561C10 8.99492 9.91632 8.79286 9.76736 8.64386L6.12351 5L9.76736 1.35615C9.91632 1.20714 10 1.00508 10 0.794391C10 0.583702 9.91632 0.381639 9.76736 0.232637Z" fill="currentColor"/></svg></div>
+          <span class="progress-question__label">سؤال 2</span>
+        </div>
+        <div class="progress-question__connector" data-connector="2"><div class="progress-question__connector-line"></div></div>
+        <div class="progress-question__item" data-question="3">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" fill="none" aria-hidden="true"><path d="M4.10942 9.18763C3.74814 9.18778 3.40167 9.04418 3.14642 8.78851L0.234956 5.87812C-0.0783188 5.56475 -0.0783188 5.05677 0.234956 4.74339C0.548332 4.43012 1.05631 4.43012 1.36969 4.74339L4.10942 7.48312L11.3576 0.234956C11.671 -0.0783188 12.1789 -0.0783188 12.4923 0.234956C12.8056 0.548332 12.8056 1.05631 12.4923 1.36969L5.07242 8.78851C4.81717 9.04418 4.47069 9.18778 4.10942 9.18763Z" fill="currentColor"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M9.76736 0.232637C9.61836 0.0836796 9.4163 0 9.20561 0C8.99492 0 8.79286 0.0836796 8.64386 0.232637L5 3.87649L1.35615 0.232637C1.20714 0.0836796 1.00508 0 0.794391 0C0.583702 0 0.381639 0.0836796 0.232637 0.232637C0.0836796 0.381639 0 0.583702 0 0.794391C0 1.00508 0.0836796 1.20714 0.232637 1.35615L3.87649 5L0.232637 8.64386C0.0836796 8.79286 0 8.99492 0 9.20561C0 9.4163 0.0836796 9.61836 0.232637 9.76736C0.381639 9.91632 0.583702 10 0.794391 10C1.00508 10 1.20714 9.91632 1.35615 9.76736L5 6.12351L8.64386 9.76736C8.79286 9.91632 8.99492 10 9.20561 10C9.4163 10 9.61836 9.91632 9.76736 9.76736C9.91632 9.61836 10 9.4163 10 9.20561C10 8.99492 9.91632 8.79286 9.76736 8.64386L6.12351 5L9.76736 1.35615C9.91632 1.20714 10 1.00508 10 0.794391C10 0.583702 9.91632 0.381639 9.76736 0.232637Z" fill="currentColor"/></svg></div>
+          <span class="progress-question__label">سؤال 3</span>
+        </div>
+        <div class="progress-question__connector" data-connector="3"><div class="progress-question__connector-line"></div></div>
+        <div class="progress-question__item" data-question="4">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" fill="none" aria-hidden="true"><path d="M4.10942 9.18763C3.74814 9.18778 3.40167 9.04418 3.14642 8.78851L0.234956 5.87812C-0.0783188 5.56475 -0.0783188 5.05677 0.234956 4.74339C0.548332 4.43012 1.05631 4.43012 1.36969 4.74339L4.10942 7.48312L11.3576 0.234956C11.671 -0.0783188 12.1789 -0.0783188 12.4923 0.234956C12.8056 0.548332 12.8056 1.05631 12.4923 1.36969L5.07242 8.78851C4.81717 9.04418 4.47069 9.18778 4.10942 9.18763Z" fill="currentColor"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M9.76736 0.232637C9.61836 0.0836796 9.4163 0 9.20561 0C8.99492 0 8.79286 0.0836796 8.64386 0.232637L5 3.87649L1.35615 0.232637C1.20714 0.0836796 1.00508 0 0.794391 0C0.583702 0 0.381639 0.0836796 0.232637 0.232637C0.0836796 0.381639 0 0.583702 0 0.794391C0 1.00508 0.0836796 1.20714 0.232637 1.35615L3.87649 5L0.232637 8.64386C0.0836796 8.79286 0 8.99492 0 9.20561C0 9.4163 0.0836796 9.61836 0.232637 9.76736C0.381639 9.91632 0.583702 10 0.794391 10C1.00508 10 1.20714 9.91632 1.35615 9.76736L5 6.12351L8.64386 9.76736C8.79286 9.91632 8.99492 10 9.20561 10C9.4163 10 9.61836 9.91632 9.76736 9.76736C9.91632 9.61836 10 9.4163 10 9.20561C10 8.99492 9.91632 8.79286 9.76736 8.64386L6.12351 5L9.76736 1.35615C9.91632 1.20714 10 1.00508 10 0.794391C10 0.583702 9.91632 0.381639 9.76736 0.232637Z" fill="currentColor"/></svg></div>
+          <span class="progress-question__label">سؤال 4</span>
+        </div>
+        <div class="progress-question__connector" data-connector="4"><div class="progress-question__connector-line"></div></div>
+        <div class="progress-question__item" data-question="5">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" fill="none" aria-hidden="true"><path d="M4.10942 9.18763C3.74814 9.18778 3.40167 9.04418 3.14642 8.78851L0.234956 5.87812C-0.0783188 5.56475 -0.0783188 5.05677 0.234956 4.74339C0.548332 4.43012 1.05631 4.43012 1.36969 4.74339L4.10942 7.48312L11.3576 0.234956C11.671 -0.0783188 12.1789 -0.0783188 12.4923 0.234956C12.8056 0.548332 12.8056 1.05631 12.4923 1.36969L5.07242 8.78851C4.81717 9.04418 4.47069 9.18778 4.10942 9.18763Z" fill="currentColor"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M9.76736 0.232637C9.61836 0.0836796 9.4163 0 9.20561 0C8.99492 0 8.79286 0.0836796 8.64386 0.232637L5 3.87649L1.35615 0.232637C1.20714 0.0836796 1.00508 0 0.794391 0C0.583702 0 0.381639 0.0836796 0.232637 0.232637C0.0836796 0.381639 0 0.583702 0 0.794391C0 1.00508 0.0836796 1.20714 0.232637 1.35615L3.87649 5L0.232637 8.64386C0.0836796 8.79286 0 8.99492 0 9.20561C0 9.4163 0.0836796 9.61836 0.232637 9.76736C0.381639 9.91632 0.583702 10 0.794391 10C1.00508 10 1.20714 9.91632 1.35615 9.76736L5 6.12351L8.64386 9.76736C8.79286 9.91632 8.99492 10 9.20561 10C9.4163 10 9.61836 9.91632 9.76736 9.76736C9.91632 9.61836 10 9.4163 10 9.20561C10 8.99492 9.91632 8.79286 9.76736 8.64386L6.12351 5L9.76736 1.35615C9.91632 1.20714 10 1.00508 10 0.794391C10 0.583702 9.91632 0.381639 9.76736 0.232637Z" fill="currentColor"/></svg></div>
+          <span class="progress-question__label">سؤال 5</span>
+        </div>
+      </nav>
+      <!-- animation-system: physical right = .s9-text-col (question+answers,
+           group 1), physical left = .scq-img (content image, group 2) — per
+           DECISIONS.md RTL rule (right before left); .scq-img is NOT
+           geometry-measured (the zoom modal clones markup only, no
+           getBoundingClientRect), so it floats like a normal content image. -->
+      <div class="scq-question">
+        <div class="scq-img" id="s1-img" data-reveal="2">
+          <div class="zoom-img-inner">
+            <img src="assets/img/standard1.jpeg" alt="صورة نهارية لمدخل قاعة مؤتمرات بلدية، مزينة بقوس بالونات زرقاء وبيضاء فوق لافتة &quot;المؤتمر السنوي للمتطوعين، المجلس الإقليمي نفيه حمتسيتسيم&quot;، مع شبان وشابات يقفون ويتحدثون في الساحة أمام المدخل">
+          </div>
+          <button class="img-zoom-btn" type="button" aria-label="تكبير الصورة"
+                  data-zoom-src="assets/img/standard1.jpeg" data-zoom-alt="צילום של כניסה לאולם כנסים מעוטרת בקשת בלונים לקראת כנס המתנדבים השנתי">
+            <svg class="img-zoom-btn__icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <circle cx="8.5" cy="8.5" r="6.5" stroke="currentColor" stroke-width="1.6"/>
+              <path d="M13.3 13.3L17.6 17.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+        <div class="s9-text-col" id="s1-text-col" data-reveal="1">
+          <p class="s9-intro">في نادي الشبيبة تسجّلَ 60 متطوعًا.<br>مديرة النادي مستعدة لتنظيم يوم ترفيهي للمتطوعين،<br>لكن فقط بشرط حضور 40 متطوعًا على الأقل.<br>سجّلَ للنشاط %65 من المتطوعين.<br>اكتشفنا أن 39 متطوعًا سجلوا لليوم الترفيهي‎.</p>
+          <p class="scq-qtext">أ. لائموا المعطيات لجدول التناسب‎:</p>
+          <!-- Column order (producer instruction, 2026-08-20, applied
+               project-wide): any 2-column table with a percent column
+               puts אחוז physical LEFT — last <th>/<td> in each row
+               (last DOM child renders leftmost under this file's
+               inherited RTL). This REVERSES the 2026-08-19 rule that
+               stood here before (אחוז right), which itself had reversed
+               an original 2026-08-11 screen-specific call — so this
+               swap restores that original כמות נרשמים-right layout.
+               Slot IDs/correctness (S1.correct in main.js, keyed by slot
+               NUMBER not by column) are unchanged — only which column
+               each slot's button sits in moved: slots 1/2 swapped
+               places in row 1, slots 3/4 in row 2, so each slot still
+               renders under the SAME header text it always matched
+               (slot 1 = '65%' now sits under אחוז on the left; slot 2 =
+               'x' sits under כמות נרשמים on the right), just mirrored. -->
+          <table class="eq-table s1-table">
+            <tr><th>عدد المسجلين</th><th>النسبة المئوية</th></tr>
+            <tr>
+              <td>
+                <div class="dq-dropdown-wrap">
+                  <button class="dq-btn" id="dq-btn-2" type="button" data-empty="true" aria-haspopup="listbox" aria-expanded="false" onclick="s1Toggle(2)">
+                    <svg class="dq-chevron" width="16" height="8" viewBox="0 0 16 8" fill="none" aria-hidden="true"><path d="M1 1L8 7L15 1" stroke="#303030" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span class="dq-selected" id="dq-selected-2">اختاروا</span>
+                  </button>
+                  <ul class="dq-list hidden" id="dq-list-2" role="listbox">
+                    <li class="dq-option" role="option" tabindex="0" onclick="s1Select(2,'x')">x</li>
+                    <li class="dq-option" role="option" tabindex="0" onclick="s1Select(2,'60')">60</li>
+                    <li class="dq-option" role="option" tabindex="0" onclick="s1Select(2,'65%')">65%</li>
+                    <li class="dq-option" role="option" tabindex="0" onclick="s1Select(2,'100%')">100%</li>
+                  </ul>
+                </div>
+              </td>
+              <td>
+                <div class="dq-dropdown-wrap">
+                  <button class="dq-btn" id="dq-btn-1" type="button" data-empty="true" aria-haspopup="listbox" aria-expanded="false" onclick="s1Toggle(1)">
+                    <svg class="dq-chevron" width="16" height="8" viewBox="0 0 16 8" fill="none" aria-hidden="true"><path d="M1 1L8 7L15 1" stroke="#303030" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span class="dq-selected" id="dq-selected-1">اختاروا</span>
+                  </button>
+                  <ul class="dq-list hidden" id="dq-list-1" role="listbox">
+                    <li class="dq-option" role="option" tabindex="0" onclick="s1Select(1,'x')">x</li>
+                    <li class="dq-option" role="option" tabindex="0" onclick="s1Select(1,'60')">60</li>
+                    <li class="dq-option" role="option" tabindex="0" onclick="s1Select(1,'65%')">65%</li>
+                    <li class="dq-option" role="option" tabindex="0" onclick="s1Select(1,'100%')">100%</li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="dq-dropdown-wrap">
+                  <button class="dq-btn" id="dq-btn-4" type="button" data-empty="true" aria-haspopup="listbox" aria-expanded="false" onclick="s1Toggle(4)">
+                    <svg class="dq-chevron" width="16" height="8" viewBox="0 0 16 8" fill="none" aria-hidden="true"><path d="M1 1L8 7L15 1" stroke="#303030" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span class="dq-selected" id="dq-selected-4">اختاروا</span>
+                  </button>
+                  <ul class="dq-list hidden" id="dq-list-4" role="listbox">
+                    <li class="dq-option" role="option" tabindex="0" onclick="s1Select(4,'x')">x</li>
+                    <li class="dq-option" role="option" tabindex="0" onclick="s1Select(4,'60')">60</li>
+                    <li class="dq-option" role="option" tabindex="0" onclick="s1Select(4,'65%')">65%</li>
+                    <li class="dq-option" role="option" tabindex="0" onclick="s1Select(4,'100%')">100%</li>
+                  </ul>
+                </div>
+              </td>
+              <td>
+                <div class="dq-dropdown-wrap">
+                  <button class="dq-btn" id="dq-btn-3" type="button" data-empty="true" aria-haspopup="listbox" aria-expanded="false" onclick="s1Toggle(3)">
+                    <svg class="dq-chevron" width="16" height="8" viewBox="0 0 16 8" fill="none" aria-hidden="true"><path d="M1 1L8 7L15 1" stroke="#303030" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span class="dq-selected" id="dq-selected-3">اختاروا</span>
+                  </button>
+                  <ul class="dq-list hidden" id="dq-list-3" role="listbox">
+                    <li class="dq-option" role="option" tabindex="0" onclick="s1Select(3,'x')">x</li>
+                    <li class="dq-option" role="option" tabindex="0" onclick="s1Select(3,'60')">60</li>
+                    <li class="dq-option" role="option" tabindex="0" onclick="s1Select(3,'65%')">65%</li>
+                    <li class="dq-option" role="option" tabindex="0" onclick="s1Select(3,'100%')">100%</li>
+                  </ul>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <button class="btn-continue" id="s1-check" disabled onclick="s1Check()"><span class="nav-label" data-label="هل إجابتي صحيحة؟"><span>هل إجابتي صحيحة؟</span></span></button>
+      <button class="scq-hint" id="s1-hint" type="button" onclick="s1OpenHint()">
+        <span class="nav-label" data-label="هل يمكنني الحصول على تلميح؟"><span>هل يمكنني الحصول على تلميح؟</span></span>
+        <svg class="scq-hint-icon" viewBox="0 0 25.9999 22.2883" fill="none" aria-hidden="true">
+          <path d="M17.7925 2.76345C16.3676 1.37911 14.5057 0.68776 12.5488 0.815545C9.07995 1.04163 6.27286 3.9168 6.01796 7.50134C5.85646 9.77363 6.7035 11.9443 8.34374 13.4548C9.23036 14.2723 9.74016 15.465 9.74016 16.7265H11.2284H14.7733H16.2615C16.2615 15.4847 16.7919 14.2707 17.7181 13.3959C19.17 12.0263 20.0012 10.0751 20.0012 8.04361C20.0012 6.01215 19.1953 4.12486 17.7909 2.76018L17.7925 2.76345ZM13.0001 5.54524C11.6701 5.54524 10.5856 6.66582 10.5856 8.04525C10.5856 8.46956 10.2515 8.81524 9.84149 8.81524C9.43143 8.81524 9.09736 8.46956 9.09736 8.04525C9.09736 5.8172 10.8484 4.00527 13.0001 4.00527C13.4133 4.00527 13.7473 4.35094 13.7473 4.77525C13.7473 5.19957 13.4133 5.54524 13.0001 5.54524Z" fill="currentColor"/>
+          <path d="M9.73858 19.6245C9.73858 20.3289 9.99823 20.9908 10.478 21.4904L10.4938 21.5068C10.9783 22.0098 11.6242 22.2883 12.3114 22.2883H13.6888C14.3775 22.2883 15.025 22.0114 15.5111 21.5052C15.9956 21.0039 16.2631 20.3355 16.2631 19.6277V17.9895H9.73858V19.6245ZM11.2268 19.5294H14.7717V19.6277C14.7717 19.9243 14.6609 20.2077 14.4566 20.419C14.254 20.6254 13.9753 20.7483 13.6888 20.7483H12.3114C12.028 20.7483 11.7588 20.6336 11.5561 20.4305L11.5451 20.4174C11.3424 20.211 11.2268 19.9226 11.2268 19.6261V19.5311V19.5294Z" fill="currentColor"/>
+          <path d="M25.2558 7.27531H22.607C22.1954 7.27531 21.8629 7.62099 21.8629 8.0453C21.8629 8.46961 22.197 8.81529 22.607 8.81529H25.2558C25.6674 8.81529 25.9999 8.46961 25.9999 8.0453C25.9999 7.62099 25.6658 7.27531 25.2558 7.27531Z" fill="currentColor"/>
+          <path d="M4.1386 8.0453C4.1386 7.61935 3.80453 7.27531 3.39447 7.27531H0.744124C0.332481 7.27531 0 7.62099 0 8.0453C0 8.46961 0.334064 8.81529 0.744124 8.81529H3.39289C3.80453 8.81529 4.13701 8.46961 4.13701 8.0453H4.1386Z" fill="currentColor"/>
+          <path d="M20.8702 3.11398C21.0175 3.11398 21.1663 3.06811 21.2961 2.97472L23.4667 1.40198C23.804 1.15788 23.8847 0.677863 23.6488 0.328911C23.4129 -0.0200418 22.949 -0.105232 22.6118 0.140509L20.4412 1.71325C20.1039 1.95736 20.0232 2.43737 20.2591 2.78632C20.4032 3.00094 20.6343 3.11562 20.8702 3.11562V3.11398Z" fill="currentColor"/>
+          <path d="M4.70372 13.1172L2.53309 14.69C2.19586 14.9341 2.11512 15.4141 2.35102 15.763C2.49509 15.9777 2.72625 16.0923 2.96215 16.0923C3.10939 16.0923 3.25822 16.0465 3.38804 15.9531L5.55867 14.3803C5.8959 14.1362 5.97665 13.6562 5.74074 13.3073C5.50484 12.9583 5.04095 12.8731 4.70372 13.1189V13.1172Z" fill="currentColor"/>
+          <path d="M23.4668 14.6884L21.2961 13.1157C20.9589 12.8716 20.495 12.9567 20.2591 13.3041C20.0232 13.653 20.1055 14.133 20.4412 14.3771L22.6118 15.9499C22.7416 16.0449 22.8904 16.0891 23.0377 16.0891C23.272 16.0891 23.5032 15.9744 23.6488 15.7598C23.8847 15.4109 23.8024 14.9309 23.4668 14.6868V14.6884Z" fill="currentColor"/>
+          <path d="M5.55869 1.71322L3.38806 0.140478C3.05083 -0.103625 2.58694 -0.0184349 2.35104 0.328879C2.11513 0.677832 2.19746 1.15785 2.53311 1.40195L4.70374 2.97469C4.83356 3.06971 4.98239 3.11395 5.12963 3.11395C5.36395 3.11395 5.5951 2.99927 5.74076 2.78465C5.97666 2.4357 5.89434 1.95569 5.55869 1.71158V1.71322Z" fill="currentColor"/>
+        </svg>
+      </button>
+      <button class="scq-back" id="s1-back" type="button" onclick="goBackFromS1()"><span class="nav-label" data-label="عودة"><span>عودة</span></span></button>
+    </section>
+
+    <!-- Feedback popup for S1 — outside all .screen divs -->
+    <div class="scq-popup hidden m-popup" id="s1-popup" onpointerdown="popupPointerDown(event, 's1-popup')">
+      <div class="scq-popup-header">
+        <p class="scq-popup-title" id="s1-popup-title"></p>
+      </div>
+      <div class="scq-popup-body" id="s1-popup-body"></div>
+      <div class="scq-popup-actions" id="s1-popup-actions"></div>
+    </div>
+    <!-- Hint overlay for S1 — outside all .screen divs -->
+    <div class="scq-hint-overlay hidden m-popup" id="s1-hint-overlay" onclick="s1CloseHintOnBackdrop(event)">
+      <div class="scq-hint-popup" role="dialog" aria-modal="true" aria-labelledby="s1-hint-title">
+        <div class="scq-hint-text">
+          <h2 class="scq-hint-title" id="s1-hint-title">
+            <svg class="scq-hint-title-icon" viewBox="0 0 25.9999 22.2883" fill="none" aria-hidden="true">
+              <path d="M17.7925 2.76345C16.3676 1.37911 14.5057 0.68776 12.5488 0.815545C9.07995 1.04163 6.27286 3.9168 6.01796 7.50134C5.85646 9.77363 6.7035 11.9443 8.34374 13.4548C9.23036 14.2723 9.74016 15.465 9.74016 16.7265H11.2284H14.7733H16.2615C16.2615 15.4847 16.7919 14.2707 17.7181 13.3959C19.17 12.0263 20.0012 10.0751 20.0012 8.04361C20.0012 6.01215 19.1953 4.12486 17.7909 2.76018L17.7925 2.76345ZM13.0001 5.54524C11.6701 5.54524 10.5856 6.66582 10.5856 8.04525C10.5856 8.46956 10.2515 8.81524 9.84149 8.81524C9.43143 8.81524 9.09736 8.46956 9.09736 8.04525C9.09736 5.8172 10.8484 4.00527 13.0001 4.00527C13.4133 4.00527 13.7473 4.35094 13.7473 4.77525C13.7473 5.19957 13.4133 5.54524 13.0001 5.54524Z" fill="currentColor"/>
+              <path d="M9.73858 19.6245C9.73858 20.3289 9.99823 20.9908 10.478 21.4904L10.4938 21.5068C10.9783 22.0098 11.6242 22.2883 12.3114 22.2883H13.6888C14.3775 22.2883 15.025 22.0114 15.5111 21.5052C15.9956 21.0039 16.2631 20.3355 16.2631 19.6277V17.9895H9.73858V19.6245ZM11.2268 19.5294H14.7717V19.6277C14.7717 19.9243 14.6609 20.2077 14.4566 20.419C14.254 20.6254 13.9753 20.7483 13.6888 20.7483H12.3114C12.028 20.7483 11.7588 20.6336 11.5561 20.4305L11.5451 20.4174C11.3424 20.211 11.2268 19.9226 11.2268 19.6261V19.5311V19.5294Z" fill="currentColor"/>
+              <path d="M25.2558 7.27531H22.607C22.1954 7.27531 21.8629 7.62099 21.8629 8.0453C21.8629 8.46961 22.197 8.81529 22.607 8.81529H25.2558C25.6674 8.81529 25.9999 8.46961 25.9999 8.0453C25.9999 7.62099 25.6658 7.27531 25.2558 7.27531Z" fill="currentColor"/>
+              <path d="M4.1386 8.0453C4.1386 7.61935 3.80453 7.27531 3.39447 7.27531H0.744124C0.332481 7.27531 0 7.62099 0 8.0453C0 8.46961 0.334064 8.81529 0.744124 8.81529H3.39289C3.80453 8.81529 4.13701 8.46961 4.13701 8.0453H4.1386Z" fill="currentColor"/>
+              <path d="M20.8702 3.11398C21.0175 3.11398 21.1663 3.06811 21.2961 2.97472L23.4667 1.40198C23.804 1.15788 23.8847 0.677863 23.6488 0.328911C23.4129 -0.0200418 22.949 -0.105232 22.6118 0.140509L20.4412 1.71325C20.1039 1.95736 20.0232 2.43737 20.2591 2.78632C20.4032 3.00094 20.6343 3.11562 20.8702 3.11562V3.11398Z" fill="currentColor"/>
+              <path d="M4.70372 13.1172L2.53309 14.69C2.19586 14.9341 2.11512 15.4141 2.35102 15.763C2.49509 15.9777 2.72625 16.0923 2.96215 16.0923C3.10939 16.0923 3.25822 16.0465 3.38804 15.9531L5.55867 14.3803C5.8959 14.1362 5.97665 13.6562 5.74074 13.3073C5.50484 12.9583 5.04095 12.8731 4.70372 13.1189V13.1172Z" fill="currentColor"/>
+              <path d="M23.4668 14.6884L21.2961 13.1157C20.9589 12.8716 20.495 12.9567 20.2591 13.3041C20.0232 13.653 20.1055 14.133 20.4412 14.3771L22.6118 15.9499C22.7416 16.0449 22.8904 16.0891 23.0377 16.0891C23.272 16.0891 23.5032 15.9744 23.6488 15.7598C23.8847 15.4109 23.8024 14.9309 23.4668 14.6868V14.6884Z" fill="currentColor"/>
+              <path d="M5.55869 1.71322L3.38806 0.140478C3.05083 -0.103625 2.58694 -0.0184349 2.35104 0.328879C2.11513 0.677832 2.19746 1.15785 2.53311 1.40195L4.70374 2.97469C4.83356 3.06971 4.98239 3.11395 5.12963 3.11395C5.36395 3.11395 5.5951 2.99927 5.74076 2.78465C5.97666 2.4357 5.89434 1.95569 5.55869 1.71158V1.71322Z" fill="currentColor"/>
+            </svg>
+            تلميح
+          </h2>
+          <div class="scq-hint-body">
+            <p>تذكروا طريقة كتابة المعطيات في جدول التناسب:<br>النسبة المئوية المعطاة فوق النسبة المئوية الكاملة، والكمية الجزئية فوق الكمية الكاملة‎.</p>
+          </div>
+        </div>
+        <button class="scq-hint-close" type="button" onclick="s1CloseHint()"><span class="nav-label" data-label="عودة إلى السؤال"><span>عودة إلى السؤال</span></span></button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 47 (S2) — ValueInputQuestion, part ב of the same
+         question (slide 46, item -001 — continues directly from S1's
+         part א). NO image on this screen at all (presenter note's own
+         image field is empty, unlike S1's standard1.jpeg) — the
+         `.scq-img` slot instead holds a plain STATIC reference table
+         (`.eq-table`, light header — same shared spec as every feedback-
+         popup table) restating S1's own correct placement (65%→x,
+         100%→60), not an interactive one. "הצבנו בטבלת הפרופורציה." is
+         literally past-tense ("we placed [the values] in the
+         proportion table") confirming this table is read-only context,
+         not a repeat of the question.
+         Correct = 39. Input+label pair reuses S22's own `.s26-input-
+         row`/`.s26-input-label` classes verbatim (bare, not #s26-scoped,
+         so free to reuse) — DOM order [input, label] again puts the
+         label at the physical LEFT under RTL, matching the fresh
+         PowerPoint render's own layout (matches S22's own reasoning).
+         Hint hidden until the first wrong attempt (producer
+         instruction, 2026-08-20) — same
+         body text as S23's own ("בנו את משוואת הפרופורציה מתוך הטבלה
+         ופתרו אותה."), reused verbatim since the underlying skill being
+         taught is identical.
+         Feedback titles ARE authored on this slide (unlike S1) —
+         transcribed verbatim from the slide's own rendered mockups
+         (ppt/media/image61.png correct / image62.png wrong2, shared
+         body): correct "יפה מאוד!" (a different phrase than this
+         project's usual "נכון!" — used exactly as given, not
+         normalized), wrong2 "טעית, כל טעות היא צעד קדימה בדרך.". Uses
+         the View My Answer Toggle on final-wrong (same reasoning as
+         S7/S8/S22 — the reveal overwrites the single input the
+         learner typed into).
+         Source: math-target-4.2-script.pptx, slide 46. Item ref:
+         methodica-math-percent-02-02-001.
+         ═══════════════════════════════════════════════════════ -->
+    <section class="screen" data-screen="2" id="s2">
+      <!-- Progress Question nav (5-question practice set, S1-S7) —
+           shared markup repeated identically on every screen in the
+           set, per 720-templates -> _global-components.md -> "Progress
+           Question" reuse rule. Q1 first in DOM (renders physically
+           rightmost under direction:rtl). CSS/markup originally ported
+           verbatim from this lomda's own part 03 (methodica-math-
+           percent-02-03, part number as of the 2026-08-12 split — this
+           part's own Q1 maps to 3 screens (S1/S2/S3, item -001's own
+           א/ב/ג sub-parts)) — see the JS block for the multi-screen
+           aggregation rule. -->
+      <nav class="progress-question" aria-label="التنقُّل بين الأسئلة">
+        <div class="progress-question__item" data-question="1">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" fill="none" aria-hidden="true"><path d="M4.10942 9.18763C3.74814 9.18778 3.40167 9.04418 3.14642 8.78851L0.234956 5.87812C-0.0783188 5.56475 -0.0783188 5.05677 0.234956 4.74339C0.548332 4.43012 1.05631 4.43012 1.36969 4.74339L4.10942 7.48312L11.3576 0.234956C11.671 -0.0783188 12.1789 -0.0783188 12.4923 0.234956C12.8056 0.548332 12.8056 1.05631 12.4923 1.36969L5.07242 8.78851C4.81717 9.04418 4.47069 9.18778 4.10942 9.18763Z" fill="currentColor"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M9.76736 0.232637C9.61836 0.0836796 9.4163 0 9.20561 0C8.99492 0 8.79286 0.0836796 8.64386 0.232637L5 3.87649L1.35615 0.232637C1.20714 0.0836796 1.00508 0 0.794391 0C0.583702 0 0.381639 0.0836796 0.232637 0.232637C0.0836796 0.381639 0 0.583702 0 0.794391C0 1.00508 0.0836796 1.20714 0.232637 1.35615L3.87649 5L0.232637 8.64386C0.0836796 8.79286 0 8.99492 0 9.20561C0 9.4163 0.0836796 9.61836 0.232637 9.76736C0.381639 9.91632 0.583702 10 0.794391 10C1.00508 10 1.20714 9.91632 1.35615 9.76736L5 6.12351L8.64386 9.76736C8.79286 9.91632 8.99492 10 9.20561 10C9.4163 10 9.61836 9.91632 9.76736 9.76736C9.91632 9.61836 10 9.4163 10 9.20561C10 8.99492 9.91632 8.79286 9.76736 8.64386L6.12351 5L9.76736 1.35615C9.91632 1.20714 10 1.00508 10 0.794391C10 0.583702 9.91632 0.381639 9.76736 0.232637Z" fill="currentColor"/></svg></div>
+          <span class="progress-question__label">سؤال 1</span>
+        </div>
+        <div class="progress-question__connector" data-connector="1"><div class="progress-question__connector-line"></div></div>
+        <div class="progress-question__item" data-question="2">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" fill="none" aria-hidden="true"><path d="M4.10942 9.18763C3.74814 9.18778 3.40167 9.04418 3.14642 8.78851L0.234956 5.87812C-0.0783188 5.56475 -0.0783188 5.05677 0.234956 4.74339C0.548332 4.43012 1.05631 4.43012 1.36969 4.74339L4.10942 7.48312L11.3576 0.234956C11.671 -0.0783188 12.1789 -0.0783188 12.4923 0.234956C12.8056 0.548332 12.8056 1.05631 12.4923 1.36969L5.07242 8.78851C4.81717 9.04418 4.47069 9.18778 4.10942 9.18763Z" fill="currentColor"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M9.76736 0.232637C9.61836 0.0836796 9.4163 0 9.20561 0C8.99492 0 8.79286 0.0836796 8.64386 0.232637L5 3.87649L1.35615 0.232637C1.20714 0.0836796 1.00508 0 0.794391 0C0.583702 0 0.381639 0.0836796 0.232637 0.232637C0.0836796 0.381639 0 0.583702 0 0.794391C0 1.00508 0.0836796 1.20714 0.232637 1.35615L3.87649 5L0.232637 8.64386C0.0836796 8.79286 0 8.99492 0 9.20561C0 9.4163 0.0836796 9.61836 0.232637 9.76736C0.381639 9.91632 0.583702 10 0.794391 10C1.00508 10 1.20714 9.91632 1.35615 9.76736L5 6.12351L8.64386 9.76736C8.79286 9.91632 8.99492 10 9.20561 10C9.4163 10 9.61836 9.91632 9.76736 9.76736C9.91632 9.61836 10 9.4163 10 9.20561C10 8.99492 9.91632 8.79286 9.76736 8.64386L6.12351 5L9.76736 1.35615C9.91632 1.20714 10 1.00508 10 0.794391C10 0.583702 9.91632 0.381639 9.76736 0.232637Z" fill="currentColor"/></svg></div>
+          <span class="progress-question__label">سؤال 2</span>
+        </div>
+        <div class="progress-question__connector" data-connector="2"><div class="progress-question__connector-line"></div></div>
+        <div class="progress-question__item" data-question="3">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" fill="none" aria-hidden="true"><path d="M4.10942 9.18763C3.74814 9.18778 3.40167 9.04418 3.14642 8.78851L0.234956 5.87812C-0.0783188 5.56475 -0.0783188 5.05677 0.234956 4.74339C0.548332 4.43012 1.05631 4.43012 1.36969 4.74339L4.10942 7.48312L11.3576 0.234956C11.671 -0.0783188 12.1789 -0.0783188 12.4923 0.234956C12.8056 0.548332 12.8056 1.05631 12.4923 1.36969L5.07242 8.78851C4.81717 9.04418 4.47069 9.18778 4.10942 9.18763Z" fill="currentColor"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M9.76736 0.232637C9.61836 0.0836796 9.4163 0 9.20561 0C8.99492 0 8.79286 0.0836796 8.64386 0.232637L5 3.87649L1.35615 0.232637C1.20714 0.0836796 1.00508 0 0.794391 0C0.583702 0 0.381639 0.0836796 0.232637 0.232637C0.0836796 0.381639 0 0.583702 0 0.794391C0 1.00508 0.0836796 1.20714 0.232637 1.35615L3.87649 5L0.232637 8.64386C0.0836796 8.79286 0 8.99492 0 9.20561C0 9.4163 0.0836796 9.61836 0.232637 9.76736C0.381639 9.91632 0.583702 10 0.794391 10C1.00508 10 1.20714 9.91632 1.35615 9.76736L5 6.12351L8.64386 9.76736C8.79286 9.91632 8.99492 10 9.20561 10C9.4163 10 9.61836 9.91632 9.76736 9.76736C9.91632 9.61836 10 9.4163 10 9.20561C10 8.99492 9.91632 8.79286 9.76736 8.64386L6.12351 5L9.76736 1.35615C9.91632 1.20714 10 1.00508 10 0.794391C10 0.583702 9.91632 0.381639 9.76736 0.232637Z" fill="currentColor"/></svg></div>
+          <span class="progress-question__label">سؤال 3</span>
+        </div>
+        <div class="progress-question__connector" data-connector="3"><div class="progress-question__connector-line"></div></div>
+        <div class="progress-question__item" data-question="4">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" fill="none" aria-hidden="true"><path d="M4.10942 9.18763C3.74814 9.18778 3.40167 9.04418 3.14642 8.78851L0.234956 5.87812C-0.0783188 5.56475 -0.0783188 5.05677 0.234956 4.74339C0.548332 4.43012 1.05631 4.43012 1.36969 4.74339L4.10942 7.48312L11.3576 0.234956C11.671 -0.0783188 12.1789 -0.0783188 12.4923 0.234956C12.8056 0.548332 12.8056 1.05631 12.4923 1.36969L5.07242 8.78851C4.81717 9.04418 4.47069 9.18778 4.10942 9.18763Z" fill="currentColor"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M9.76736 0.232637C9.61836 0.0836796 9.4163 0 9.20561 0C8.99492 0 8.79286 0.0836796 8.64386 0.232637L5 3.87649L1.35615 0.232637C1.20714 0.0836796 1.00508 0 0.794391 0C0.583702 0 0.381639 0.0836796 0.232637 0.232637C0.0836796 0.381639 0 0.583702 0 0.794391C0 1.00508 0.0836796 1.20714 0.232637 1.35615L3.87649 5L0.232637 8.64386C0.0836796 8.79286 0 8.99492 0 9.20561C0 9.4163 0.0836796 9.61836 0.232637 9.76736C0.381639 9.91632 0.583702 10 0.794391 10C1.00508 10 1.20714 9.91632 1.35615 9.76736L5 6.12351L8.64386 9.76736C8.79286 9.91632 8.99492 10 9.20561 10C9.4163 10 9.61836 9.91632 9.76736 9.76736C9.91632 9.61836 10 9.4163 10 9.20561C10 8.99492 9.91632 8.79286 9.76736 8.64386L6.12351 5L9.76736 1.35615C9.91632 1.20714 10 1.00508 10 0.794391C10 0.583702 9.91632 0.381639 9.76736 0.232637Z" fill="currentColor"/></svg></div>
+          <span class="progress-question__label">سؤال 4</span>
+        </div>
+        <div class="progress-question__connector" data-connector="4"><div class="progress-question__connector-line"></div></div>
+        <div class="progress-question__item" data-question="5">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" fill="none" aria-hidden="true"><path d="M4.10942 9.18763C3.74814 9.18778 3.40167 9.04418 3.14642 8.78851L0.234956 5.87812C-0.0783188 5.56475 -0.0783188 5.05677 0.234956 4.74339C0.548332 4.43012 1.05631 4.43012 1.36969 4.74339L4.10942 7.48312L11.3576 0.234956C11.671 -0.0783188 12.1789 -0.0783188 12.4923 0.234956C12.8056 0.548332 12.8056 1.05631 12.4923 1.36969L5.07242 8.78851C4.81717 9.04418 4.47069 9.18778 4.10942 9.18763Z" fill="currentColor"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M9.76736 0.232637C9.61836 0.0836796 9.4163 0 9.20561 0C8.99492 0 8.79286 0.0836796 8.64386 0.232637L5 3.87649L1.35615 0.232637C1.20714 0.0836796 1.00508 0 0.794391 0C0.583702 0 0.381639 0.0836796 0.232637 0.232637C0.0836796 0.381639 0 0.583702 0 0.794391C0 1.00508 0.0836796 1.20714 0.232637 1.35615L3.87649 5L0.232637 8.64386C0.0836796 8.79286 0 8.99492 0 9.20561C0 9.4163 0.0836796 9.61836 0.232637 9.76736C0.381639 9.91632 0.583702 10 0.794391 10C1.00508 10 1.20714 9.91632 1.35615 9.76736L5 6.12351L8.64386 9.76736C8.79286 9.91632 8.99492 10 9.20561 10C9.4163 10 9.61836 9.91632 9.76736 9.76736C9.91632 9.61836 10 9.4163 10 9.20561C10 8.99492 9.91632 8.79286 9.76736 8.64386L6.12351 5L9.76736 1.35615C9.91632 1.20714 10 1.00508 10 0.794391C10 0.583702 9.91632 0.381639 9.76736 0.232637Z" fill="currentColor"/></svg></div>
+          <span class="progress-question__label">سؤال 5</span>
+        </div>
+      </nav>
+      <!-- animation-system: physical right = .s9-text-col (group 1),
+           physical left = .scq-img (group 2) — same RTL pairing as S1. -->
+      <div class="scq-question">
+        <div class="scq-img" id="s2-img" data-reveal="2">
+          <div class="zoom-img-inner">
+            <img src="assets/img/standard1.jpeg" alt="صورة نهارية لمدخل قاعة مؤتمرات بلدية، مزينة بقوس بالونات زرقاء وبيضاء فوق لافتة &quot;المؤتمر السنوي للمتطوعين، المجلس الإقليمي نفيه حمتسيتسيم&quot;، مع شبان وشابات يقفون ويتحدثون في الساحة أمام المدخل">
+          </div>
+          <button class="img-zoom-btn" type="button" aria-label="تكبير الصورة"
+                  data-zoom-src="assets/img/standard1.jpeg" data-zoom-alt="צילום של כניסה לאולם כנסים מעוטרת בקשת בלונים לקראת כנס המתנדבים השנתי">
+            <svg class="img-zoom-btn__icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <circle cx="8.5" cy="8.5" r="6.5" stroke="currentColor" stroke-width="1.6"/>
+              <path d="M13.3 13.3L17.6 17.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+        <div class="s9-text-col" id="s2-text-col">
+          <!-- No data-reveal: identical scenario paragraph already
+               animated once on S1 (producer instruction, 2026-08-19) —
+               everything else below is new to this screen and keeps its
+               own reveal, moved down to each element individually so
+               this one paragraph can be skipped. -->
+          <p class="s9-intro">في نادي الشبيبة تسجّلَ 60 متطوعًا.<br>مديرة النادي مستعدة لتنظيم يوم ترفيهي للمتطوعين،<br>لكن فقط بشرط حضور 40 متطوعًا على الأقل.<br>سجّلَ للنشاط %65 من المتطوعين.<br>اكتشفنا أن 39 متطوعًا سجلوا لليوم الترفيهي‎.</p>
+          <p class="s9-intro" data-reveal="1"><strong>كتبنا المعطيات في جدول التناسب‎.</strong></p>
+          <!-- Column order (producer instruction, 2026-08-20, applied
+               project-wide, reversing the 2026-08-19 rule that stood
+               here before): אחוז physical LEFT, last <th>/<td> in each
+               row. Matches S2_EXPLANATION_BODY's own inline table
+               (js/main.js), which already used this order. -->
+          <table class="eq-table s2-ref-table" data-reveal="1">
+            <tr><th>عدد المسجلين</th><th>النسبة المئوية</th></tr>
+            <tr><td>x</td><td>65%</td></tr>
+            <tr><td>60</td><td>100%</td></tr>
+          </table>
+          <p class="scq-qtext" data-reveal="1">ب. كم متطوعًا سجلوا لورشة القيادة؟</p>
+          <!-- .viq-field wrapper is required: it owns the box (border/fill/
+               size) and hosts the correct/incorrect icon inside that same
+               box — a bare input renders borderless and can only ever give
+               colour-free feedback. See css/style.css's .viq-field block. -->
+          <div class="s26-input-row" data-reveal="1">
+            <span class="viq-field" id="s2-input-field">
+              <input id="s2-input" class="viq-input-box" type="text" inputmode="numeric" aria-label="عدد المتطوعين الذين سجلوا لورشة القيادة" oninput="s2OnInput()">
+              <span class="viq-input-ico" id="s2-input-ico" aria-hidden="true"></span>
+            </span>
+            <span class="s26-input-label">متطوّعًا</span>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-continue" id="s2-check" disabled onclick="s2Check()"><span class="nav-label" data-label="هل إجابتي صحيحة؟"><span>هل إجابتي صحيحة؟</span></span></button>
+      <button class="scq-hint" id="s2-hint" type="button" onclick="s2OpenHint()">
+        <span class="nav-label" data-label="هل يمكنني الحصول على تلميح؟"><span>هل يمكنني الحصول على تلميح؟</span></span>
+        <svg class="scq-hint-icon" viewBox="0 0 25.9999 22.2883" fill="none" aria-hidden="true">
+          <path d="M17.7925 2.76345C16.3676 1.37911 14.5057 0.68776 12.5488 0.815545C9.07995 1.04163 6.27286 3.9168 6.01796 7.50134C5.85646 9.77363 6.7035 11.9443 8.34374 13.4548C9.23036 14.2723 9.74016 15.465 9.74016 16.7265H11.2284H14.7733H16.2615C16.2615 15.4847 16.7919 14.2707 17.7181 13.3959C19.17 12.0263 20.0012 10.0751 20.0012 8.04361C20.0012 6.01215 19.1953 4.12486 17.7909 2.76018L17.7925 2.76345ZM13.0001 5.54524C11.6701 5.54524 10.5856 6.66582 10.5856 8.04525C10.5856 8.46956 10.2515 8.81524 9.84149 8.81524C9.43143 8.81524 9.09736 8.46956 9.09736 8.04525C9.09736 5.8172 10.8484 4.00527 13.0001 4.00527C13.4133 4.00527 13.7473 4.35094 13.7473 4.77525C13.7473 5.19957 13.4133 5.54524 13.0001 5.54524Z" fill="currentColor"/>
+          <path d="M9.73858 19.6245C9.73858 20.3289 9.99823 20.9908 10.478 21.4904L10.4938 21.5068C10.9783 22.0098 11.6242 22.2883 12.3114 22.2883H13.6888C14.3775 22.2883 15.025 22.0114 15.5111 21.5052C15.9956 21.0039 16.2631 20.3355 16.2631 19.6277V17.9895H9.73858V19.6245ZM11.2268 19.5294H14.7717V19.6277C14.7717 19.9243 14.6609 20.2077 14.4566 20.419C14.254 20.6254 13.9753 20.7483 13.6888 20.7483H12.3114C12.028 20.7483 11.7588 20.6336 11.5561 20.4305L11.5451 20.4174C11.3424 20.211 11.2268 19.9226 11.2268 19.6261V19.5311V19.5294Z" fill="currentColor"/>
+          <path d="M25.2558 7.27531H22.607C22.1954 7.27531 21.8629 7.62099 21.8629 8.0453C21.8629 8.46961 22.197 8.81529 22.607 8.81529H25.2558C25.6674 8.81529 25.9999 8.46961 25.9999 8.0453C25.9999 7.62099 25.6658 7.27531 25.2558 7.27531Z" fill="currentColor"/>
+          <path d="M4.1386 8.0453C4.1386 7.61935 3.80453 7.27531 3.39447 7.27531H0.744124C0.332481 7.27531 0 7.62099 0 8.0453C0 8.46961 0.334064 8.81529 0.744124 8.81529H3.39289C3.80453 8.81529 4.13701 8.46961 4.13701 8.0453H4.1386Z" fill="currentColor"/>
+          <path d="M20.8702 3.11398C21.0175 3.11398 21.1663 3.06811 21.2961 2.97472L23.4667 1.40198C23.804 1.15788 23.8847 0.677863 23.6488 0.328911C23.4129 -0.0200418 22.949 -0.105232 22.6118 0.140509L20.4412 1.71325C20.1039 1.95736 20.0232 2.43737 20.2591 2.78632C20.4032 3.00094 20.6343 3.11562 20.8702 3.11562V3.11398Z" fill="currentColor"/>
+          <path d="M4.70372 13.1172L2.53309 14.69C2.19586 14.9341 2.11512 15.4141 2.35102 15.763C2.49509 15.9777 2.72625 16.0923 2.96215 16.0923C3.10939 16.0923 3.25822 16.0465 3.38804 15.9531L5.55867 14.3803C5.8959 14.1362 5.97665 13.6562 5.74074 13.3073C5.50484 12.9583 5.04095 12.8731 4.70372 13.1189V13.1172Z" fill="currentColor"/>
+          <path d="M23.4668 14.6884L21.2961 13.1157C20.9589 12.8716 20.495 12.9567 20.2591 13.3041C20.0232 13.653 20.1055 14.133 20.4412 14.3771L22.6118 15.9499C22.7416 16.0449 22.8904 16.0891 23.0377 16.0891C23.272 16.0891 23.5032 15.9744 23.6488 15.7598C23.8847 15.4109 23.8024 14.9309 23.4668 14.6868V14.6884Z" fill="currentColor"/>
+          <path d="M5.55869 1.71322L3.38806 0.140478C3.05083 -0.103625 2.58694 -0.0184349 2.35104 0.328879C2.11513 0.677832 2.19746 1.15785 2.53311 1.40195L4.70374 2.97469C4.83356 3.06971 4.98239 3.11395 5.12963 3.11395C5.36395 3.11395 5.5951 2.99927 5.74076 2.78465C5.97666 2.4357 5.89434 1.95569 5.55869 1.71158V1.71322Z" fill="currentColor"/>
+        </svg>
+      </button>
+      <button class="scq-back" id="s2-back" type="button" onclick="goBackFromS2()"><span class="nav-label" data-label="عودة"><span>عودة</span></span></button>
+    </section>
+
+    <!-- Feedback popup for S2 — outside all .screen divs -->
+    <div class="scq-popup hidden m-popup" id="s2-popup" onpointerdown="popupPointerDown(event, 's2-popup')">
+      <div class="scq-popup-header">
+        <p class="scq-popup-title" id="s2-popup-title"></p>
+      </div>
+      <div class="scq-popup-body" id="s2-popup-body"></div>
+      <div class="scq-popup-actions" id="s2-popup-actions"></div>
+    </div>
+    <!-- Hint overlay for S2 — outside all .screen divs -->
+    <div class="scq-hint-overlay hidden m-popup" id="s2-hint-overlay" onclick="s2CloseHintOnBackdrop(event)">
+      <div class="scq-hint-popup" role="dialog" aria-modal="true" aria-labelledby="s2-hint-title">
+        <div class="scq-hint-text">
+          <h2 class="scq-hint-title" id="s2-hint-title">
+            <svg class="scq-hint-title-icon" viewBox="0 0 25.9999 22.2883" fill="none" aria-hidden="true">
+              <path d="M17.7925 2.76345C16.3676 1.37911 14.5057 0.68776 12.5488 0.815545C9.07995 1.04163 6.27286 3.9168 6.01796 7.50134C5.85646 9.77363 6.7035 11.9443 8.34374 13.4548C9.23036 14.2723 9.74016 15.465 9.74016 16.7265H11.2284H14.7733H16.2615C16.2615 15.4847 16.7919 14.2707 17.7181 13.3959C19.17 12.0263 20.0012 10.0751 20.0012 8.04361C20.0012 6.01215 19.1953 4.12486 17.7909 2.76018L17.7925 2.76345ZM13.0001 5.54524C11.6701 5.54524 10.5856 6.66582 10.5856 8.04525C10.5856 8.46956 10.2515 8.81524 9.84149 8.81524C9.43143 8.81524 9.09736 8.46956 9.09736 8.04525C9.09736 5.8172 10.8484 4.00527 13.0001 4.00527C13.4133 4.00527 13.7473 4.35094 13.7473 4.77525C13.7473 5.19957 13.4133 5.54524 13.0001 5.54524Z" fill="currentColor"/>
+              <path d="M9.73858 19.6245C9.73858 20.3289 9.99823 20.9908 10.478 21.4904L10.4938 21.5068C10.9783 22.0098 11.6242 22.2883 12.3114 22.2883H13.6888C14.3775 22.2883 15.025 22.0114 15.5111 21.5052C15.9956 21.0039 16.2631 20.3355 16.2631 19.6277V17.9895H9.73858V19.6245ZM11.2268 19.5294H14.7717V19.6277C14.7717 19.9243 14.6609 20.2077 14.4566 20.419C14.254 20.6254 13.9753 20.7483 13.6888 20.7483H12.3114C12.028 20.7483 11.7588 20.6336 11.5561 20.4305L11.5451 20.4174C11.3424 20.211 11.2268 19.9226 11.2268 19.6261V19.5311V19.5294Z" fill="currentColor"/>
+              <path d="M25.2558 7.27531H22.607C22.1954 7.27531 21.8629 7.62099 21.8629 8.0453C21.8629 8.46961 22.197 8.81529 22.607 8.81529H25.2558C25.6674 8.81529 25.9999 8.46961 25.9999 8.0453C25.9999 7.62099 25.6658 7.27531 25.2558 7.27531Z" fill="currentColor"/>
+              <path d="M4.1386 8.0453C4.1386 7.61935 3.80453 7.27531 3.39447 7.27531H0.744124C0.332481 7.27531 0 7.62099 0 8.0453C0 8.46961 0.334064 8.81529 0.744124 8.81529H3.39289C3.80453 8.81529 4.13701 8.46961 4.13701 8.0453H4.1386Z" fill="currentColor"/>
+              <path d="M20.8702 3.11398C21.0175 3.11398 21.1663 3.06811 21.2961 2.97472L23.4667 1.40198C23.804 1.15788 23.8847 0.677863 23.6488 0.328911C23.4129 -0.0200418 22.949 -0.105232 22.6118 0.140509L20.4412 1.71325C20.1039 1.95736 20.0232 2.43737 20.2591 2.78632C20.4032 3.00094 20.6343 3.11562 20.8702 3.11562V3.11398Z" fill="currentColor"/>
+              <path d="M4.70372 13.1172L2.53309 14.69C2.19586 14.9341 2.11512 15.4141 2.35102 15.763C2.49509 15.9777 2.72625 16.0923 2.96215 16.0923C3.10939 16.0923 3.25822 16.0465 3.38804 15.9531L5.55867 14.3803C5.8959 14.1362 5.97665 13.6562 5.74074 13.3073C5.50484 12.9583 5.04095 12.8731 4.70372 13.1189V13.1172Z" fill="currentColor"/>
+              <path d="M23.4668 14.6884L21.2961 13.1157C20.9589 12.8716 20.495 12.9567 20.2591 13.3041C20.0232 13.653 20.1055 14.133 20.4412 14.3771L22.6118 15.9499C22.7416 16.0449 22.8904 16.0891 23.0377 16.0891C23.272 16.0891 23.5032 15.9744 23.6488 15.7598C23.8847 15.4109 23.8024 14.9309 23.4668 14.6868V14.6884Z" fill="currentColor"/>
+              <path d="M5.55869 1.71322L3.38806 0.140478C3.05083 -0.103625 2.58694 -0.0184349 2.35104 0.328879C2.11513 0.677832 2.19746 1.15785 2.53311 1.40195L4.70374 2.97469C4.83356 3.06971 4.98239 3.11395 5.12963 3.11395C5.36395 3.11395 5.5951 2.99927 5.74076 2.78465C5.97666 2.4357 5.89434 1.95569 5.55869 1.71158V1.71322Z" fill="currentColor"/>
+            </svg>
+            تلميح
+          </h2>
+          <div class="scq-hint-body">
+            <p>ابنوا معادلة التناسب من الجدول وحلّوها‎.</p>
+          </div>
+        </div>
+        <button class="scq-hint-close" type="button" onclick="s2CloseHint()"><span class="nav-label" data-label="عودة إلى السؤال"><span>عودة إلى السؤال</span></span></button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 48 (S3) — SingleChoiceQuestion, part ג of the same
+         question (slide 47, item -001 — continues directly from S2's
+         part ב). NO hint at all (presenter note: "אין רמז", same
+         convention as S22 — no hint button/overlay markup, not just
+         hidden). Same image as S1 (standard1.jpeg, same 480px
+         aspect-ratio-driven frame + `.zoom-img-inner` treatment).
+         maxAttempts defaults to 2 (no presenter-note deviation, unlike
+         S24's own single-attempt item).
+         Three plain-text answer options (S24's own `.scq-opt`/
+         `.scq-radio` shell): כן / לא (correct) / לא ניתן להחליט.
+         `.scq-answers` needs its own static-flow override under
+         `.s9-text-col` again (same as S24's own — `.s9-text-col` never
+         hosted `.scq-answers` before S24 either).
+         Feedback title is genuinely custom for correct ("נכון!") but
+         NOT authored for wrong2 on this slide (no "טעית" text anywhere
+         in its own runs) — reused this item's own established fallback
+         ("לא מדויק. התשובה הנכונה מוצגת.", first used on S1) rather
+         than inventing new phrasing, for consistency within item -001.
+         Shared body includes the producer's own "😉" emoji verbatim —
+         this is transcribed source content, not an invented addition.
+         Source: math-target-4.2-script.pptx, slide 47. Item ref:
+         methodica-math-percent-02-02-001.
+         ═══════════════════════════════════════════════════════ -->
+    <section class="screen" data-screen="3" id="s3">
+      <!-- Progress Question nav (5-question practice set, S1-S7) —
+           shared markup repeated identically on every screen in the
+           set, per 720-templates -> _global-components.md -> "Progress
+           Question" reuse rule. Q1 first in DOM (renders physically
+           rightmost under direction:rtl). CSS/markup originally ported
+           verbatim from this lomda's own part 03 (methodica-math-
+           percent-02-03, part number as of the 2026-08-12 split — this
+           part's own Q1 maps to 3 screens (S1/S2/S3, item -001's own
+           א/ב/ג sub-parts)) — see the JS block for the multi-screen
+           aggregation rule. -->
+      <nav class="progress-question" aria-label="التنقُّل بين الأسئلة">
+        <div class="progress-question__item" data-question="1">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" fill="none" aria-hidden="true"><path d="M4.10942 9.18763C3.74814 9.18778 3.40167 9.04418 3.14642 8.78851L0.234956 5.87812C-0.0783188 5.56475 -0.0783188 5.05677 0.234956 4.74339C0.548332 4.43012 1.05631 4.43012 1.36969 4.74339L4.10942 7.48312L11.3576 0.234956C11.671 -0.0783188 12.1789 -0.0783188 12.4923 0.234956C12.8056 0.548332 12.8056 1.05631 12.4923 1.36969L5.07242 8.78851C4.81717 9.04418 4.47069 9.18778 4.10942 9.18763Z" fill="currentColor"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M9.76736 0.232637C9.61836 0.0836796 9.4163 0 9.20561 0C8.99492 0 8.79286 0.0836796 8.64386 0.232637L5 3.87649L1.35615 0.232637C1.20714 0.0836796 1.00508 0 0.794391 0C0.583702 0 0.381639 0.0836796 0.232637 0.232637C0.0836796 0.381639 0 0.583702 0 0.794391C0 1.00508 0.0836796 1.20714 0.232637 1.35615L3.87649 5L0.232637 8.64386C0.0836796 8.79286 0 8.99492 0 9.20561C0 9.4163 0.0836796 9.61836 0.232637 9.76736C0.381639 9.91632 0.583702 10 0.794391 10C1.00508 10 1.20714 9.91632 1.35615 9.76736L5 6.12351L8.64386 9.76736C8.79286 9.91632 8.99492 10 9.20561 10C9.4163 10 9.61836 9.91632 9.76736 9.76736C9.91632 9.61836 10 9.4163 10 9.20561C10 8.99492 9.91632 8.79286 9.76736 8.64386L6.12351 5L9.76736 1.35615C9.91632 1.20714 10 1.00508 10 0.794391C10 0.583702 9.91632 0.381639 9.76736 0.232637Z" fill="currentColor"/></svg></div>
+          <span class="progress-question__label">سؤال 1</span>
+        </div>
+        <div class="progress-question__connector" data-connector="1"><div class="progress-question__connector-line"></div></div>
+        <div class="progress-question__item" data-question="2">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" fill="none" aria-hidden="true"><path d="M4.10942 9.18763C3.74814 9.18778 3.40167 9.04418 3.14642 8.78851L0.234956 5.87812C-0.0783188 5.56475 -0.0783188 5.05677 0.234956 4.74339C0.548332 4.43012 1.05631 4.43012 1.36969 4.74339L4.10942 7.48312L11.3576 0.234956C11.671 -0.0783188 12.1789 -0.0783188 12.4923 0.234956C12.8056 0.548332 12.8056 1.05631 12.4923 1.36969L5.07242 8.78851C4.81717 9.04418 4.47069 9.18778 4.10942 9.18763Z" fill="currentColor"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M9.76736 0.232637C9.61836 0.0836796 9.4163 0 9.20561 0C8.99492 0 8.79286 0.0836796 8.64386 0.232637L5 3.87649L1.35615 0.232637C1.20714 0.0836796 1.00508 0 0.794391 0C0.583702 0 0.381639 0.0836796 0.232637 0.232637C0.0836796 0.381639 0 0.583702 0 0.794391C0 1.00508 0.0836796 1.20714 0.232637 1.35615L3.87649 5L0.232637 8.64386C0.0836796 8.79286 0 8.99492 0 9.20561C0 9.4163 0.0836796 9.61836 0.232637 9.76736C0.381639 9.91632 0.583702 10 0.794391 10C1.00508 10 1.20714 9.91632 1.35615 9.76736L5 6.12351L8.64386 9.76736C8.79286 9.91632 8.99492 10 9.20561 10C9.4163 10 9.61836 9.91632 9.76736 9.76736C9.91632 9.61836 10 9.4163 10 9.20561C10 8.99492 9.91632 8.79286 9.76736 8.64386L6.12351 5L9.76736 1.35615C9.91632 1.20714 10 1.00508 10 0.794391C10 0.583702 9.91632 0.381639 9.76736 0.232637Z" fill="currentColor"/></svg></div>
+          <span class="progress-question__label">سؤال 2</span>
+        </div>
+        <div class="progress-question__connector" data-connector="2"><div class="progress-question__connector-line"></div></div>
+        <div class="progress-question__item" data-question="3">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" fill="none" aria-hidden="true"><path d="M4.10942 9.18763C3.74814 9.18778 3.40167 9.04418 3.14642 8.78851L0.234956 5.87812C-0.0783188 5.56475 -0.0783188 5.05677 0.234956 4.74339C0.548332 4.43012 1.05631 4.43012 1.36969 4.74339L4.10942 7.48312L11.3576 0.234956C11.671 -0.0783188 12.1789 -0.0783188 12.4923 0.234956C12.8056 0.548332 12.8056 1.05631 12.4923 1.36969L5.07242 8.78851C4.81717 9.04418 4.47069 9.18778 4.10942 9.18763Z" fill="currentColor"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M9.76736 0.232637C9.61836 0.0836796 9.4163 0 9.20561 0C8.99492 0 8.79286 0.0836796 8.64386 0.232637L5 3.87649L1.35615 0.232637C1.20714 0.0836796 1.00508 0 0.794391 0C0.583702 0 0.381639 0.0836796 0.232637 0.232637C0.0836796 0.381639 0 0.583702 0 0.794391C0 1.00508 0.0836796 1.20714 0.232637 1.35615L3.87649 5L0.232637 8.64386C0.0836796 8.79286 0 8.99492 0 9.20561C0 9.4163 0.0836796 9.61836 0.232637 9.76736C0.381639 9.91632 0.583702 10 0.794391 10C1.00508 10 1.20714 9.91632 1.35615 9.76736L5 6.12351L8.64386 9.76736C8.79286 9.91632 8.99492 10 9.20561 10C9.4163 10 9.61836 9.91632 9.76736 9.76736C9.91632 9.61836 10 9.4163 10 9.20561C10 8.99492 9.91632 8.79286 9.76736 8.64386L6.12351 5L9.76736 1.35615C9.91632 1.20714 10 1.00508 10 0.794391C10 0.583702 9.91632 0.381639 9.76736 0.232637Z" fill="currentColor"/></svg></div>
+          <span class="progress-question__label">سؤال 3</span>
+        </div>
+        <div class="progress-question__connector" data-connector="3"><div class="progress-question__connector-line"></div></div>
+        <div class="progress-question__item" data-question="4">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" fill="none" aria-hidden="true"><path d="M4.10942 9.18763C3.74814 9.18778 3.40167 9.04418 3.14642 8.78851L0.234956 5.87812C-0.0783188 5.56475 -0.0783188 5.05677 0.234956 4.74339C0.548332 4.43012 1.05631 4.43012 1.36969 4.74339L4.10942 7.48312L11.3576 0.234956C11.671 -0.0783188 12.1789 -0.0783188 12.4923 0.234956C12.8056 0.548332 12.8056 1.05631 12.4923 1.36969L5.07242 8.78851C4.81717 9.04418 4.47069 9.18778 4.10942 9.18763Z" fill="currentColor"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M9.76736 0.232637C9.61836 0.0836796 9.4163 0 9.20561 0C8.99492 0 8.79286 0.0836796 8.64386 0.232637L5 3.87649L1.35615 0.232637C1.20714 0.0836796 1.00508 0 0.794391 0C0.583702 0 0.381639 0.0836796 0.232637 0.232637C0.0836796 0.381639 0 0.583702 0 0.794391C0 1.00508 0.0836796 1.20714 0.232637 1.35615L3.87649 5L0.232637 8.64386C0.0836796 8.79286 0 8.99492 0 9.20561C0 9.4163 0.0836796 9.61836 0.232637 9.76736C0.381639 9.91632 0.583702 10 0.794391 10C1.00508 10 1.20714 9.91632 1.35615 9.76736L5 6.12351L8.64386 9.76736C8.79286 9.91632 8.99492 10 9.20561 10C9.4163 10 9.61836 9.91632 9.76736 9.76736C9.91632 9.61836 10 9.4163 10 9.20561C10 8.99492 9.91632 8.79286 9.76736 8.64386L6.12351 5L9.76736 1.35615C9.91632 1.20714 10 1.00508 10 0.794391C10 0.583702 9.91632 0.381639 9.76736 0.232637Z" fill="currentColor"/></svg></div>
+          <span class="progress-question__label">سؤال 4</span>
+        </div>
+        <div class="progress-question__connector" data-connector="4"><div class="progress-question__connector-line"></div></div>
+        <div class="progress-question__item" data-question="5">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" fill="none" aria-hidden="true"><path d="M4.10942 9.18763C3.74814 9.18778 3.40167 9.04418 3.14642 8.78851L0.234956 5.87812C-0.0783188 5.56475 -0.0783188 5.05677 0.234956 4.74339C0.548332 4.43012 1.05631 4.43012 1.36969 4.74339L4.10942 7.48312L11.3576 0.234956C11.671 -0.0783188 12.1789 -0.0783188 12.4923 0.234956C12.8056 0.548332 12.8056 1.05631 12.4923 1.36969L5.07242 8.78851C4.81717 9.04418 4.47069 9.18778 4.10942 9.18763Z" fill="currentColor"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M9.76736 0.232637C9.61836 0.0836796 9.4163 0 9.20561 0C8.99492 0 8.79286 0.0836796 8.64386 0.232637L5 3.87649L1.35615 0.232637C1.20714 0.0836796 1.00508 0 0.794391 0C0.583702 0 0.381639 0.0836796 0.232637 0.232637C0.0836796 0.381639 0 0.583702 0 0.794391C0 1.00508 0.0836796 1.20714 0.232637 1.35615L3.87649 5L0.232637 8.64386C0.0836796 8.79286 0 8.99492 0 9.20561C0 9.4163 0.0836796 9.61836 0.232637 9.76736C0.381639 9.91632 0.583702 10 0.794391 10C1.00508 10 1.20714 9.91632 1.35615 9.76736L5 6.12351L8.64386 9.76736C8.79286 9.91632 8.99492 10 9.20561 10C9.4163 10 9.61836 9.91632 9.76736 9.76736C9.91632 9.61836 10 9.4163 10 9.20561C10 8.99492 9.91632 8.79286 9.76736 8.64386L6.12351 5L9.76736 1.35615C9.91632 1.20714 10 1.00508 10 0.794391C10 0.583702 9.91632 0.381639 9.76736 0.232637Z" fill="currentColor"/></svg></div>
+          <span class="progress-question__label">سؤال 5</span>
+        </div>
+      </nav>
+      <!-- animation-system: physical right = .s9-text-col (group 1),
+           physical left = .scq-img (group 2) — same RTL pairing as S1/S2. -->
+      <div class="scq-question">
+        <div class="scq-img" id="s3-img" data-reveal="2">
+          <div class="zoom-img-inner">
+            <img src="assets/img/standard1.jpeg" alt="صورة نهارية لمدخل قاعة مؤتمرات بلدية، مزينة بقوس بالونات زرقاء وبيضاء فوق لافتة &quot;المؤتمر السنوي للمتطوعين، المجلس الإقليمي نفيه حمتسيتسيم&quot;، مع شبان وشابات يقفون ويتحدثون في الساحة أمام المدخل">
+          </div>
+          <button class="img-zoom-btn" type="button" aria-label="تكبير الصورة"
+                  data-zoom-src="assets/img/standard1.jpeg" data-zoom-alt="צילום של כניסה לאולם כנסים מעוטרת בקשת בלונים לקראת כנס המתנדבים השנתי">
+            <svg class="img-zoom-btn__icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <circle cx="8.5" cy="8.5" r="6.5" stroke="currentColor" stroke-width="1.6"/>
+              <path d="M13.3 13.3L17.6 17.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+        <div class="s9-text-col" id="s3-text-col">
+          <!-- No data-reveal: identical scenario paragraph already
+               animated once on S1 (producer instruction, 2026-08-19) —
+               everything else below is new to this screen and keeps its
+               own reveal, moved down to each element individually so
+               this one paragraph can be skipped. -->
+          <p class="s9-intro">في نادي الشبيبة تسجّلَ 60 متطوعًا.<br>مديرة النادي مستعدة لتنظيم يوم ترفيهي للمتطوعين،<br>لكن فقط بشرط حضور 40 متطوعًا على الأقل.<br>سجّلَ للنشاط %65 من المتطوعين.<br>اكتشفنا أن 39 متطوعًا سجلوا لليوم الترفيهي‎.</p>
+          <p class="scq-qtext" data-reveal="1">ت. هل ستوافق المديرة على إقامة اليوم الترفيهي؟</p>
+          <div class="scq-answers s3-answers" data-reveal="1" role="radiogroup" aria-label="اختاروا إجابة">
+            <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="a" onclick="s3Select('a')">
+              <span class="scq-opt-text">نعم</span>
+              <span class="scq-radio" aria-hidden="true"></span>
+            </button>
+            <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="b" onclick="s3Select('b')">
+              <span class="scq-opt-text">لا</span>
+              <span class="scq-radio" aria-hidden="true"></span>
+            </button>
+            <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="c" onclick="s3Select('c')">
+              <span class="scq-opt-text">لا يمكن اتخاذ قرار</span>
+              <span class="scq-radio" aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-continue" id="s3-check" disabled onclick="s3Check()"><span class="nav-label" data-label="هل إجابتي صحيحة؟"><span>هل إجابتي صحيحة؟</span></span></button>
+      <button class="scq-back" id="s3-back" type="button" onclick="goBackFromS3()"><span class="nav-label" data-label="عودة"><span>عودة</span></span></button>
+    </section>
+
+    <!-- Feedback popup for S3 — outside all .screen divs -->
+    <div class="scq-popup hidden m-popup" id="s3-popup" onpointerdown="popupPointerDown(event, 's3-popup')">
+      <div class="scq-popup-header">
+        <p class="scq-popup-title" id="s3-popup-title"></p>
+      </div>
+      <div class="scq-popup-body" id="s3-popup-body"></div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 49 (S4) — ValueInputQuestion, 4-field percent-
+         distribution TABLE fill-in (slide 48.xml), first NEW question
+         (item -002) after the 5-question practice set kicked off by
+         S0. Figma template per presenter notes: ValueInputQuestion.
+         Image "standard2" (presenter notes' own filename), copied from
+         ppt/media/image42.jpeg — a fresh photo, 592×303 native (~1.83
+         ratio, close enough to S1/S3's own 555/303 that the SAME
+         aspect-ratio-driven frame technique/measurements are reused
+         verbatim, this is a coincidence not a shared asset). Alt text
+         transcribed verbatim from the presenter notes' own detailed
+         description, per the standing project rule.
+         Table column order confirmed via a fresh PowerPoint COM export
+         of this exact slide (NOT assumed from the raw XML's own storage
+         order, which is unverifiable per the pptx-script-extraction
+         skill's own documented table-order caveat): physical
+         right-to-left = סוג ציוד, אחוז, נפח (מ"ק) — the render's own
+         column order happens to match the XML's raw <a:tbl> storage
+         order left-to-right (נפח, אחוז, סוג ציוד), i.e. this
+         particular table does NOT reverse under RTL (no <a:tblPr rtl>
+         flag), unlike S1/S2's own table which the producer confirmed
+         DOES need reversing — two different source tables, two
+         independently-confirmed answers, not a shared rule. Because
+         THIS project's own HTML <table> DOES reverse column order
+         under `direction:rtl` (confirmed by S1/S2's own DOM-order
+         fix), the DOM order below is deliberately סוג ציוד → אחוז →
+         נפח (מ"ק) — the MIRROR of the XML's own storage order — so the
+         rendered output matches the confirmed screenshot.
+         4 blank נפח cells (בישול ומטבח/אוהלים ומבנים/ציוד חבלים
+         ובטיחות/עזרה ראשונה) are real `.viq-input-box` inputs,
+         validated HOLISTICALLY as one combined outcome — same
+         3-field pattern as this project's own S15 (not part 05's
+         array-driven S2V refactor; part 01 uses named per-field
+         locals throughout, so this screen follows part 01's own
+         convention instead). No total/סה"כ row on-screen (unlike part
+         05's S2 sibling) — confirmed absent from both the raw text dump
+         and the fresh render; the "200 מ"ק" total only appears in the
+         intro text and the feedback's own closing note.
+         Correct values (90/80/24/6) cross-checked against the fresh
+         render, which shows them already filled into the input
+         boxes as the mockup's own reference/answer state.
+         Uses the View My Answer Toggle on final-wrong — a destructive
+         reveal across 4 separate fields is exactly the case the
+         toggle exists for (S11's own explicit reasoning, applied
+         proactively here rather than waiting for an audit finding).
+         Hint: no explicit presenter-note override either way on this
+         slide, so this screen follows the MAJORITY convention in this
+         project (S7/S8/S12) — hidden until the first wrong attempt —
+         rather than S11/S2's own earlier exception. Hint
+         title is the generic "רמז" (no restated-question text on this
+         slide, same as S23/S1). Hint body transcribed verbatim from
+         the slide's own hint-overlay text run.
+         Feedback titles: correct = "נכון!" (universal). Wrong2 title
+         IS authored on this slide — "זו טעות, כל טעות מחזקת את היכולת
+         שלכם." — found positioned between the correct-feedback body
+         and an identical repeated body block in the raw text dump (the
+         same "duplicate body, title differs" structure already seen on
+         S23/S1's siblings), NOT a stray unrelated fragment despite
+         initially looking like one. Shared body (same for correct AND
+         final-wrong) walks all 4 equations using the project's own
+         `s8Frac()` helper, transcribed from the slide's own OMML
+         equation runs (e.g. "45% · 200 = 45/100 · 200 = 90 מ"ק").
+         Retry title is this project's own universal standard
+         ("התשובה אינה נכונה." / "שננסה שוב?") — not authored on this
+         slide either, same as every other screen's own non-final-wrong
+         popup.
+         Source: math-target-4.2-script.pptx, slide 48. Item ref:
+         methodica-math-percent-02-02-002.
+         ═══════════════════════════════════════════════════════ -->
+    <section class="screen" data-screen="4" id="s4">
+      <!-- Progress Question nav (5-question practice set, S1-S7) —
+           shared markup repeated identically on every screen in the
+           set, per 720-templates -> _global-components.md -> "Progress
+           Question" reuse rule. Q1 first in DOM (renders physically
+           rightmost under direction:rtl). CSS/markup originally ported
+           verbatim from this lomda's own part 03 (methodica-math-
+           percent-02-03, part number as of the 2026-08-12 split — this
+           part's own Q1 maps to 3 screens (S1/S2/S3, item -001's own
+           א/ב/ג sub-parts)) — see the JS block for the multi-screen
+           aggregation rule. -->
+      <nav class="progress-question" aria-label="التنقُّل بين الأسئلة">
+        <div class="progress-question__item" data-question="1">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" fill="none" aria-hidden="true"><path d="M4.10942 9.18763C3.74814 9.18778 3.40167 9.04418 3.14642 8.78851L0.234956 5.87812C-0.0783188 5.56475 -0.0783188 5.05677 0.234956 4.74339C0.548332 4.43012 1.05631 4.43012 1.36969 4.74339L4.10942 7.48312L11.3576 0.234956C11.671 -0.0783188 12.1789 -0.0783188 12.4923 0.234956C12.8056 0.548332 12.8056 1.05631 12.4923 1.36969L5.07242 8.78851C4.81717 9.04418 4.47069 9.18778 4.10942 9.18763Z" fill="currentColor"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M9.76736 0.232637C9.61836 0.0836796 9.4163 0 9.20561 0C8.99492 0 8.79286 0.0836796 8.64386 0.232637L5 3.87649L1.35615 0.232637C1.20714 0.0836796 1.00508 0 0.794391 0C0.583702 0 0.381639 0.0836796 0.232637 0.232637C0.0836796 0.381639 0 0.583702 0 0.794391C0 1.00508 0.0836796 1.20714 0.232637 1.35615L3.87649 5L0.232637 8.64386C0.0836796 8.79286 0 8.99492 0 9.20561C0 9.4163 0.0836796 9.61836 0.232637 9.76736C0.381639 9.91632 0.583702 10 0.794391 10C1.00508 10 1.20714 9.91632 1.35615 9.76736L5 6.12351L8.64386 9.76736C8.79286 9.91632 8.99492 10 9.20561 10C9.4163 10 9.61836 9.91632 9.76736 9.76736C9.91632 9.61836 10 9.4163 10 9.20561C10 8.99492 9.91632 8.79286 9.76736 8.64386L6.12351 5L9.76736 1.35615C9.91632 1.20714 10 1.00508 10 0.794391C10 0.583702 9.91632 0.381639 9.76736 0.232637Z" fill="currentColor"/></svg></div>
+          <span class="progress-question__label">سؤال 1</span>
+        </div>
+        <div class="progress-question__connector" data-connector="1"><div class="progress-question__connector-line"></div></div>
+        <div class="progress-question__item" data-question="2">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" fill="none" aria-hidden="true"><path d="M4.10942 9.18763C3.74814 9.18778 3.40167 9.04418 3.14642 8.78851L0.234956 5.87812C-0.0783188 5.56475 -0.0783188 5.05677 0.234956 4.74339C0.548332 4.43012 1.05631 4.43012 1.36969 4.74339L4.10942 7.48312L11.3576 0.234956C11.671 -0.0783188 12.1789 -0.0783188 12.4923 0.234956C12.8056 0.548332 12.8056 1.05631 12.4923 1.36969L5.07242 8.78851C4.81717 9.04418 4.47069 9.18778 4.10942 9.18763Z" fill="currentColor"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M9.76736 0.232637C9.61836 0.0836796 9.4163 0 9.20561 0C8.99492 0 8.79286 0.0836796 8.64386 0.232637L5 3.87649L1.35615 0.232637C1.20714 0.0836796 1.00508 0 0.794391 0C0.583702 0 0.381639 0.0836796 0.232637 0.232637C0.0836796 0.381639 0 0.583702 0 0.794391C0 1.00508 0.0836796 1.20714 0.232637 1.35615L3.87649 5L0.232637 8.64386C0.0836796 8.79286 0 8.99492 0 9.20561C0 9.4163 0.0836796 9.61836 0.232637 9.76736C0.381639 9.91632 0.583702 10 0.794391 10C1.00508 10 1.20714 9.91632 1.35615 9.76736L5 6.12351L8.64386 9.76736C8.79286 9.91632 8.99492 10 9.20561 10C9.4163 10 9.61836 9.91632 9.76736 9.76736C9.91632 9.61836 10 9.4163 10 9.20561C10 8.99492 9.91632 8.79286 9.76736 8.64386L6.12351 5L9.76736 1.35615C9.91632 1.20714 10 1.00508 10 0.794391C10 0.583702 9.91632 0.381639 9.76736 0.232637Z" fill="currentColor"/></svg></div>
+          <span class="progress-question__label">سؤال 2</span>
+        </div>
+        <div class="progress-question__connector" data-connector="2"><div class="progress-question__connector-line"></div></div>
+        <div class="progress-question__item" data-question="3">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" fill="none" aria-hidden="true"><path d="M4.10942 9.18763C3.74814 9.18778 3.40167 9.04418 3.14642 8.78851L0.234956 5.87812C-0.0783188 5.56475 -0.0783188 5.05677 0.234956 4.74339C0.548332 4.43012 1.05631 4.43012 1.36969 4.74339L4.10942 7.48312L11.3576 0.234956C11.671 -0.0783188 12.1789 -0.0783188 12.4923 0.234956C12.8056 0.548332 12.8056 1.05631 12.4923 1.36969L5.07242 8.78851C4.81717 9.04418 4.47069 9.18778 4.10942 9.18763Z" fill="currentColor"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M9.76736 0.232637C9.61836 0.0836796 9.4163 0 9.20561 0C8.99492 0 8.79286 0.0836796 8.64386 0.232637L5 3.87649L1.35615 0.232637C1.20714 0.0836796 1.00508 0 0.794391 0C0.583702 0 0.381639 0.0836796 0.232637 0.232637C0.0836796 0.381639 0 0.583702 0 0.794391C0 1.00508 0.0836796 1.20714 0.232637 1.35615L3.87649 5L0.232637 8.64386C0.0836796 8.79286 0 8.99492 0 9.20561C0 9.4163 0.0836796 9.61836 0.232637 9.76736C0.381639 9.91632 0.583702 10 0.794391 10C1.00508 10 1.20714 9.91632 1.35615 9.76736L5 6.12351L8.64386 9.76736C8.79286 9.91632 8.99492 10 9.20561 10C9.4163 10 9.61836 9.91632 9.76736 9.76736C9.91632 9.61836 10 9.4163 10 9.20561C10 8.99492 9.91632 8.79286 9.76736 8.64386L6.12351 5L9.76736 1.35615C9.91632 1.20714 10 1.00508 10 0.794391C10 0.583702 9.91632 0.381639 9.76736 0.232637Z" fill="currentColor"/></svg></div>
+          <span class="progress-question__label">سؤال 3</span>
+        </div>
+        <div class="progress-question__connector" data-connector="3"><div class="progress-question__connector-line"></div></div>
+        <div class="progress-question__item" data-question="4">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" fill="none" aria-hidden="true"><path d="M4.10942 9.18763C3.74814 9.18778 3.40167 9.04418 3.14642 8.78851L0.234956 5.87812C-0.0783188 5.56475 -0.0783188 5.05677 0.234956 4.74339C0.548332 4.43012 1.05631 4.43012 1.36969 4.74339L4.10942 7.48312L11.3576 0.234956C11.671 -0.0783188 12.1789 -0.0783188 12.4923 0.234956C12.8056 0.548332 12.8056 1.05631 12.4923 1.36969L5.07242 8.78851C4.81717 9.04418 4.47069 9.18778 4.10942 9.18763Z" fill="currentColor"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M9.76736 0.232637C9.61836 0.0836796 9.4163 0 9.20561 0C8.99492 0 8.79286 0.0836796 8.64386 0.232637L5 3.87649L1.35615 0.232637C1.20714 0.0836796 1.00508 0 0.794391 0C0.583702 0 0.381639 0.0836796 0.232637 0.232637C0.0836796 0.381639 0 0.583702 0 0.794391C0 1.00508 0.0836796 1.20714 0.232637 1.35615L3.87649 5L0.232637 8.64386C0.0836796 8.79286 0 8.99492 0 9.20561C0 9.4163 0.0836796 9.61836 0.232637 9.76736C0.381639 9.91632 0.583702 10 0.794391 10C1.00508 10 1.20714 9.91632 1.35615 9.76736L5 6.12351L8.64386 9.76736C8.79286 9.91632 8.99492 10 9.20561 10C9.4163 10 9.61836 9.91632 9.76736 9.76736C9.91632 9.61836 10 9.4163 10 9.20561C10 8.99492 9.91632 8.79286 9.76736 8.64386L6.12351 5L9.76736 1.35615C9.91632 1.20714 10 1.00508 10 0.794391C10 0.583702 9.91632 0.381639 9.76736 0.232637Z" fill="currentColor"/></svg></div>
+          <span class="progress-question__label">سؤال 4</span>
+        </div>
+        <div class="progress-question__connector" data-connector="4"><div class="progress-question__connector-line"></div></div>
+        <div class="progress-question__item" data-question="5">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" fill="none" aria-hidden="true"><path d="M4.10942 9.18763C3.74814 9.18778 3.40167 9.04418 3.14642 8.78851L0.234956 5.87812C-0.0783188 5.56475 -0.0783188 5.05677 0.234956 4.74339C0.548332 4.43012 1.05631 4.43012 1.36969 4.74339L4.10942 7.48312L11.3576 0.234956C11.671 -0.0783188 12.1789 -0.0783188 12.4923 0.234956C12.8056 0.548332 12.8056 1.05631 12.4923 1.36969L5.07242 8.78851C4.81717 9.04418 4.47069 9.18778 4.10942 9.18763Z" fill="currentColor"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M9.76736 0.232637C9.61836 0.0836796 9.4163 0 9.20561 0C8.99492 0 8.79286 0.0836796 8.64386 0.232637L5 3.87649L1.35615 0.232637C1.20714 0.0836796 1.00508 0 0.794391 0C0.583702 0 0.381639 0.0836796 0.232637 0.232637C0.0836796 0.381639 0 0.583702 0 0.794391C0 1.00508 0.0836796 1.20714 0.232637 1.35615L3.87649 5L0.232637 8.64386C0.0836796 8.79286 0 8.99492 0 9.20561C0 9.4163 0.0836796 9.61836 0.232637 9.76736C0.381639 9.91632 0.583702 10 0.794391 10C1.00508 10 1.20714 9.91632 1.35615 9.76736L5 6.12351L8.64386 9.76736C8.79286 9.91632 8.99492 10 9.20561 10C9.4163 10 9.61836 9.91632 9.76736 9.76736C9.91632 9.61836 10 9.4163 10 9.20561C10 8.99492 9.91632 8.79286 9.76736 8.64386L6.12351 5L9.76736 1.35615C9.91632 1.20714 10 1.00508 10 0.794391C10 0.583702 9.91632 0.381639 9.76736 0.232637Z" fill="currentColor"/></svg></div>
+          <span class="progress-question__label">سؤال 5</span>
+        </div>
+      </nav>
+      <!-- animation-system: physical right = .s9-text-col (group 1),
+           physical left = .scq-img (group 2) — same RTL pairing as S1-S3. -->
+      <div class="scq-question">
+        <div class="scq-img" id="s4-img" data-reveal="2">
+          <div class="zoom-img-inner">
+            <img src="assets/img/standard2.jpeg" alt="أربعة مرشدين ومرشدات شباب بسنّ الإعدادية (الصف الثامن)، يرتدون زيّ حركة الشبيبة &quot;أجنحة الكريمبو&quot; (بلوزات حركة زرقاء فاتحة عليها شعارات وبناطيل عمل زرقاء)، يحمّلون معًا معدات في حاوية زرقاء ضخمة حجمها 200 متر مكعب. يظهر على الحاوية اسم الحركة بالعبرية والإنجليزية، والحجم &quot;200 متر مكعب&quot;. داخلها وخارجها تظهر معدات تخييم كثيرة تشمل أكوامًا من الخيام المطوية، صناديق بلاستيكية ومعدنية مكتوب عليها &quot;معدات طبخ&quot;، وحقائب إسعافات أولية حمراء. يقام النشاط في ساحة موقف إسفلتية، وفي الخلفية يظهر مبنى الحركة ذو الطابقين بلون أصفر-برتقالي وعليه أعلام إسرائيل ولافتة &quot;أجنحة الكريمبو&quot;&quot;.">
+          </div>
+          <button class="img-zoom-btn" type="button" aria-label="تكبير الصورة"
+                  data-zoom-src="assets/img/standard2.jpeg" data-zoom-alt="צילום של חניכי תנועת נוער מעמיסים ציוד מחנאות לתוך מכולה נגררת כחולה בחצר התנועה">
+            <svg class="img-zoom-btn__icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <circle cx="8.5" cy="8.5" r="6.5" stroke="currentColor" stroke-width="1.6"/>
+              <path d="M13.3 13.3L17.6 17.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+        <div class="s9-text-col" id="s4-text-col" data-reveal="1">
+          <p class="s9-intro">استعدادًا للمخيم الصيفي لحركة "أجنحة الكريمبو"،<br>حمّلَ طلاب الصف الثامن المعدات على حاوية شاحنة.<br>الحجم الإجمالي للحاوية هو 200 متر مكعب.</p>
+          <p class="scq-qtext">أكملوا عمود الحجم (متر مكعب) في الجدول بحسب النسب المئوية المعطاة‎.</p>
+          <p class="s9-intro">استعينوا <strong>بتحويل النسبة المئوية إلى كسر بسيط/عشري‎</strong>.</p>
+          <table class="eq-table s4-table">
+            <tr><th>نوع المعدات</th><th>النسبة المئوية</th><th>الحجم (متر مكعب)</th></tr>
+            <tr>
+              <td>طبخ ومطبخ</td>
+              <td>45%</td>
+              <td><span class="viq-field s4-table-input" id="s4-field-cooking"><input id="s4-input-cooking" class="viq-input-box" type="text" inputmode="numeric" aria-label="حجم معدات الطبخ والمطبخ، بالمتر المكعب" oninput="s4OnInput()"><span class="viq-input-ico" id="s4-ico-cooking" aria-hidden="true"></span></span></td>
+            </tr>
+            <tr>
+              <td>خيام ومباني</td>
+              <td>40%</td>
+              <td><span class="viq-field s4-table-input" id="s4-field-tents"><input id="s4-input-tents" class="viq-input-box" type="text" inputmode="numeric" aria-label="حجم الخيام والمباني، بالمتر المكعب" oninput="s4OnInput()"><span class="viq-input-ico" id="s4-ico-tents" aria-hidden="true"></span></span></td>
+            </tr>
+            <tr>
+              <td>معدات الحبال والسلامة</td>
+              <td>12%</td>
+              <td><span class="viq-field s4-table-input" id="s4-field-ropes"><input id="s4-input-ropes" class="viq-input-box" type="text" inputmode="numeric" aria-label="حجم معدات الحبال والسلامة، بالمتر المكعب" oninput="s4OnInput()"><span class="viq-input-ico" id="s4-ico-ropes" aria-hidden="true"></span></span></td>
+            </tr>
+            <tr>
+              <td>إسعاف أولي</td>
+              <td>3%</td>
+              <td><span class="viq-field s4-table-input" id="s4-field-firstaid"><input id="s4-input-firstaid" class="viq-input-box" type="text" inputmode="numeric" aria-label="حجم معدات الإسعاف الأولي، بالمتر المكعب" oninput="s4OnInput()"><span class="viq-input-ico" id="s4-ico-firstaid" aria-hidden="true"></span></span></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <button class="btn-continue" id="s4-check" disabled onclick="s4Check()"><span class="nav-label" data-label="هل إجابتي صحيحة؟"><span>هل إجابتي صحيحة؟</span></span></button>
+      <button class="scq-hint" id="s4-hint" type="button" onclick="s4OpenHint()" style="visibility:hidden;">
+        <span class="nav-label" data-label="هل يمكنني الحصول على تلميح؟"><span>هل يمكنني الحصول على تلميح؟</span></span>
+        <svg class="scq-hint-icon" viewBox="0 0 25.9999 22.2883" fill="none" aria-hidden="true">
+          <path d="M17.7925 2.76345C16.3676 1.37911 14.5057 0.68776 12.5488 0.815545C9.07995 1.04163 6.27286 3.9168 6.01796 7.50134C5.85646 9.77363 6.7035 11.9443 8.34374 13.4548C9.23036 14.2723 9.74016 15.465 9.74016 16.7265H11.2284H14.7733H16.2615C16.2615 15.4847 16.7919 14.2707 17.7181 13.3959C19.17 12.0263 20.0012 10.0751 20.0012 8.04361C20.0012 6.01215 19.1953 4.12486 17.7909 2.76018L17.7925 2.76345ZM13.0001 5.54524C11.6701 5.54524 10.5856 6.66582 10.5856 8.04525C10.5856 8.46956 10.2515 8.81524 9.84149 8.81524C9.43143 8.81524 9.09736 8.46956 9.09736 8.04525C9.09736 5.8172 10.8484 4.00527 13.0001 4.00527C13.4133 4.00527 13.7473 4.35094 13.7473 4.77525C13.7473 5.19957 13.4133 5.54524 13.0001 5.54524Z" fill="currentColor"/>
+          <path d="M9.73858 19.6245C9.73858 20.3289 9.99823 20.9908 10.478 21.4904L10.4938 21.5068C10.9783 22.0098 11.6242 22.2883 12.3114 22.2883H13.6888C14.3775 22.2883 15.025 22.0114 15.5111 21.5052C15.9956 21.0039 16.2631 20.3355 16.2631 19.6277V17.9895H9.73858V19.6245ZM11.2268 19.5294H14.7717V19.6277C14.7717 19.9243 14.6609 20.2077 14.4566 20.419C14.254 20.6254 13.9753 20.7483 13.6888 20.7483H12.3114C12.028 20.7483 11.7588 20.6336 11.5561 20.4305L11.5451 20.4174C11.3424 20.211 11.2268 19.9226 11.2268 19.6261V19.5311V19.5294Z" fill="currentColor"/>
+          <path d="M25.2558 7.27531H22.607C22.1954 7.27531 21.8629 7.62099 21.8629 8.0453C21.8629 8.46961 22.197 8.81529 22.607 8.81529H25.2558C25.6674 8.81529 25.9999 8.46961 25.9999 8.0453C25.9999 7.62099 25.6658 7.27531 25.2558 7.27531Z" fill="currentColor"/>
+          <path d="M4.1386 8.0453C4.1386 7.61935 3.80453 7.27531 3.39447 7.27531H0.744124C0.332481 7.27531 0 7.62099 0 8.0453C0 8.46961 0.334064 8.81529 0.744124 8.81529H3.39289C3.80453 8.81529 4.13701 8.46961 4.13701 8.0453H4.1386Z" fill="currentColor"/>
+          <path d="M20.8702 3.11398C21.0175 3.11398 21.1663 3.06811 21.2961 2.97472L23.4667 1.40198C23.804 1.15788 23.8847 0.677863 23.6488 0.328911C23.4129 -0.0200418 22.949 -0.105232 22.6118 0.140509L20.4412 1.71325C20.1039 1.95736 20.0232 2.43737 20.2591 2.78632C20.4032 3.00094 20.6343 3.11562 20.8702 3.11562V3.11398Z" fill="currentColor"/>
+          <path d="M4.70372 13.1172L2.53309 14.69C2.19586 14.9341 2.11512 15.4141 2.35102 15.763C2.49509 15.9777 2.72625 16.0923 2.96215 16.0923C3.10939 16.0923 3.25822 16.0465 3.38804 15.9531L5.55867 14.3803C5.8959 14.1362 5.97665 13.6562 5.74074 13.3073C5.50484 12.9583 5.04095 12.8731 4.70372 13.1189V13.1172Z" fill="currentColor"/>
+          <path d="M23.4668 14.6884L21.2961 13.1157C20.9589 12.8716 20.495 12.9567 20.2591 13.3041C20.0232 13.653 20.1055 14.133 20.4412 14.3771L22.6118 15.9499C22.7416 16.0449 22.8904 16.0891 23.0377 16.0891C23.272 16.0891 23.5032 15.9744 23.6488 15.7598C23.8847 15.4109 23.8024 14.9309 23.4668 14.6868V14.6884Z" fill="currentColor"/>
+          <path d="M5.55869 1.71322L3.38806 0.140478C3.05083 -0.103625 2.58694 -0.0184349 2.35104 0.328879C2.11513 0.677832 2.19746 1.15785 2.53311 1.40195L4.70374 2.97469C4.83356 3.06971 4.98239 3.11395 5.12963 3.11395C5.36395 3.11395 5.5951 2.99927 5.74076 2.78465C5.97666 2.4357 5.89434 1.95569 5.55869 1.71158V1.71322Z" fill="currentColor"/>
+        </svg>
+      </button>
+      <button class="scq-back" id="s4-back" type="button" onclick="goBackFromS4()"><span class="nav-label" data-label="عودة"><span>عودة</span></span></button>
+    </section>
+
+    <!-- Feedback popup for S4 — outside all .screen divs -->
+    <div class="scq-popup hidden m-popup" id="s4-popup" onpointerdown="popupPointerDown(event, 's4-popup')">
+      <div class="scq-popup-header">
+        <p class="scq-popup-title" id="s4-popup-title"></p>
+      </div>
+      <div class="scq-popup-body" id="s4-popup-body"></div>
+      <div class="scq-popup-actions" id="s4-popup-actions"></div>
+    </div>
+    <!-- Hint overlay for S4 — outside all .screen divs -->
+    <div class="scq-hint-overlay hidden m-popup" id="s4-hint-overlay" onclick="s4CloseHintOnBackdrop(event)">
+      <div class="scq-hint-popup" role="dialog" aria-modal="true" aria-labelledby="s4-hint-title">
+        <div class="scq-hint-text">
+          <h2 class="scq-hint-title" id="s4-hint-title">
+            <svg class="scq-hint-title-icon" viewBox="0 0 25.9999 22.2883" fill="none" aria-hidden="true">
+              <path d="M17.7925 2.76345C16.3676 1.37911 14.5057 0.68776 12.5488 0.815545C9.07995 1.04163 6.27286 3.9168 6.01796 7.50134C5.85646 9.77363 6.7035 11.9443 8.34374 13.4548C9.23036 14.2723 9.74016 15.465 9.74016 16.7265H11.2284H14.7733H16.2615C16.2615 15.4847 16.7919 14.2707 17.7181 13.3959C19.17 12.0263 20.0012 10.0751 20.0012 8.04361C20.0012 6.01215 19.1953 4.12486 17.7909 2.76018L17.7925 2.76345ZM13.0001 5.54524C11.6701 5.54524 10.5856 6.66582 10.5856 8.04525C10.5856 8.46956 10.2515 8.81524 9.84149 8.81524C9.43143 8.81524 9.09736 8.46956 9.09736 8.04525C9.09736 5.8172 10.8484 4.00527 13.0001 4.00527C13.4133 4.00527 13.7473 4.35094 13.7473 4.77525C13.7473 5.19957 13.4133 5.54524 13.0001 5.54524Z" fill="currentColor"/>
+              <path d="M9.73858 19.6245C9.73858 20.3289 9.99823 20.9908 10.478 21.4904L10.4938 21.5068C10.9783 22.0098 11.6242 22.2883 12.3114 22.2883H13.6888C14.3775 22.2883 15.025 22.0114 15.5111 21.5052C15.9956 21.0039 16.2631 20.3355 16.2631 19.6277V17.9895H9.73858V19.6245ZM11.2268 19.5294H14.7717V19.6277C14.7717 19.9243 14.6609 20.2077 14.4566 20.419C14.254 20.6254 13.9753 20.7483 13.6888 20.7483H12.3114C12.028 20.7483 11.7588 20.6336 11.5561 20.4305L11.5451 20.4174C11.3424 20.211 11.2268 19.9226 11.2268 19.6261V19.5311V19.5294Z" fill="currentColor"/>
+              <path d="M25.2558 7.27531H22.607C22.1954 7.27531 21.8629 7.62099 21.8629 8.0453C21.8629 8.46961 22.197 8.81529 22.607 8.81529H25.2558C25.6674 8.81529 25.9999 8.46961 25.9999 8.0453C25.9999 7.62099 25.6658 7.27531 25.2558 7.27531Z" fill="currentColor"/>
+              <path d="M4.1386 8.0453C4.1386 7.61935 3.80453 7.27531 3.39447 7.27531H0.744124C0.332481 7.27531 0 7.62099 0 8.0453C0 8.46961 0.334064 8.81529 0.744124 8.81529H3.39289C3.80453 8.81529 4.13701 8.46961 4.13701 8.0453H4.1386Z" fill="currentColor"/>
+              <path d="M20.8702 3.11398C21.0175 3.11398 21.1663 3.06811 21.2961 2.97472L23.4667 1.40198C23.804 1.15788 23.8847 0.677863 23.6488 0.328911C23.4129 -0.0200418 22.949 -0.105232 22.6118 0.140509L20.4412 1.71325C20.1039 1.95736 20.0232 2.43737 20.2591 2.78632C20.4032 3.00094 20.6343 3.11562 20.8702 3.11562V3.11398Z" fill="currentColor"/>
+              <path d="M4.70372 13.1172L2.53309 14.69C2.19586 14.9341 2.11512 15.4141 2.35102 15.763C2.49509 15.9777 2.72625 16.0923 2.96215 16.0923C3.10939 16.0923 3.25822 16.0465 3.38804 15.9531L5.55867 14.3803C5.8959 14.1362 5.97665 13.6562 5.74074 13.3073C5.50484 12.9583 5.04095 12.8731 4.70372 13.1189V13.1172Z" fill="currentColor"/>
+              <path d="M23.4668 14.6884L21.2961 13.1157C20.9589 12.8716 20.495 12.9567 20.2591 13.3041C20.0232 13.653 20.1055 14.133 20.4412 14.3771L22.6118 15.9499C22.7416 16.0449 22.8904 16.0891 23.0377 16.0891C23.272 16.0891 23.5032 15.9744 23.6488 15.7598C23.8847 15.4109 23.8024 14.9309 23.4668 14.6868V14.6884Z" fill="currentColor"/>
+              <path d="M5.55869 1.71322L3.38806 0.140478C3.05083 -0.103625 2.58694 -0.0184349 2.35104 0.328879C2.11513 0.677832 2.19746 1.15785 2.53311 1.40195L4.70374 2.97469C4.83356 3.06971 4.98239 3.11395 5.12963 3.11395C5.36395 3.11395 5.5951 2.99927 5.74076 2.78465C5.97666 2.4357 5.89434 1.95569 5.55869 1.71158V1.71322Z" fill="currentColor"/>
+            </svg>
+            تلميح
+          </h2>
+          <div class="scq-hint-body">
+            <p>احسبوا مقدار الحجم الذي يُشغِله كل نوع من المعدات في الحاوية - استعينوا بالتحويل إلى كسر بسيط/عشري‎.</p>
+          </div>
+        </div>
+        <button class="scq-hint-close" type="button" onclick="s4CloseHint()"><span class="nav-label" data-label="عودة إلى السؤال"><span>عودة إلى السؤال</span></span></button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 50 (S5) — MultipleChoiceQuestion (slide 49), item -003
+         (a NEW top-level item — a single self-contained question, NOT a
+         sub-part of -002's equipment scenario). Figma template per
+         presenter notes: MultipleChoiceQuestion. Second use of this
+         template in part 01 (first was S21) — reused S21's own
+         `.mcq-check`/Set-based multi-select state shape verbatim, but
+         built inside `.s9-text-col`/`.s9-intro` (this item's own
+         established convention from S1-S4) rather than S21's older
+         `.s2-right-col`/`.s2-intro` naming.
+         Image "standard3" (presenter notes' own filename), copied from
+         ppt/media/image43.jpeg — a PORTRAIT photo, 379×565 native
+         (~1.49 ratio), the first portrait content image in this
+         project (every prior S21+ image was landscape/square). Sized
+         340px wide via the same aspect-ratio-driven frame technique,
+         auto height (~507px). Alt text transcribed verbatim from the
+         presenter notes' own description.
+         Answer-option order confirmed via a fresh PowerPoint COM export
+         of this exact slide (options carry no distinguishing xfrm/table
+         ambiguity here — the raw text dump's own top-to-bottom order
+         already matches the render). Correct set {c, d} confirmed by
+         each option's own green-filled vs. outline radio glyph in the
+         render, matching the feedback body's own reasoning (30 teacher
+         tickets ordered vs 32 teachers arrived → the 2 extra teachers
+         get the pricier leftover student tickets; 120 student tickets
+         ordered vs 118 arrived → 2 shirts go undistributed).
+         Hint hidden until the first wrong attempt (producer instruction, 2026-08-20). Previously S21's convention for
+         THIS template — MultipleChoiceQuestion — no presenter-note
+         deviation on this slide either). Hint title generic "רמז" (no
+         restated-question text on this slide, same as S23/S1/S4).
+         Wrong2 title IS authored — "טעית, זה חלק טבעי מתהליך הלמידה."
+         — found (same as S4's own "duplicate body, title differs"
+         structure) between the correct-feedback body and an identical
+         repeated body block. Shared body (correct + final-wrong) walks
+         the ticket-count calculation via `s8Frac()`, transcribed from
+         the slide's own OMML equation runs ("20% · 150 = 20/100 · 150 =
+         0.2 · 150 = 30", "150 − 30 = 120").
+         `.scq-answers`/`.scq-opt` widened from the 604px default to
+         780px (this screen's own text column is 800px wide, more room
+         than the usual 660px, since the portrait image needs less
+         horizontal space than the landscape ones) — the two correct
+         options are full sentences and wrap to 2 lines regardless, but
+         at 780px they wrap more gracefully than at 604px.
+         Source: math-target-4.2-script.pptx, slide 49. Item ref:
+         methodica-math-percent-02-02-003.
+         ═══════════════════════════════════════════════════════ -->
+    <section class="screen" data-screen="5" id="s5">
+      <!-- Progress Question nav (5-question practice set, S1-S7) —
+           shared markup repeated identically on every screen in the
+           set, per 720-templates -> _global-components.md -> "Progress
+           Question" reuse rule. Q1 first in DOM (renders physically
+           rightmost under direction:rtl). CSS/markup originally ported
+           verbatim from this lomda's own part 03 (methodica-math-
+           percent-02-03, part number as of the 2026-08-12 split — this
+           part's own Q1 maps to 3 screens (S1/S2/S3, item -001's own
+           א/ב/ג sub-parts)) — see the JS block for the multi-screen
+           aggregation rule. -->
+      <nav class="progress-question" aria-label="التنقُّل بين الأسئلة">
+        <div class="progress-question__item" data-question="1">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" fill="none" aria-hidden="true"><path d="M4.10942 9.18763C3.74814 9.18778 3.40167 9.04418 3.14642 8.78851L0.234956 5.87812C-0.0783188 5.56475 -0.0783188 5.05677 0.234956 4.74339C0.548332 4.43012 1.05631 4.43012 1.36969 4.74339L4.10942 7.48312L11.3576 0.234956C11.671 -0.0783188 12.1789 -0.0783188 12.4923 0.234956C12.8056 0.548332 12.8056 1.05631 12.4923 1.36969L5.07242 8.78851C4.81717 9.04418 4.47069 9.18778 4.10942 9.18763Z" fill="currentColor"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M9.76736 0.232637C9.61836 0.0836796 9.4163 0 9.20561 0C8.99492 0 8.79286 0.0836796 8.64386 0.232637L5 3.87649L1.35615 0.232637C1.20714 0.0836796 1.00508 0 0.794391 0C0.583702 0 0.381639 0.0836796 0.232637 0.232637C0.0836796 0.381639 0 0.583702 0 0.794391C0 1.00508 0.0836796 1.20714 0.232637 1.35615L3.87649 5L0.232637 8.64386C0.0836796 8.79286 0 8.99492 0 9.20561C0 9.4163 0.0836796 9.61836 0.232637 9.76736C0.381639 9.91632 0.583702 10 0.794391 10C1.00508 10 1.20714 9.91632 1.35615 9.76736L5 6.12351L8.64386 9.76736C8.79286 9.91632 8.99492 10 9.20561 10C9.4163 10 9.61836 9.91632 9.76736 9.76736C9.91632 9.61836 10 9.4163 10 9.20561C10 8.99492 9.91632 8.79286 9.76736 8.64386L6.12351 5L9.76736 1.35615C9.91632 1.20714 10 1.00508 10 0.794391C10 0.583702 9.91632 0.381639 9.76736 0.232637Z" fill="currentColor"/></svg></div>
+          <span class="progress-question__label">سؤال 1</span>
+        </div>
+        <div class="progress-question__connector" data-connector="1"><div class="progress-question__connector-line"></div></div>
+        <div class="progress-question__item" data-question="2">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" fill="none" aria-hidden="true"><path d="M4.10942 9.18763C3.74814 9.18778 3.40167 9.04418 3.14642 8.78851L0.234956 5.87812C-0.0783188 5.56475 -0.0783188 5.05677 0.234956 4.74339C0.548332 4.43012 1.05631 4.43012 1.36969 4.74339L4.10942 7.48312L11.3576 0.234956C11.671 -0.0783188 12.1789 -0.0783188 12.4923 0.234956C12.8056 0.548332 12.8056 1.05631 12.4923 1.36969L5.07242 8.78851C4.81717 9.04418 4.47069 9.18778 4.10942 9.18763Z" fill="currentColor"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M9.76736 0.232637C9.61836 0.0836796 9.4163 0 9.20561 0C8.99492 0 8.79286 0.0836796 8.64386 0.232637L5 3.87649L1.35615 0.232637C1.20714 0.0836796 1.00508 0 0.794391 0C0.583702 0 0.381639 0.0836796 0.232637 0.232637C0.0836796 0.381639 0 0.583702 0 0.794391C0 1.00508 0.0836796 1.20714 0.232637 1.35615L3.87649 5L0.232637 8.64386C0.0836796 8.79286 0 8.99492 0 9.20561C0 9.4163 0.0836796 9.61836 0.232637 9.76736C0.381639 9.91632 0.583702 10 0.794391 10C1.00508 10 1.20714 9.91632 1.35615 9.76736L5 6.12351L8.64386 9.76736C8.79286 9.91632 8.99492 10 9.20561 10C9.4163 10 9.61836 9.91632 9.76736 9.76736C9.91632 9.61836 10 9.4163 10 9.20561C10 8.99492 9.91632 8.79286 9.76736 8.64386L6.12351 5L9.76736 1.35615C9.91632 1.20714 10 1.00508 10 0.794391C10 0.583702 9.91632 0.381639 9.76736 0.232637Z" fill="currentColor"/></svg></div>
+          <span class="progress-question__label">سؤال 2</span>
+        </div>
+        <div class="progress-question__connector" data-connector="2"><div class="progress-question__connector-line"></div></div>
+        <div class="progress-question__item" data-question="3">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" fill="none" aria-hidden="true"><path d="M4.10942 9.18763C3.74814 9.18778 3.40167 9.04418 3.14642 8.78851L0.234956 5.87812C-0.0783188 5.56475 -0.0783188 5.05677 0.234956 4.74339C0.548332 4.43012 1.05631 4.43012 1.36969 4.74339L4.10942 7.48312L11.3576 0.234956C11.671 -0.0783188 12.1789 -0.0783188 12.4923 0.234956C12.8056 0.548332 12.8056 1.05631 12.4923 1.36969L5.07242 8.78851C4.81717 9.04418 4.47069 9.18778 4.10942 9.18763Z" fill="currentColor"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M9.76736 0.232637C9.61836 0.0836796 9.4163 0 9.20561 0C8.99492 0 8.79286 0.0836796 8.64386 0.232637L5 3.87649L1.35615 0.232637C1.20714 0.0836796 1.00508 0 0.794391 0C0.583702 0 0.381639 0.0836796 0.232637 0.232637C0.0836796 0.381639 0 0.583702 0 0.794391C0 1.00508 0.0836796 1.20714 0.232637 1.35615L3.87649 5L0.232637 8.64386C0.0836796 8.79286 0 8.99492 0 9.20561C0 9.4163 0.0836796 9.61836 0.232637 9.76736C0.381639 9.91632 0.583702 10 0.794391 10C1.00508 10 1.20714 9.91632 1.35615 9.76736L5 6.12351L8.64386 9.76736C8.79286 9.91632 8.99492 10 9.20561 10C9.4163 10 9.61836 9.91632 9.76736 9.76736C9.91632 9.61836 10 9.4163 10 9.20561C10 8.99492 9.91632 8.79286 9.76736 8.64386L6.12351 5L9.76736 1.35615C9.91632 1.20714 10 1.00508 10 0.794391C10 0.583702 9.91632 0.381639 9.76736 0.232637Z" fill="currentColor"/></svg></div>
+          <span class="progress-question__label">سؤال 3</span>
+        </div>
+        <div class="progress-question__connector" data-connector="3"><div class="progress-question__connector-line"></div></div>
+        <div class="progress-question__item" data-question="4">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" fill="none" aria-hidden="true"><path d="M4.10942 9.18763C3.74814 9.18778 3.40167 9.04418 3.14642 8.78851L0.234956 5.87812C-0.0783188 5.56475 -0.0783188 5.05677 0.234956 4.74339C0.548332 4.43012 1.05631 4.43012 1.36969 4.74339L4.10942 7.48312L11.3576 0.234956C11.671 -0.0783188 12.1789 -0.0783188 12.4923 0.234956C12.8056 0.548332 12.8056 1.05631 12.4923 1.36969L5.07242 8.78851C4.81717 9.04418 4.47069 9.18778 4.10942 9.18763Z" fill="currentColor"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M9.76736 0.232637C9.61836 0.0836796 9.4163 0 9.20561 0C8.99492 0 8.79286 0.0836796 8.64386 0.232637L5 3.87649L1.35615 0.232637C1.20714 0.0836796 1.00508 0 0.794391 0C0.583702 0 0.381639 0.0836796 0.232637 0.232637C0.0836796 0.381639 0 0.583702 0 0.794391C0 1.00508 0.0836796 1.20714 0.232637 1.35615L3.87649 5L0.232637 8.64386C0.0836796 8.79286 0 8.99492 0 9.20561C0 9.4163 0.0836796 9.61836 0.232637 9.76736C0.381639 9.91632 0.583702 10 0.794391 10C1.00508 10 1.20714 9.91632 1.35615 9.76736L5 6.12351L8.64386 9.76736C8.79286 9.91632 8.99492 10 9.20561 10C9.4163 10 9.61836 9.91632 9.76736 9.76736C9.91632 9.61836 10 9.4163 10 9.20561C10 8.99492 9.91632 8.79286 9.76736 8.64386L6.12351 5L9.76736 1.35615C9.91632 1.20714 10 1.00508 10 0.794391C10 0.583702 9.91632 0.381639 9.76736 0.232637Z" fill="currentColor"/></svg></div>
+          <span class="progress-question__label">سؤال 4</span>
+        </div>
+        <div class="progress-question__connector" data-connector="4"><div class="progress-question__connector-line"></div></div>
+        <div class="progress-question__item" data-question="5">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" fill="none" aria-hidden="true"><path d="M4.10942 9.18763C3.74814 9.18778 3.40167 9.04418 3.14642 8.78851L0.234956 5.87812C-0.0783188 5.56475 -0.0783188 5.05677 0.234956 4.74339C0.548332 4.43012 1.05631 4.43012 1.36969 4.74339L4.10942 7.48312L11.3576 0.234956C11.671 -0.0783188 12.1789 -0.0783188 12.4923 0.234956C12.8056 0.548332 12.8056 1.05631 12.4923 1.36969L5.07242 8.78851C4.81717 9.04418 4.47069 9.18778 4.10942 9.18763Z" fill="currentColor"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M9.76736 0.232637C9.61836 0.0836796 9.4163 0 9.20561 0C8.99492 0 8.79286 0.0836796 8.64386 0.232637L5 3.87649L1.35615 0.232637C1.20714 0.0836796 1.00508 0 0.794391 0C0.583702 0 0.381639 0.0836796 0.232637 0.232637C0.0836796 0.381639 0 0.583702 0 0.794391C0 1.00508 0.0836796 1.20714 0.232637 1.35615L3.87649 5L0.232637 8.64386C0.0836796 8.79286 0 8.99492 0 9.20561C0 9.4163 0.0836796 9.61836 0.232637 9.76736C0.381639 9.91632 0.583702 10 0.794391 10C1.00508 10 1.20714 9.91632 1.35615 9.76736L5 6.12351L8.64386 9.76736C8.79286 9.91632 8.99492 10 9.20561 10C9.4163 10 9.61836 9.91632 9.76736 9.76736C9.91632 9.61836 10 9.4163 10 9.20561C10 8.99492 9.91632 8.79286 9.76736 8.64386L6.12351 5L9.76736 1.35615C9.91632 1.20714 10 1.00508 10 0.794391C10 0.583702 9.91632 0.381639 9.76736 0.232637Z" fill="currentColor"/></svg></div>
+          <span class="progress-question__label">سؤال 5</span>
+        </div>
+      </nav>
+      <!-- animation-system: physical right = .s9-text-col (group 1),
+           physical left = .scq-img (group 2) — same RTL pairing as S1-S4. -->
+      <div class="scq-question">
+        <div class="scq-img" id="s5-img" data-reveal="2">
+          <div class="zoom-img-inner">
+            <img src="assets/img/standard3.jpeg" alt="صورة عمودية لبلوزة زرقاء داكنة موضوعة على طاولة خشبية، وأمامها بطاقة دخول مصممة لنهائي مسابقة العلوم. على البلوزة طبعة لفريق &quot;نفيه حمتسيتسيم&quot; الذي فاز بالمركز الأول، مع رسم بأسلوب خربشة لثلاثة شبيبة على منصة يرفعون كأسًا. في الخلفية تظهر ردهة واسعة فيها أشخاص وطاولات.">
+          </div>
+          <button class="img-zoom-btn" type="button" aria-label="تكبير الصورة"
+                  data-zoom-src="assets/img/standard3.jpeg" data-zoom-alt="צילום של חולצת נבחרת המדעים וכרטיס כניסה לגמר תחרות המדעים">
+            <svg class="img-zoom-btn__icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <circle cx="8.5" cy="8.5" r="6.5" stroke="currentColor" stroke-width="1.6"/>
+              <path d="M13.3 13.3L17.6 17.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+        <div class="s9-text-col" id="s5-text-col" data-reveal="1">
+          <p class="s9-intro">تأهّل فريق العلوم إلى النهائي القطري! طلبت مركّزة الصف الثامن 150 تذكرة لتشجيع الفريق.<br>%80 من التذاكر كانت مخصصة لطلاب المدرسة وتشمل بلوزات.<br>بقية التذاكر، وهي أرخص ولا تشمل بلوزات، فخُصصت للمعلمين المرافقين.<br>في صباح النشاط حضر 118 طالبًا و-32 معلمًا‎.</p>
+          <p class="scq-qtext">ما هي المشكلة التي ستواجهها مركّزة الصف عندما توزع الـ 150 تذكرة<br>على 118 طالبًا و-32 معلمًا الذين حضروا؟</p>
+          <p class="s9-intro">اختاروا <strong>جميع</strong> الإجابات الصحيحة‎.</p>
+          <div class="scq-answers" role="group" aria-label="اختاروا جميع الإجابات الصحيحة" id="s5-answers">
+            <button class="scq-opt" type="button" role="checkbox" aria-checked="false" data-id="a" onclick="s5Toggle('a')">
+              <span class="scq-opt-text">لا توجد مشكلة - تم طلب 150 تذكرة وحضر 150 مدعوًا‎.</span>
+              <span class="mcq-check" aria-hidden="true"></span>
+            </button>
+            <button class="scq-opt" type="button" role="checkbox" aria-checked="false" data-id="b" onclick="s5Toggle('b')">
+              <span class="scq-opt-text">تم طلب تذاكر لـ 32 معلمًا، وكانت كافية بالضبط لجميع المعلمين‎.</span>
+              <span class="mcq-check" aria-hidden="true"></span>
+            </button>
+            <button class="scq-opt" type="button" role="checkbox" aria-checked="false" data-id="c" onclick="s5Toggle('c')">
+              <span class="scq-opt-text">ستتبقى تذكرتان غير مستخدمتين للطلاب، ولذلك سيحصل المعلمان الإضافيان على تذكرتي طلاب، وهما أغلى‎.</span>
+              <span class="mcq-check" aria-hidden="true"></span>
+            </button>
+            <button class="scq-opt" type="button" role="checkbox" aria-checked="false" data-id="d" onclick="s5Toggle('d')">
+              <span class="scq-opt-text">تم طلب تذاكر لـ 120 طالبًا، لكن حضر 118 فقط – لن يتم توزيع بلوزتين‎.</span>
+              <span class="mcq-check" aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-continue" id="s5-check" disabled onclick="s5Check()"><span class="nav-label" data-label="هل إجابتي صحيحة؟"><span>هل إجابتي صحيحة؟</span></span></button>
+      <button class="scq-hint" id="s5-hint" type="button" onclick="s5OpenHint()">
+        <span class="nav-label" data-label="هل يمكنني الحصول على تلميح؟"><span>هل يمكنني الحصول على تلميح؟</span></span>
+        <svg class="scq-hint-icon" viewBox="0 0 25.9999 22.2883" fill="none" aria-hidden="true">
+          <path d="M17.7925 2.76345C16.3676 1.37911 14.5057 0.68776 12.5488 0.815545C9.07995 1.04163 6.27286 3.9168 6.01796 7.50134C5.85646 9.77363 6.7035 11.9443 8.34374 13.4548C9.23036 14.2723 9.74016 15.465 9.74016 16.7265H11.2284H14.7733H16.2615C16.2615 15.4847 16.7919 14.2707 17.7181 13.3959C19.17 12.0263 20.0012 10.0751 20.0012 8.04361C20.0012 6.01215 19.1953 4.12486 17.7909 2.76018L17.7925 2.76345ZM13.0001 5.54524C11.6701 5.54524 10.5856 6.66582 10.5856 8.04525C10.5856 8.46956 10.2515 8.81524 9.84149 8.81524C9.43143 8.81524 9.09736 8.46956 9.09736 8.04525C9.09736 5.8172 10.8484 4.00527 13.0001 4.00527C13.4133 4.00527 13.7473 4.35094 13.7473 4.77525C13.7473 5.19957 13.4133 5.54524 13.0001 5.54524Z" fill="currentColor"/>
+          <path d="M9.73858 19.6245C9.73858 20.3289 9.99823 20.9908 10.478 21.4904L10.4938 21.5068C10.9783 22.0098 11.6242 22.2883 12.3114 22.2883H13.6888C14.3775 22.2883 15.025 22.0114 15.5111 21.5052C15.9956 21.0039 16.2631 20.3355 16.2631 19.6277V17.9895H9.73858V19.6245ZM11.2268 19.5294H14.7717V19.6277C14.7717 19.9243 14.6609 20.2077 14.4566 20.419C14.254 20.6254 13.9753 20.7483 13.6888 20.7483H12.3114C12.028 20.7483 11.7588 20.6336 11.5561 20.4305L11.5451 20.4174C11.3424 20.211 11.2268 19.9226 11.2268 19.6261V19.5311V19.5294Z" fill="currentColor"/>
+          <path d="M25.2558 7.27531H22.607C22.1954 7.27531 21.8629 7.62099 21.8629 8.0453C21.8629 8.46961 22.197 8.81529 22.607 8.81529H25.2558C25.6674 8.81529 25.9999 8.46961 25.9999 8.0453C25.9999 7.62099 25.6658 7.27531 25.2558 7.27531Z" fill="currentColor"/>
+          <path d="M4.1386 8.0453C4.1386 7.61935 3.80453 7.27531 3.39447 7.27531H0.744124C0.332481 7.27531 0 7.62099 0 8.0453C0 8.46961 0.334064 8.81529 0.744124 8.81529H3.39289C3.80453 8.81529 4.13701 8.46961 4.13701 8.0453H4.1386Z" fill="currentColor"/>
+          <path d="M20.8702 3.11398C21.0175 3.11398 21.1663 3.06811 21.2961 2.97472L23.4667 1.40198C23.804 1.15788 23.8847 0.677863 23.6488 0.328911C23.4129 -0.0200418 22.949 -0.105232 22.6118 0.140509L20.4412 1.71325C20.1039 1.95736 20.0232 2.43737 20.2591 2.78632C20.4032 3.00094 20.6343 3.11562 20.8702 3.11562V3.11398Z" fill="currentColor"/>
+          <path d="M4.70372 13.1172L2.53309 14.69C2.19586 14.9341 2.11512 15.4141 2.35102 15.763C2.49509 15.9777 2.72625 16.0923 2.96215 16.0923C3.10939 16.0923 3.25822 16.0465 3.38804 15.9531L5.55867 14.3803C5.8959 14.1362 5.97665 13.6562 5.74074 13.3073C5.50484 12.9583 5.04095 12.8731 4.70372 13.1189V13.1172Z" fill="currentColor"/>
+          <path d="M23.4668 14.6884L21.2961 13.1157C20.9589 12.8716 20.495 12.9567 20.2591 13.3041C20.0232 13.653 20.1055 14.133 20.4412 14.3771L22.6118 15.9499C22.7416 16.0449 22.8904 16.0891 23.0377 16.0891C23.272 16.0891 23.5032 15.9744 23.6488 15.7598C23.8847 15.4109 23.8024 14.9309 23.4668 14.6868V14.6884Z" fill="currentColor"/>
+          <path d="M5.55869 1.71322L3.38806 0.140478C3.05083 -0.103625 2.58694 -0.0184349 2.35104 0.328879C2.11513 0.677832 2.19746 1.15785 2.53311 1.40195L4.70374 2.97469C4.83356 3.06971 4.98239 3.11395 5.12963 3.11395C5.36395 3.11395 5.5951 2.99927 5.74076 2.78465C5.97666 2.4357 5.89434 1.95569 5.55869 1.71158V1.71322Z" fill="currentColor"/>
+        </svg>
+      </button>
+      <button class="scq-back" id="s5-back" type="button" onclick="goBackFromS5()"><span class="nav-label" data-label="عودة"><span>عودة</span></span></button>
+    </section>
+
+    <!-- Feedback popup for S5 — outside all .screen divs -->
+    <div class="scq-popup hidden m-popup" id="s5-popup" onpointerdown="popupPointerDown(event, 's5-popup')">
+      <div class="scq-popup-header">
+        <p class="scq-popup-title" id="s5-popup-title"></p>
+      </div>
+      <div class="scq-popup-body" id="s5-popup-body"></div>
+    </div>
+    <!-- Hint overlay for S5 — outside all .screen divs -->
+    <div class="scq-hint-overlay hidden m-popup" id="s5-hint-overlay" onclick="s5CloseHintOnBackdrop(event)">
+      <div class="scq-hint-popup" role="dialog" aria-modal="true" aria-labelledby="s5-hint-title">
+        <div class="scq-hint-text">
+          <h2 class="scq-hint-title" id="s5-hint-title">
+            <svg class="scq-hint-title-icon" viewBox="0 0 25.9999 22.2883" fill="none" aria-hidden="true">
+              <path d="M17.7925 2.76345C16.3676 1.37911 14.5057 0.68776 12.5488 0.815545C9.07995 1.04163 6.27286 3.9168 6.01796 7.50134C5.85646 9.77363 6.7035 11.9443 8.34374 13.4548C9.23036 14.2723 9.74016 15.465 9.74016 16.7265H11.2284H14.7733H16.2615C16.2615 15.4847 16.7919 14.2707 17.7181 13.3959C19.17 12.0263 20.0012 10.0751 20.0012 8.04361C20.0012 6.01215 19.1953 4.12486 17.7909 2.76018L17.7925 2.76345ZM13.0001 5.54524C11.6701 5.54524 10.5856 6.66582 10.5856 8.04525C10.5856 8.46956 10.2515 8.81524 9.84149 8.81524C9.43143 8.81524 9.09736 8.46956 9.09736 8.04525C9.09736 5.8172 10.8484 4.00527 13.0001 4.00527C13.4133 4.00527 13.7473 4.35094 13.7473 4.77525C13.7473 5.19957 13.4133 5.54524 13.0001 5.54524Z" fill="currentColor"/>
+              <path d="M9.73858 19.6245C9.73858 20.3289 9.99823 20.9908 10.478 21.4904L10.4938 21.5068C10.9783 22.0098 11.6242 22.2883 12.3114 22.2883H13.6888C14.3775 22.2883 15.025 22.0114 15.5111 21.5052C15.9956 21.0039 16.2631 20.3355 16.2631 19.6277V17.9895H9.73858V19.6245ZM11.2268 19.5294H14.7717V19.6277C14.7717 19.9243 14.6609 20.2077 14.4566 20.419C14.254 20.6254 13.9753 20.7483 13.6888 20.7483H12.3114C12.028 20.7483 11.7588 20.6336 11.5561 20.4305L11.5451 20.4174C11.3424 20.211 11.2268 19.9226 11.2268 19.6261V19.5311V19.5294Z" fill="currentColor"/>
+              <path d="M25.2558 7.27531H22.607C22.1954 7.27531 21.8629 7.62099 21.8629 8.0453C21.8629 8.46961 22.197 8.81529 22.607 8.81529H25.2558C25.6674 8.81529 25.9999 8.46961 25.9999 8.0453C25.9999 7.62099 25.6658 7.27531 25.2558 7.27531Z" fill="currentColor"/>
+              <path d="M4.1386 8.0453C4.1386 7.61935 3.80453 7.27531 3.39447 7.27531H0.744124C0.332481 7.27531 0 7.62099 0 8.0453C0 8.46961 0.334064 8.81529 0.744124 8.81529H3.39289C3.80453 8.81529 4.13701 8.46961 4.13701 8.0453H4.1386Z" fill="currentColor"/>
+              <path d="M20.8702 3.11398C21.0175 3.11398 21.1663 3.06811 21.2961 2.97472L23.4667 1.40198C23.804 1.15788 23.8847 0.677863 23.6488 0.328911C23.4129 -0.0200418 22.949 -0.105232 22.6118 0.140509L20.4412 1.71325C20.1039 1.95736 20.0232 2.43737 20.2591 2.78632C20.4032 3.00094 20.6343 3.11562 20.8702 3.11562V3.11398Z" fill="currentColor"/>
+              <path d="M4.70372 13.1172L2.53309 14.69C2.19586 14.9341 2.11512 15.4141 2.35102 15.763C2.49509 15.9777 2.72625 16.0923 2.96215 16.0923C3.10939 16.0923 3.25822 16.0465 3.38804 15.9531L5.55867 14.3803C5.8959 14.1362 5.97665 13.6562 5.74074 13.3073C5.50484 12.9583 5.04095 12.8731 4.70372 13.1189V13.1172Z" fill="currentColor"/>
+              <path d="M23.4668 14.6884L21.2961 13.1157C20.9589 12.8716 20.495 12.9567 20.2591 13.3041C20.0232 13.653 20.1055 14.133 20.4412 14.3771L22.6118 15.9499C22.7416 16.0449 22.8904 16.0891 23.0377 16.0891C23.272 16.0891 23.5032 15.9744 23.6488 15.7598C23.8847 15.4109 23.8024 14.9309 23.4668 14.6868V14.6884Z" fill="currentColor"/>
+              <path d="M5.55869 1.71322L3.38806 0.140478C3.05083 -0.103625 2.58694 -0.0184349 2.35104 0.328879C2.11513 0.677832 2.19746 1.15785 2.53311 1.40195L4.70374 2.97469C4.83356 3.06971 4.98239 3.11395 5.12963 3.11395C5.36395 3.11395 5.5951 2.99927 5.74076 2.78465C5.97666 2.4357 5.89434 1.95569 5.55869 1.71158V1.71322Z" fill="currentColor"/>
+            </svg>
+            تلميح
+          </h2>
+          <div class="scq-hint-body">
+            <p>احسبوا كم تذكرة مخصصة للطلاب وكم تذكرة مخصصة للمعلمين‎.</p>
+          </div>
+        </div>
+        <button class="scq-hint-close" type="button" onclick="s5CloseHint()"><span class="nav-label" data-label="عودة إلى السؤال"><span>عودة إلى السؤال</span></span></button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 51 (S6) — SingleChoiceQuestion (slide 50), item -004
+         (a NEW top-level item). Figma template per presenter notes:
+         SingleChoiceQuestion. Image "standard4" (presenter notes' own
+         filename), copied from ppt/media/image44.jpeg (697×389, ~1.79
+         landscape ratio) — two protein-yogurt cups on a wood table.
+         NEW LAYOUT SHAPE for this project: the context paragraph
+         ("יאיר סיים...") is NOT confined to the usual narrow text
+         column — it spans the FULL 1188px `.scq-question` width as its
+         own top banner (confirmed via a fresh PowerPoint COM export:
+         the paragraph's own line-wrap is visibly wider than the
+         qstem/answers column beneath it), and ONLY the image+qstem+
+         answers split into the familiar left/right columns BELOW that
+         banner. `.q-intro-wide` is a new class for this top banner;
+         `#s6-img`/`#s6-text-col` both get an explicit `top` offset
+         (rather than the usual top:0) to sit below the banner — this
+         is the first screen in the project where the image/text-col
+         pair doesn't start flush with `.scq-question`'s own top edge.
+         Bold brand names (פרו-מקס/אקסטרה-פיט) preserved per-run from
+         the source, both in the banner and inside option c.
+         4-option order matches the raw text dump AND the render (no
+         reordering needed, unlike S4/S21's own OMML-order surprises).
+         Correct = option c ("פרו-מקס, מכיוון שהוא מכיל 25 גרם חלבון,
+         לעומת 24 גרם באקסטרה-פיט"), confirmed via the render's own
+         green-filled radio glyph and cross-checked against the math:
+         10%·250=25g vs 16%·150=24g.
+         Hint hidden until the first wrong attempt (producer instruction, 2026-08-20). Previously S23's convention for
+         this template — SingleChoiceQuestion). Wrong2 title IS
+         authored — "טעיתם, מצוין שניסיתם, עכשיו אפשר לדייק." (plural
+         "טעיתם", transcribed exactly as given, not normalized to this
+         project's usual singular "טעית"). Shared body (correct +
+         final-wrong) walks both products' actual protein-gram
+         calculation via `s8Frac()`, transcribed from the slide's own
+         OMML equation runs ("10/100·250=25", "16/100·150=24").
+         Source: math-target-4.2-script.pptx, slide 50. Item ref:
+         methodica-math-percent-02-02-004.
+         ═══════════════════════════════════════════════════════ -->
+    <section class="screen" data-screen="6" id="s6">
+      <!-- Progress Question nav (5-question practice set, S1-S7) —
+           shared markup repeated identically on every screen in the
+           set, per 720-templates -> _global-components.md -> "Progress
+           Question" reuse rule. Q1 first in DOM (renders physically
+           rightmost under direction:rtl). CSS/markup originally ported
+           verbatim from this lomda's own part 03 (methodica-math-
+           percent-02-03, part number as of the 2026-08-12 split — this
+           part's own Q1 maps to 3 screens (S1/S2/S3, item -001's own
+           א/ב/ג sub-parts)) — see the JS block for the multi-screen
+           aggregation rule. -->
+      <nav class="progress-question" aria-label="التنقُّل بين الأسئلة">
+        <div class="progress-question__item" data-question="1">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" fill="none" aria-hidden="true"><path d="M4.10942 9.18763C3.74814 9.18778 3.40167 9.04418 3.14642 8.78851L0.234956 5.87812C-0.0783188 5.56475 -0.0783188 5.05677 0.234956 4.74339C0.548332 4.43012 1.05631 4.43012 1.36969 4.74339L4.10942 7.48312L11.3576 0.234956C11.671 -0.0783188 12.1789 -0.0783188 12.4923 0.234956C12.8056 0.548332 12.8056 1.05631 12.4923 1.36969L5.07242 8.78851C4.81717 9.04418 4.47069 9.18778 4.10942 9.18763Z" fill="currentColor"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M9.76736 0.232637C9.61836 0.0836796 9.4163 0 9.20561 0C8.99492 0 8.79286 0.0836796 8.64386 0.232637L5 3.87649L1.35615 0.232637C1.20714 0.0836796 1.00508 0 0.794391 0C0.583702 0 0.381639 0.0836796 0.232637 0.232637C0.0836796 0.381639 0 0.583702 0 0.794391C0 1.00508 0.0836796 1.20714 0.232637 1.35615L3.87649 5L0.232637 8.64386C0.0836796 8.79286 0 8.99492 0 9.20561C0 9.4163 0.0836796 9.61836 0.232637 9.76736C0.381639 9.91632 0.583702 10 0.794391 10C1.00508 10 1.20714 9.91632 1.35615 9.76736L5 6.12351L8.64386 9.76736C8.79286 9.91632 8.99492 10 9.20561 10C9.4163 10 9.61836 9.91632 9.76736 9.76736C9.91632 9.61836 10 9.4163 10 9.20561C10 8.99492 9.91632 8.79286 9.76736 8.64386L6.12351 5L9.76736 1.35615C9.91632 1.20714 10 1.00508 10 0.794391C10 0.583702 9.91632 0.381639 9.76736 0.232637Z" fill="currentColor"/></svg></div>
+          <span class="progress-question__label">سؤال 1</span>
+        </div>
+        <div class="progress-question__connector" data-connector="1"><div class="progress-question__connector-line"></div></div>
+        <div class="progress-question__item" data-question="2">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" fill="none" aria-hidden="true"><path d="M4.10942 9.18763C3.74814 9.18778 3.40167 9.04418 3.14642 8.78851L0.234956 5.87812C-0.0783188 5.56475 -0.0783188 5.05677 0.234956 4.74339C0.548332 4.43012 1.05631 4.43012 1.36969 4.74339L4.10942 7.48312L11.3576 0.234956C11.671 -0.0783188 12.1789 -0.0783188 12.4923 0.234956C12.8056 0.548332 12.8056 1.05631 12.4923 1.36969L5.07242 8.78851C4.81717 9.04418 4.47069 9.18778 4.10942 9.18763Z" fill="currentColor"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M9.76736 0.232637C9.61836 0.0836796 9.4163 0 9.20561 0C8.99492 0 8.79286 0.0836796 8.64386 0.232637L5 3.87649L1.35615 0.232637C1.20714 0.0836796 1.00508 0 0.794391 0C0.583702 0 0.381639 0.0836796 0.232637 0.232637C0.0836796 0.381639 0 0.583702 0 0.794391C0 1.00508 0.0836796 1.20714 0.232637 1.35615L3.87649 5L0.232637 8.64386C0.0836796 8.79286 0 8.99492 0 9.20561C0 9.4163 0.0836796 9.61836 0.232637 9.76736C0.381639 9.91632 0.583702 10 0.794391 10C1.00508 10 1.20714 9.91632 1.35615 9.76736L5 6.12351L8.64386 9.76736C8.79286 9.91632 8.99492 10 9.20561 10C9.4163 10 9.61836 9.91632 9.76736 9.76736C9.91632 9.61836 10 9.4163 10 9.20561C10 8.99492 9.91632 8.79286 9.76736 8.64386L6.12351 5L9.76736 1.35615C9.91632 1.20714 10 1.00508 10 0.794391C10 0.583702 9.91632 0.381639 9.76736 0.232637Z" fill="currentColor"/></svg></div>
+          <span class="progress-question__label">سؤال 2</span>
+        </div>
+        <div class="progress-question__connector" data-connector="2"><div class="progress-question__connector-line"></div></div>
+        <div class="progress-question__item" data-question="3">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" fill="none" aria-hidden="true"><path d="M4.10942 9.18763C3.74814 9.18778 3.40167 9.04418 3.14642 8.78851L0.234956 5.87812C-0.0783188 5.56475 -0.0783188 5.05677 0.234956 4.74339C0.548332 4.43012 1.05631 4.43012 1.36969 4.74339L4.10942 7.48312L11.3576 0.234956C11.671 -0.0783188 12.1789 -0.0783188 12.4923 0.234956C12.8056 0.548332 12.8056 1.05631 12.4923 1.36969L5.07242 8.78851C4.81717 9.04418 4.47069 9.18778 4.10942 9.18763Z" fill="currentColor"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M9.76736 0.232637C9.61836 0.0836796 9.4163 0 9.20561 0C8.99492 0 8.79286 0.0836796 8.64386 0.232637L5 3.87649L1.35615 0.232637C1.20714 0.0836796 1.00508 0 0.794391 0C0.583702 0 0.381639 0.0836796 0.232637 0.232637C0.0836796 0.381639 0 0.583702 0 0.794391C0 1.00508 0.0836796 1.20714 0.232637 1.35615L3.87649 5L0.232637 8.64386C0.0836796 8.79286 0 8.99492 0 9.20561C0 9.4163 0.0836796 9.61836 0.232637 9.76736C0.381639 9.91632 0.583702 10 0.794391 10C1.00508 10 1.20714 9.91632 1.35615 9.76736L5 6.12351L8.64386 9.76736C8.79286 9.91632 8.99492 10 9.20561 10C9.4163 10 9.61836 9.91632 9.76736 9.76736C9.91632 9.61836 10 9.4163 10 9.20561C10 8.99492 9.91632 8.79286 9.76736 8.64386L6.12351 5L9.76736 1.35615C9.91632 1.20714 10 1.00508 10 0.794391C10 0.583702 9.91632 0.381639 9.76736 0.232637Z" fill="currentColor"/></svg></div>
+          <span class="progress-question__label">سؤال 3</span>
+        </div>
+        <div class="progress-question__connector" data-connector="3"><div class="progress-question__connector-line"></div></div>
+        <div class="progress-question__item" data-question="4">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" fill="none" aria-hidden="true"><path d="M4.10942 9.18763C3.74814 9.18778 3.40167 9.04418 3.14642 8.78851L0.234956 5.87812C-0.0783188 5.56475 -0.0783188 5.05677 0.234956 4.74339C0.548332 4.43012 1.05631 4.43012 1.36969 4.74339L4.10942 7.48312L11.3576 0.234956C11.671 -0.0783188 12.1789 -0.0783188 12.4923 0.234956C12.8056 0.548332 12.8056 1.05631 12.4923 1.36969L5.07242 8.78851C4.81717 9.04418 4.47069 9.18778 4.10942 9.18763Z" fill="currentColor"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M9.76736 0.232637C9.61836 0.0836796 9.4163 0 9.20561 0C8.99492 0 8.79286 0.0836796 8.64386 0.232637L5 3.87649L1.35615 0.232637C1.20714 0.0836796 1.00508 0 0.794391 0C0.583702 0 0.381639 0.0836796 0.232637 0.232637C0.0836796 0.381639 0 0.583702 0 0.794391C0 1.00508 0.0836796 1.20714 0.232637 1.35615L3.87649 5L0.232637 8.64386C0.0836796 8.79286 0 8.99492 0 9.20561C0 9.4163 0.0836796 9.61836 0.232637 9.76736C0.381639 9.91632 0.583702 10 0.794391 10C1.00508 10 1.20714 9.91632 1.35615 9.76736L5 6.12351L8.64386 9.76736C8.79286 9.91632 8.99492 10 9.20561 10C9.4163 10 9.61836 9.91632 9.76736 9.76736C9.91632 9.61836 10 9.4163 10 9.20561C10 8.99492 9.91632 8.79286 9.76736 8.64386L6.12351 5L9.76736 1.35615C9.91632 1.20714 10 1.00508 10 0.794391C10 0.583702 9.91632 0.381639 9.76736 0.232637Z" fill="currentColor"/></svg></div>
+          <span class="progress-question__label">سؤال 4</span>
+        </div>
+        <div class="progress-question__connector" data-connector="4"><div class="progress-question__connector-line"></div></div>
+        <div class="progress-question__item" data-question="5">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" fill="none" aria-hidden="true"><path d="M4.10942 9.18763C3.74814 9.18778 3.40167 9.04418 3.14642 8.78851L0.234956 5.87812C-0.0783188 5.56475 -0.0783188 5.05677 0.234956 4.74339C0.548332 4.43012 1.05631 4.43012 1.36969 4.74339L4.10942 7.48312L11.3576 0.234956C11.671 -0.0783188 12.1789 -0.0783188 12.4923 0.234956C12.8056 0.548332 12.8056 1.05631 12.4923 1.36969L5.07242 8.78851C4.81717 9.04418 4.47069 9.18778 4.10942 9.18763Z" fill="currentColor"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M9.76736 0.232637C9.61836 0.0836796 9.4163 0 9.20561 0C8.99492 0 8.79286 0.0836796 8.64386 0.232637L5 3.87649L1.35615 0.232637C1.20714 0.0836796 1.00508 0 0.794391 0C0.583702 0 0.381639 0.0836796 0.232637 0.232637C0.0836796 0.381639 0 0.583702 0 0.794391C0 1.00508 0.0836796 1.20714 0.232637 1.35615L3.87649 5L0.232637 8.64386C0.0836796 8.79286 0 8.99492 0 9.20561C0 9.4163 0.0836796 9.61836 0.232637 9.76736C0.381639 9.91632 0.583702 10 0.794391 10C1.00508 10 1.20714 9.91632 1.35615 9.76736L5 6.12351L8.64386 9.76736C8.79286 9.91632 8.99492 10 9.20561 10C9.4163 10 9.61836 9.91632 9.76736 9.76736C9.91632 9.61836 10 9.4163 10 9.20561C10 8.99492 9.91632 8.79286 9.76736 8.64386L6.12351 5L9.76736 1.35615C9.91632 1.20714 10 1.00508 10 0.794391C10 0.583702 9.91632 0.381639 9.76736 0.232637Z" fill="currentColor"/></svg></div>
+          <span class="progress-question__label">سؤال 5</span>
+        </div>
+      </nav>
+      <!-- animation-system: new top-banner layout (.q-intro-wide spans the
+           full question width above the image/text-col row). Treated as its
+           own group per "top before bottom": group 1 = banner (topmost),
+           then group 2 = .s9-text-col (right), group 3 = .scq-img (left),
+           per the RTL right-before-left rule within the row below the
+           banner. This layout shape isn't explicitly named in DECISIONS.md's
+           role table — flagged as a judgment call in the task report rather
+           than silently assumed. -->
+      <div class="scq-question">
+        <p class="s9-intro q-intro-wide" data-reveal="1">أنهى عامر تمرين تنس وأراد شراء المنتج الذي يحتوي على أكبر كمية من البروتين (بالغرامات). وهو محتار بين نوعين:<br><strong>برو-ماكس</strong>: عبوة وزنها 250 غرام. يحتوي المنتج على %10 بروتين.<br><strong>إكسترا-فيت</strong>: عبوة وزنها 150 غرام. يحتوي المنتج على %16 بروتين‎.</p>
+        <div class="scq-img" id="s6-img" data-reveal="3">
+          <div class="zoom-img-inner">
+            <img src="assets/img/standard4.jpeg" alt="منتجان من زبادي البروتين بنكهة التوت، موضوعان على طاولة خشبية، وخلفهما ملعب تنس ترابي مشوّش وشخص يلعب. على اليسار: منتج بعبوة سوداء من نوع برو-ماكس، وزنه 250 غرام ويحتوي على %10 بروتين. على اليمين: منتج بعبوة فاتحة شبيهة بالكرتون من نوع إكسترا-فيت، وزنه 150 غرام ويحتوي على %16 بروتين. تظهر على العبوتين صورة توت وعبارة &quot;بنكهة التوت‎&quot;.">
+          </div>
+          <button class="img-zoom-btn" type="button" aria-label="تكبير الصورة"
+                  data-zoom-src="assets/img/standard4.jpeg" data-zoom-alt="שני מעדני יוגורט חלבון בטעם תות, פרו-מקס ואקסטרה-פיט, מונחים על שולחן עץ ליד מגרש טניס">
+            <svg class="img-zoom-btn__icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <circle cx="8.5" cy="8.5" r="6.5" stroke="currentColor" stroke-width="1.6"/>
+              <path d="M13.3 13.3L17.6 17.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+        <div class="s9-text-col" id="s6-text-col" data-reveal="2">
+          <p class="scq-qtext">أي منتج يجب أن يختار عامر ولماذا؟</p>
+          <p class="s9-intro">استخدموا طريقة <strong>تحويل النسبة المئوية إلى كسر بسيط/عشري‎</strong>.</p>
+          <div class="scq-answers" role="radiogroup" aria-label="اختاروا إجابة" id="s6-answers">
+            <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="a" onclick="s6Select('a')">
+              <span class="scq-opt-text"><strong>إكسترا-فيت</strong>، لأن نسبة البروتين فيه أعلى (%16) ولذلك فهو يحتوي بالضرورة على كمية أكبر من البروتين‎.</span>
+              <span class="scq-radio" aria-hidden="true"></span>
+            </button>
+            <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="b" onclick="s6Select('b')">
+              <span class="scq-opt-text"><strong>برو-ماكس</strong>، لأن عبوتَه أثقل (250 غرام) ولذلك فهو يحتوي بالضرورة على كمية أكبر من البروتين‎.</span>
+              <span class="scq-radio" aria-hidden="true"></span>
+            </button>
+            <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="c" onclick="s6Select('c')">
+              <span class="scq-opt-text"><strong>برو-ماكس</strong>، لأنه يحتوي على 25 غرام من البروتين، مقابل 24 غرام في إكسترا-فيت‎.</span>
+              <span class="scq-radio" aria-hidden="true"></span>
+            </button>
+            <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="d" onclick="s6Select('d')">
+              <span class="scq-opt-text">يحتوي المنتجان على نفس كمية البروتين بالضبط.</span>
+              <span class="scq-radio" aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-continue" id="s6-check" disabled onclick="s6Check()"><span class="nav-label" data-label="هل إجابتي صحيحة؟"><span>هل إجابتي صحيحة؟</span></span></button>
+      <button class="scq-hint" id="s6-hint" type="button" onclick="s6OpenHint()">
+        <span class="nav-label" data-label="هل يمكنني الحصول على تلميح؟"><span>هل يمكنني الحصول على تلميح؟</span></span>
+        <svg class="scq-hint-icon" viewBox="0 0 25.9999 22.2883" fill="none" aria-hidden="true">
+          <path d="M17.7925 2.76345C16.3676 1.37911 14.5057 0.68776 12.5488 0.815545C9.07995 1.04163 6.27286 3.9168 6.01796 7.50134C5.85646 9.77363 6.7035 11.9443 8.34374 13.4548C9.23036 14.2723 9.74016 15.465 9.74016 16.7265H11.2284H14.7733H16.2615C16.2615 15.4847 16.7919 14.2707 17.7181 13.3959C19.17 12.0263 20.0012 10.0751 20.0012 8.04361C20.0012 6.01215 19.1953 4.12486 17.7909 2.76018L17.7925 2.76345ZM13.0001 5.54524C11.6701 5.54524 10.5856 6.66582 10.5856 8.04525C10.5856 8.46956 10.2515 8.81524 9.84149 8.81524C9.43143 8.81524 9.09736 8.46956 9.09736 8.04525C9.09736 5.8172 10.8484 4.00527 13.0001 4.00527C13.4133 4.00527 13.7473 4.35094 13.7473 4.77525C13.7473 5.19957 13.4133 5.54524 13.0001 5.54524Z" fill="currentColor"/>
+          <path d="M9.73858 19.6245C9.73858 20.3289 9.99823 20.9908 10.478 21.4904L10.4938 21.5068C10.9783 22.0098 11.6242 22.2883 12.3114 22.2883H13.6888C14.3775 22.2883 15.025 22.0114 15.5111 21.5052C15.9956 21.0039 16.2631 20.3355 16.2631 19.6277V17.9895H9.73858V19.6245ZM11.2268 19.5294H14.7717V19.6277C14.7717 19.9243 14.6609 20.2077 14.4566 20.419C14.254 20.6254 13.9753 20.7483 13.6888 20.7483H12.3114C12.028 20.7483 11.7588 20.6336 11.5561 20.4305L11.5451 20.4174C11.3424 20.211 11.2268 19.9226 11.2268 19.6261V19.5311V19.5294Z" fill="currentColor"/>
+          <path d="M25.2558 7.27531H22.607C22.1954 7.27531 21.8629 7.62099 21.8629 8.0453C21.8629 8.46961 22.197 8.81529 22.607 8.81529H25.2558C25.6674 8.81529 25.9999 8.46961 25.9999 8.0453C25.9999 7.62099 25.6658 7.27531 25.2558 7.27531Z" fill="currentColor"/>
+          <path d="M4.1386 8.0453C4.1386 7.61935 3.80453 7.27531 3.39447 7.27531H0.744124C0.332481 7.27531 0 7.62099 0 8.0453C0 8.46961 0.334064 8.81529 0.744124 8.81529H3.39289C3.80453 8.81529 4.13701 8.46961 4.13701 8.0453H4.1386Z" fill="currentColor"/>
+          <path d="M20.8702 3.11398C21.0175 3.11398 21.1663 3.06811 21.2961 2.97472L23.4667 1.40198C23.804 1.15788 23.8847 0.677863 23.6488 0.328911C23.4129 -0.0200418 22.949 -0.105232 22.6118 0.140509L20.4412 1.71325C20.1039 1.95736 20.0232 2.43737 20.2591 2.78632C20.4032 3.00094 20.6343 3.11562 20.8702 3.11562V3.11398Z" fill="currentColor"/>
+          <path d="M4.70372 13.1172L2.53309 14.69C2.19586 14.9341 2.11512 15.4141 2.35102 15.763C2.49509 15.9777 2.72625 16.0923 2.96215 16.0923C3.10939 16.0923 3.25822 16.0465 3.38804 15.9531L5.55867 14.3803C5.8959 14.1362 5.97665 13.6562 5.74074 13.3073C5.50484 12.9583 5.04095 12.8731 4.70372 13.1189V13.1172Z" fill="currentColor"/>
+          <path d="M23.4668 14.6884L21.2961 13.1157C20.9589 12.8716 20.495 12.9567 20.2591 13.3041C20.0232 13.653 20.1055 14.133 20.4412 14.3771L22.6118 15.9499C22.7416 16.0449 22.8904 16.0891 23.0377 16.0891C23.272 16.0891 23.5032 15.9744 23.6488 15.7598C23.8847 15.4109 23.8024 14.9309 23.4668 14.6868V14.6884Z" fill="currentColor"/>
+          <path d="M5.55869 1.71322L3.38806 0.140478C3.05083 -0.103625 2.58694 -0.0184349 2.35104 0.328879C2.11513 0.677832 2.19746 1.15785 2.53311 1.40195L4.70374 2.97469C4.83356 3.06971 4.98239 3.11395 5.12963 3.11395C5.36395 3.11395 5.5951 2.99927 5.74076 2.78465C5.97666 2.4357 5.89434 1.95569 5.55869 1.71158V1.71322Z" fill="currentColor"/>
+        </svg>
+      </button>
+      <button class="scq-back" id="s6-back" type="button" onclick="goBackFromS6()"><span class="nav-label" data-label="عودة"><span>عودة</span></span></button>
+    </section>
+
+    <!-- Feedback popup for S6 — outside all .screen divs -->
+    <div class="scq-popup hidden m-popup" id="s6-popup" onpointerdown="popupPointerDown(event, 's6-popup')">
+      <div class="scq-popup-header">
+        <p class="scq-popup-title" id="s6-popup-title"></p>
+      </div>
+      <div class="scq-popup-body" id="s6-popup-body"></div>
+    </div>
+    <!-- Hint overlay for S6 — outside all .screen divs -->
+    <div class="scq-hint-overlay hidden m-popup" id="s6-hint-overlay" onclick="s6CloseHintOnBackdrop(event)">
+      <div class="scq-hint-popup" role="dialog" aria-modal="true" aria-labelledby="s6-hint-title">
+        <div class="scq-hint-text">
+          <h2 class="scq-hint-title" id="s6-hint-title">
+            <svg class="scq-hint-title-icon" viewBox="0 0 25.9999 22.2883" fill="none" aria-hidden="true">
+              <path d="M17.7925 2.76345C16.3676 1.37911 14.5057 0.68776 12.5488 0.815545C9.07995 1.04163 6.27286 3.9168 6.01796 7.50134C5.85646 9.77363 6.7035 11.9443 8.34374 13.4548C9.23036 14.2723 9.74016 15.465 9.74016 16.7265H11.2284H14.7733H16.2615C16.2615 15.4847 16.7919 14.2707 17.7181 13.3959C19.17 12.0263 20.0012 10.0751 20.0012 8.04361C20.0012 6.01215 19.1953 4.12486 17.7909 2.76018L17.7925 2.76345ZM13.0001 5.54524C11.6701 5.54524 10.5856 6.66582 10.5856 8.04525C10.5856 8.46956 10.2515 8.81524 9.84149 8.81524C9.43143 8.81524 9.09736 8.46956 9.09736 8.04525C9.09736 5.8172 10.8484 4.00527 13.0001 4.00527C13.4133 4.00527 13.7473 4.35094 13.7473 4.77525C13.7473 5.19957 13.4133 5.54524 13.0001 5.54524Z" fill="currentColor"/>
+              <path d="M9.73858 19.6245C9.73858 20.3289 9.99823 20.9908 10.478 21.4904L10.4938 21.5068C10.9783 22.0098 11.6242 22.2883 12.3114 22.2883H13.6888C14.3775 22.2883 15.025 22.0114 15.5111 21.5052C15.9956 21.0039 16.2631 20.3355 16.2631 19.6277V17.9895H9.73858V19.6245ZM11.2268 19.5294H14.7717V19.6277C14.7717 19.9243 14.6609 20.2077 14.4566 20.419C14.254 20.6254 13.9753 20.7483 13.6888 20.7483H12.3114C12.028 20.7483 11.7588 20.6336 11.5561 20.4305L11.5451 20.4174C11.3424 20.211 11.2268 19.9226 11.2268 19.6261V19.5311V19.5294Z" fill="currentColor"/>
+              <path d="M25.2558 7.27531H22.607C22.1954 7.27531 21.8629 7.62099 21.8629 8.0453C21.8629 8.46961 22.197 8.81529 22.607 8.81529H25.2558C25.6674 8.81529 25.9999 8.46961 25.9999 8.0453C25.9999 7.62099 25.6658 7.27531 25.2558 7.27531Z" fill="currentColor"/>
+              <path d="M4.1386 8.0453C4.1386 7.61935 3.80453 7.27531 3.39447 7.27531H0.744124C0.332481 7.27531 0 7.62099 0 8.0453C0 8.46961 0.334064 8.81529 0.744124 8.81529H3.39289C3.80453 8.81529 4.13701 8.46961 4.13701 8.0453H4.1386Z" fill="currentColor"/>
+              <path d="M20.8702 3.11398C21.0175 3.11398 21.1663 3.06811 21.2961 2.97472L23.4667 1.40198C23.804 1.15788 23.8847 0.677863 23.6488 0.328911C23.4129 -0.0200418 22.949 -0.105232 22.6118 0.140509L20.4412 1.71325C20.1039 1.95736 20.0232 2.43737 20.2591 2.78632C20.4032 3.00094 20.6343 3.11562 20.8702 3.11562V3.11398Z" fill="currentColor"/>
+              <path d="M4.70372 13.1172L2.53309 14.69C2.19586 14.9341 2.11512 15.4141 2.35102 15.763C2.49509 15.9777 2.72625 16.0923 2.96215 16.0923C3.10939 16.0923 3.25822 16.0465 3.38804 15.9531L5.55867 14.3803C5.8959 14.1362 5.97665 13.6562 5.74074 13.3073C5.50484 12.9583 5.04095 12.8731 4.70372 13.1189V13.1172Z" fill="currentColor"/>
+              <path d="M23.4668 14.6884L21.2961 13.1157C20.9589 12.8716 20.495 12.9567 20.2591 13.3041C20.0232 13.653 20.1055 14.133 20.4412 14.3771L22.6118 15.9499C22.7416 16.0449 22.8904 16.0891 23.0377 16.0891C23.272 16.0891 23.5032 15.9744 23.6488 15.7598C23.8847 15.4109 23.8024 14.9309 23.4668 14.6868V14.6884Z" fill="currentColor"/>
+              <path d="M5.55869 1.71322L3.38806 0.140478C3.05083 -0.103625 2.58694 -0.0184349 2.35104 0.328879C2.11513 0.677832 2.19746 1.15785 2.53311 1.40195L4.70374 2.97469C4.83356 3.06971 4.98239 3.11395 5.12963 3.11395C5.36395 3.11395 5.5951 2.99927 5.74076 2.78465C5.97666 2.4357 5.89434 1.95569 5.55869 1.71158V1.71322Z" fill="currentColor"/>
+            </svg>
+            تلميح
+          </h2>
+          <div class="scq-hint-body">
+            <p>عليكم حساب كمية البروتين في المنتجين بواسطة طريقة تحويل النسبة المئوية إلى كسر بسيط/عشري‎.</p>
+          </div>
+        </div>
+        <button class="scq-hint-close" type="button" onclick="s6CloseHint()"><span class="nav-label" data-label="عودة إلى السؤال"><span>عودة إلى السؤال</span></span></button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 52 (S7) — True/False Question (slide 51), item -005
+         (a NEW top-level item). Figma template name per presenter
+         notes: "True/False Question" — NOT one of the nine documented
+         720-templates skill templates. Per the skill's own "prefer a
+         local variant" guidance, implemented as a local variant: 5
+         independent binary (נכון/לא נכון) toggle rows, checked
+         HOLISTICALLY as one combined outcome — the same shape as this
+         project's own S11/S4 (named per-field locals, not an array),
+         just with a fixed 2-button toggle per field instead of a text
+         input. New `.tf-row`/`.tf-btn` classes for the toggle pairs.
+         Reuses S6's newly-generalized `.q-intro-wide` top-banner
+         layout (full-width context paragraph, image+content split
+         below it) — second use of that shape, confirming it's a real
+         reusable pattern and not a one-off.
+         Image "standard5" (presenter notes' own filename), copied from
+         ppt/media/image45.jpeg — a portrait WhatsApp-poll screenshot
+         mockup, 254×455 (~1.79 ratio, tall). No alt-text field in the
+         presenter notes for this slide (unlike standard1-4) — wrote a
+         plain factual description from the image's own visible content
+         (a WhatsApp poll titled "הצביעו לפעילות סוף שנה!" showing 5
+         options with vote percentages) rather than inventing detail
+         the notes never specified.
+         Correct values per row confirmed via a fresh PowerPoint export
+         (each row's own green-filled toggle in the mockup) rather than
+         a second, out-of-order "נכון/לא נכון" list found elsewhere in
+         the raw text dump (4 items, mismatched against the render on
+         row 3 — treated as leftover/duplicate XML content, not a
+         second answer key, per this project's "trust the render over
+         raw dump order" standing rule): 1=נכון (28=35%·80), 2=לא נכון
+         (35% is the percentage, not the count), 3=לא נכון (30% is the
+         percentage; actual count is 24), 4=נכון (24 < 25), 5=לא נכון
+         (the remaining 35% is split across several other options, not
+         concentrated in one).
+         No per-row marking on a non-final wrong attempt (same
+         DropdownQuestion.md QA rule already applied to S1 — only the
+         final attempt reveals per-row correctness). On final wrong,
+         BOTH the learner's own wrong pick (red) and the correct option
+         (green) are shown simultaneously per row — no View My Answer
+         Toggle needed (unlike a destructive single-value reveal, both
+         toggle options stay visible at once, same reasoning as SCQ/MCQ
+         "mark both" screens).
+         Hint hidden until the first wrong attempt (producer instruction, 2026-08-20). Previously S1's convention for
+         this closest sibling — multi-slot holistic check). No
+         "נכון"/"טעית" title authored on this slide for correct/wrong2 —
+         used this project's universal "נכון!" and, since no wrong2
+         phrasing exists to transcribe either, the DropdownQuestion.md
+         documented default "לא מדויק. התשובה הנכונה מוצגת." (same
+         fallback already used on S1/S3/S4).
+         Source: math-target-4.2-script.pptx, slide 51. Item ref:
+         methodica-math-percent-02-02-005.
+         ═══════════════════════════════════════════════════════ -->
+    <section class="screen" data-screen="7" id="s7">
+      <!-- Progress Question nav (5-question practice set, S1-S7) —
+           shared markup repeated identically on every screen in the
+           set, per 720-templates -> _global-components.md -> "Progress
+           Question" reuse rule. Q1 first in DOM (renders physically
+           rightmost under direction:rtl). CSS/markup originally ported
+           verbatim from this lomda's own part 03 (methodica-math-
+           percent-02-03, part number as of the 2026-08-12 split — this
+           part's own Q1 maps to 3 screens (S1/S2/S3, item -001's own
+           א/ב/ג sub-parts)) — see the JS block for the multi-screen
+           aggregation rule. -->
+      <nav class="progress-question" aria-label="التنقُّل بين الأسئلة">
+        <div class="progress-question__item" data-question="1">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" fill="none" aria-hidden="true"><path d="M4.10942 9.18763C3.74814 9.18778 3.40167 9.04418 3.14642 8.78851L0.234956 5.87812C-0.0783188 5.56475 -0.0783188 5.05677 0.234956 4.74339C0.548332 4.43012 1.05631 4.43012 1.36969 4.74339L4.10942 7.48312L11.3576 0.234956C11.671 -0.0783188 12.1789 -0.0783188 12.4923 0.234956C12.8056 0.548332 12.8056 1.05631 12.4923 1.36969L5.07242 8.78851C4.81717 9.04418 4.47069 9.18778 4.10942 9.18763Z" fill="currentColor"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M9.76736 0.232637C9.61836 0.0836796 9.4163 0 9.20561 0C8.99492 0 8.79286 0.0836796 8.64386 0.232637L5 3.87649L1.35615 0.232637C1.20714 0.0836796 1.00508 0 0.794391 0C0.583702 0 0.381639 0.0836796 0.232637 0.232637C0.0836796 0.381639 0 0.583702 0 0.794391C0 1.00508 0.0836796 1.20714 0.232637 1.35615L3.87649 5L0.232637 8.64386C0.0836796 8.79286 0 8.99492 0 9.20561C0 9.4163 0.0836796 9.61836 0.232637 9.76736C0.381639 9.91632 0.583702 10 0.794391 10C1.00508 10 1.20714 9.91632 1.35615 9.76736L5 6.12351L8.64386 9.76736C8.79286 9.91632 8.99492 10 9.20561 10C9.4163 10 9.61836 9.91632 9.76736 9.76736C9.91632 9.61836 10 9.4163 10 9.20561C10 8.99492 9.91632 8.79286 9.76736 8.64386L6.12351 5L9.76736 1.35615C9.91632 1.20714 10 1.00508 10 0.794391C10 0.583702 9.91632 0.381639 9.76736 0.232637Z" fill="currentColor"/></svg></div>
+          <span class="progress-question__label">سؤال 1</span>
+        </div>
+        <div class="progress-question__connector" data-connector="1"><div class="progress-question__connector-line"></div></div>
+        <div class="progress-question__item" data-question="2">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" fill="none" aria-hidden="true"><path d="M4.10942 9.18763C3.74814 9.18778 3.40167 9.04418 3.14642 8.78851L0.234956 5.87812C-0.0783188 5.56475 -0.0783188 5.05677 0.234956 4.74339C0.548332 4.43012 1.05631 4.43012 1.36969 4.74339L4.10942 7.48312L11.3576 0.234956C11.671 -0.0783188 12.1789 -0.0783188 12.4923 0.234956C12.8056 0.548332 12.8056 1.05631 12.4923 1.36969L5.07242 8.78851C4.81717 9.04418 4.47069 9.18778 4.10942 9.18763Z" fill="currentColor"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M9.76736 0.232637C9.61836 0.0836796 9.4163 0 9.20561 0C8.99492 0 8.79286 0.0836796 8.64386 0.232637L5 3.87649L1.35615 0.232637C1.20714 0.0836796 1.00508 0 0.794391 0C0.583702 0 0.381639 0.0836796 0.232637 0.232637C0.0836796 0.381639 0 0.583702 0 0.794391C0 1.00508 0.0836796 1.20714 0.232637 1.35615L3.87649 5L0.232637 8.64386C0.0836796 8.79286 0 8.99492 0 9.20561C0 9.4163 0.0836796 9.61836 0.232637 9.76736C0.381639 9.91632 0.583702 10 0.794391 10C1.00508 10 1.20714 9.91632 1.35615 9.76736L5 6.12351L8.64386 9.76736C8.79286 9.91632 8.99492 10 9.20561 10C9.4163 10 9.61836 9.91632 9.76736 9.76736C9.91632 9.61836 10 9.4163 10 9.20561C10 8.99492 9.91632 8.79286 9.76736 8.64386L6.12351 5L9.76736 1.35615C9.91632 1.20714 10 1.00508 10 0.794391C10 0.583702 9.91632 0.381639 9.76736 0.232637Z" fill="currentColor"/></svg></div>
+          <span class="progress-question__label">سؤال 2</span>
+        </div>
+        <div class="progress-question__connector" data-connector="2"><div class="progress-question__connector-line"></div></div>
+        <div class="progress-question__item" data-question="3">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" fill="none" aria-hidden="true"><path d="M4.10942 9.18763C3.74814 9.18778 3.40167 9.04418 3.14642 8.78851L0.234956 5.87812C-0.0783188 5.56475 -0.0783188 5.05677 0.234956 4.74339C0.548332 4.43012 1.05631 4.43012 1.36969 4.74339L4.10942 7.48312L11.3576 0.234956C11.671 -0.0783188 12.1789 -0.0783188 12.4923 0.234956C12.8056 0.548332 12.8056 1.05631 12.4923 1.36969L5.07242 8.78851C4.81717 9.04418 4.47069 9.18778 4.10942 9.18763Z" fill="currentColor"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M9.76736 0.232637C9.61836 0.0836796 9.4163 0 9.20561 0C8.99492 0 8.79286 0.0836796 8.64386 0.232637L5 3.87649L1.35615 0.232637C1.20714 0.0836796 1.00508 0 0.794391 0C0.583702 0 0.381639 0.0836796 0.232637 0.232637C0.0836796 0.381639 0 0.583702 0 0.794391C0 1.00508 0.0836796 1.20714 0.232637 1.35615L3.87649 5L0.232637 8.64386C0.0836796 8.79286 0 8.99492 0 9.20561C0 9.4163 0.0836796 9.61836 0.232637 9.76736C0.381639 9.91632 0.583702 10 0.794391 10C1.00508 10 1.20714 9.91632 1.35615 9.76736L5 6.12351L8.64386 9.76736C8.79286 9.91632 8.99492 10 9.20561 10C9.4163 10 9.61836 9.91632 9.76736 9.76736C9.91632 9.61836 10 9.4163 10 9.20561C10 8.99492 9.91632 8.79286 9.76736 8.64386L6.12351 5L9.76736 1.35615C9.91632 1.20714 10 1.00508 10 0.794391C10 0.583702 9.91632 0.381639 9.76736 0.232637Z" fill="currentColor"/></svg></div>
+          <span class="progress-question__label">سؤال 3</span>
+        </div>
+        <div class="progress-question__connector" data-connector="3"><div class="progress-question__connector-line"></div></div>
+        <div class="progress-question__item" data-question="4">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" fill="none" aria-hidden="true"><path d="M4.10942 9.18763C3.74814 9.18778 3.40167 9.04418 3.14642 8.78851L0.234956 5.87812C-0.0783188 5.56475 -0.0783188 5.05677 0.234956 4.74339C0.548332 4.43012 1.05631 4.43012 1.36969 4.74339L4.10942 7.48312L11.3576 0.234956C11.671 -0.0783188 12.1789 -0.0783188 12.4923 0.234956C12.8056 0.548332 12.8056 1.05631 12.4923 1.36969L5.07242 8.78851C4.81717 9.04418 4.47069 9.18778 4.10942 9.18763Z" fill="currentColor"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M9.76736 0.232637C9.61836 0.0836796 9.4163 0 9.20561 0C8.99492 0 8.79286 0.0836796 8.64386 0.232637L5 3.87649L1.35615 0.232637C1.20714 0.0836796 1.00508 0 0.794391 0C0.583702 0 0.381639 0.0836796 0.232637 0.232637C0.0836796 0.381639 0 0.583702 0 0.794391C0 1.00508 0.0836796 1.20714 0.232637 1.35615L3.87649 5L0.232637 8.64386C0.0836796 8.79286 0 8.99492 0 9.20561C0 9.4163 0.0836796 9.61836 0.232637 9.76736C0.381639 9.91632 0.583702 10 0.794391 10C1.00508 10 1.20714 9.91632 1.35615 9.76736L5 6.12351L8.64386 9.76736C8.79286 9.91632 8.99492 10 9.20561 10C9.4163 10 9.61836 9.91632 9.76736 9.76736C9.91632 9.61836 10 9.4163 10 9.20561C10 8.99492 9.91632 8.79286 9.76736 8.64386L6.12351 5L9.76736 1.35615C9.91632 1.20714 10 1.00508 10 0.794391C10 0.583702 9.91632 0.381639 9.76736 0.232637Z" fill="currentColor"/></svg></div>
+          <span class="progress-question__label">سؤال 4</span>
+        </div>
+        <div class="progress-question__connector" data-connector="4"><div class="progress-question__connector-line"></div></div>
+        <div class="progress-question__item" data-question="5">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" fill="none" aria-hidden="true"><path d="M4.10942 9.18763C3.74814 9.18778 3.40167 9.04418 3.14642 8.78851L0.234956 5.87812C-0.0783188 5.56475 -0.0783188 5.05677 0.234956 4.74339C0.548332 4.43012 1.05631 4.43012 1.36969 4.74339L4.10942 7.48312L11.3576 0.234956C11.671 -0.0783188 12.1789 -0.0783188 12.4923 0.234956C12.8056 0.548332 12.8056 1.05631 12.4923 1.36969L5.07242 8.78851C4.81717 9.04418 4.47069 9.18778 4.10942 9.18763Z" fill="currentColor"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" fill="none" aria-hidden="true"><path d="M9.76736 0.232637C9.61836 0.0836796 9.4163 0 9.20561 0C8.99492 0 8.79286 0.0836796 8.64386 0.232637L5 3.87649L1.35615 0.232637C1.20714 0.0836796 1.00508 0 0.794391 0C0.583702 0 0.381639 0.0836796 0.232637 0.232637C0.0836796 0.381639 0 0.583702 0 0.794391C0 1.00508 0.0836796 1.20714 0.232637 1.35615L3.87649 5L0.232637 8.64386C0.0836796 8.79286 0 8.99492 0 9.20561C0 9.4163 0.0836796 9.61836 0.232637 9.76736C0.381639 9.91632 0.583702 10 0.794391 10C1.00508 10 1.20714 9.91632 1.35615 9.76736L5 6.12351L8.64386 9.76736C8.79286 9.91632 8.99492 10 9.20561 10C9.4163 10 9.61836 9.91632 9.76736 9.76736C9.91632 9.61836 10 9.4163 10 9.20561C10 8.99492 9.91632 8.79286 9.76736 8.64386L6.12351 5L9.76736 1.35615C9.91632 1.20714 10 1.00508 10 0.794391C10 0.583702 9.91632 0.381639 9.76736 0.232637Z" fill="currentColor"/></svg></div>
+          <span class="progress-question__label">سؤال 5</span>
+        </div>
+      </nav>
+      <!-- animation-system: same top-banner layout as S6 (see that screen's
+           comment) — group 1 = banner (topmost), group 2 = .s9-text-col
+           (right: qtext + the 5-row true/false block, kept as ONE unit, never
+           per-row), group 3 = .scq-img (left). -->
+      <div class="scq-question">
+        <p class="s9-intro q-intro-wide" data-reveal="1">بمناسبة رحلة نهاية السنة، فُتح استطلاع عبر مجموعة الواتساب للصف الثامن.<br>أجاب عن الاستطلاع 80 طالبًا وطالبة.<br>لخّص ممثل مجلس الطلاب النتائج وكتب في المجموعة:<br>"الخيارات الأكثر تفضيلًا للرحلة: بارك مائي - %35 من المشاركين، مجمع نينجا - %30 من المشاركين.<br>حصلت بقية الخيارات على أصوات أقل‎".</p>
+        <div class="scq-img" id="s7-img" data-reveal="3">
+          <div class="zoom-img-inner">
+            <img src="assets/img/standard5.jpeg" alt="لقطة شاشة لاستطلاع عبر واتساب بعنوان &quot;صوّتوا لفعالية نهاية السنة!&quot; يعرض 5 خيارات مع نسب التصويت: بارك مائي %35، مجمع نينجا %30، صنع فقاعات صابون %5، فعالية بالونات %5، ورشة شوكولاتة %25، من أصل 40 مصوتًا‎.">
+          </div>
+          <button class="img-zoom-btn" type="button" aria-label="تكبير الصورة"
+                  data-zoom-src="assets/img/standard5.jpeg" data-zoom-alt="צילום מסך של סקר בוואטסאפ עם תוצאות ההצבעה לפעילות סוף שנה">
+            <svg class="img-zoom-btn__icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <circle cx="8.5" cy="8.5" r="6.5" stroke="currentColor" stroke-width="1.6"/>
+              <path d="M13.3 13.3L17.6 17.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+        <div class="s9-text-col" id="s7-text-col" data-reveal="2">
+          <p class="scq-qtext">بالاستناد إلى رسالة ممثل مجلس الطلاب، هل العبارات التالية صحيحة أم غير صحيحة؟</p>
+          <div class="tf-rows" id="s7-rows">
+            <div class="tf-row" id="s7-row-1">
+              <span class="tf-text"><span class="tf-num">1.</span> 28 طالبًا اختاروا البارك المائي.</span>
+              <div class="tf-toggle" role="radiogroup" aria-label="العبارة 1">
+                <button class="scq-opt tf-opt" type="button" role="radio" aria-checked="false" data-value="true" onclick="s7Toggle(1,'true')">
+                  <span class="scq-opt-text">‎صحيح</span>
+                  <span class="scq-radio" aria-hidden="true"></span>
+                </button>
+                <button class="scq-opt tf-opt" type="button" role="radio" aria-checked="false" data-value="false" onclick="s7Toggle(1,'false')">
+                  <span class="scq-opt-text">‎غير صحيح</span>
+                  <span class="scq-radio" aria-hidden="true"></span>
+                </button>
+              </div>
+            </div>
+            <div class="tf-row" id="s7-row-2">
+              <span class="tf-text"><span class="tf-num">2.</span> 35 طالبًا اختاروا البارك المائي.</span>
+              <div class="tf-toggle" role="radiogroup" aria-label="‎العبارة 2">
+                <button class="scq-opt tf-opt" type="button" role="radio" aria-checked="false" data-value="true" onclick="s7Toggle(2,'true')">
+                  <span class="scq-opt-text">‎صحيح</span>
+                  <span class="scq-radio" aria-hidden="true"></span>
+                </button>
+                <button class="scq-opt tf-opt" type="button" role="radio" aria-checked="false" data-value="false" onclick="s7Toggle(2,'false')">
+                  <span class="scq-opt-text">‎غير صحيح</span>
+                  <span class="scq-radio" aria-hidden="true"></span>
+                </button>
+              </div>
+            </div>
+            <div class="tf-row" id="s7-row-3">
+              <span class="tf-text"><span class="tf-num">3.</span> 30 طالبًا اختاروا مجمع النينجا‎.</span>
+              <div class="tf-toggle" role="radiogroup" aria-label="‎العبارة 3">
+                <button class="scq-opt tf-opt" type="button" role="radio" aria-checked="false" data-value="true" onclick="s7Toggle(3,'true')">
+                  <span class="scq-opt-text">‎صحيح</span>
+                  <span class="scq-radio" aria-hidden="true"></span>
+                </button>
+                <button class="scq-opt tf-opt" type="button" role="radio" aria-checked="false" data-value="false" onclick="s7Toggle(3,'false')">
+                  <span class="scq-opt-text">‎غير صحيح</span>
+                  <span class="scq-radio" aria-hidden="true"></span>
+                </button>
+              </div>
+            </div>
+            <div class="tf-row" id="s7-row-4">
+              <span class="tf-text"><span class="tf-num">4.</span> أقل من 25 طالبًا اختاروا مجمع النينجا‎.</span>
+              <div class="tf-toggle" role="radiogroup" aria-label="‎العبارة 4">
+                <button class="scq-opt tf-opt" type="button" role="radio" aria-checked="false" data-value="true" onclick="s7Toggle(4,'true')">
+                  <span class="scq-opt-text">‎صحيح</span>
+                  <span class="scq-radio" aria-hidden="true"></span>
+                </button>
+                <button class="scq-opt tf-opt" type="button" role="radio" aria-checked="false" data-value="false" onclick="s7Toggle(4,'false')">
+                  <span class="scq-opt-text">‎غير صحيح</span>
+                  <span class="scq-radio" aria-hidden="true"></span>
+                </button>
+              </div>
+            </div>
+            <div class="tf-row" id="s7-row-5">
+              <span class="tf-text"><span class="tf-num">5.</span> ‎لا يمكن أن يكون البارك المائي الخيار الأكثر تفضيلًا (%35)،<br>لأن %35 إضافيين من الطلاب اختاروا خيارات أخرى‎.</span>
+              <div class="tf-toggle" role="radiogroup" aria-label="‎العبارة 5">
+                <button class="scq-opt tf-opt" type="button" role="radio" aria-checked="false" data-value="true" onclick="s7Toggle(5,'true')">
+                  <span class="scq-opt-text">‎صحيح</span>
+                  <span class="scq-radio" aria-hidden="true"></span>
+                </button>
+                <button class="scq-opt tf-opt" type="button" role="radio" aria-checked="false" data-value="false" onclick="s7Toggle(5,'false')">
+                  <span class="scq-opt-text">‎غير صحيح</span>
+                  <span class="scq-radio" aria-hidden="true"></span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-continue" id="s7-check" disabled onclick="s7Check()"><span class="nav-label" data-label="هل إجابتي صحيحة؟"><span>هل إجابتي صحيحة؟</span></span></button>
+      <button class="scq-hint" id="s7-hint" type="button" onclick="s7OpenHint()">
+        <span class="nav-label" data-label="هل يمكنني الحصول على تلميح؟"><span>هل يمكنني الحصول على تلميح؟</span></span>
+        <svg class="scq-hint-icon" viewBox="0 0 25.9999 22.2883" fill="none" aria-hidden="true">
+          <path d="M17.7925 2.76345C16.3676 1.37911 14.5057 0.68776 12.5488 0.815545C9.07995 1.04163 6.27286 3.9168 6.01796 7.50134C5.85646 9.77363 6.7035 11.9443 8.34374 13.4548C9.23036 14.2723 9.74016 15.465 9.74016 16.7265H11.2284H14.7733H16.2615C16.2615 15.4847 16.7919 14.2707 17.7181 13.3959C19.17 12.0263 20.0012 10.0751 20.0012 8.04361C20.0012 6.01215 19.1953 4.12486 17.7909 2.76018L17.7925 2.76345ZM13.0001 5.54524C11.6701 5.54524 10.5856 6.66582 10.5856 8.04525C10.5856 8.46956 10.2515 8.81524 9.84149 8.81524C9.43143 8.81524 9.09736 8.46956 9.09736 8.04525C9.09736 5.8172 10.8484 4.00527 13.0001 4.00527C13.4133 4.00527 13.7473 4.35094 13.7473 4.77525C13.7473 5.19957 13.4133 5.54524 13.0001 5.54524Z" fill="currentColor"/>
+          <path d="M9.73858 19.6245C9.73858 20.3289 9.99823 20.9908 10.478 21.4904L10.4938 21.5068C10.9783 22.0098 11.6242 22.2883 12.3114 22.2883H13.6888C14.3775 22.2883 15.025 22.0114 15.5111 21.5052C15.9956 21.0039 16.2631 20.3355 16.2631 19.6277V17.9895H9.73858V19.6245ZM11.2268 19.5294H14.7717V19.6277C14.7717 19.9243 14.6609 20.2077 14.4566 20.419C14.254 20.6254 13.9753 20.7483 13.6888 20.7483H12.3114C12.028 20.7483 11.7588 20.6336 11.5561 20.4305L11.5451 20.4174C11.3424 20.211 11.2268 19.9226 11.2268 19.6261V19.5311V19.5294Z" fill="currentColor"/>
+          <path d="M25.2558 7.27531H22.607C22.1954 7.27531 21.8629 7.62099 21.8629 8.0453C21.8629 8.46961 22.197 8.81529 22.607 8.81529H25.2558C25.6674 8.81529 25.9999 8.46961 25.9999 8.0453C25.9999 7.62099 25.6658 7.27531 25.2558 7.27531Z" fill="currentColor"/>
+          <path d="M4.1386 8.0453C4.1386 7.61935 3.80453 7.27531 3.39447 7.27531H0.744124C0.332481 7.27531 0 7.62099 0 8.0453C0 8.46961 0.334064 8.81529 0.744124 8.81529H3.39289C3.80453 8.81529 4.13701 8.46961 4.13701 8.0453H4.1386Z" fill="currentColor"/>
+          <path d="M20.8702 3.11398C21.0175 3.11398 21.1663 3.06811 21.2961 2.97472L23.4667 1.40198C23.804 1.15788 23.8847 0.677863 23.6488 0.328911C23.4129 -0.0200418 22.949 -0.105232 22.6118 0.140509L20.4412 1.71325C20.1039 1.95736 20.0232 2.43737 20.2591 2.78632C20.4032 3.00094 20.6343 3.11562 20.8702 3.11562V3.11398Z" fill="currentColor"/>
+          <path d="M4.70372 13.1172L2.53309 14.69C2.19586 14.9341 2.11512 15.4141 2.35102 15.763C2.49509 15.9777 2.72625 16.0923 2.96215 16.0923C3.10939 16.0923 3.25822 16.0465 3.38804 15.9531L5.55867 14.3803C5.8959 14.1362 5.97665 13.6562 5.74074 13.3073C5.50484 12.9583 5.04095 12.8731 4.70372 13.1189V13.1172Z" fill="currentColor"/>
+          <path d="M23.4668 14.6884L21.2961 13.1157C20.9589 12.8716 20.495 12.9567 20.2591 13.3041C20.0232 13.653 20.1055 14.133 20.4412 14.3771L22.6118 15.9499C22.7416 16.0449 22.8904 16.0891 23.0377 16.0891C23.272 16.0891 23.5032 15.9744 23.6488 15.7598C23.8847 15.4109 23.8024 14.9309 23.4668 14.6868V14.6884Z" fill="currentColor"/>
+          <path d="M5.55869 1.71322L3.38806 0.140478C3.05083 -0.103625 2.58694 -0.0184349 2.35104 0.328879C2.11513 0.677832 2.19746 1.15785 2.53311 1.40195L4.70374 2.97469C4.83356 3.06971 4.98239 3.11395 5.12963 3.11395C5.36395 3.11395 5.5951 2.99927 5.74076 2.78465C5.97666 2.4357 5.89434 1.95569 5.55869 1.71158V1.71322Z" fill="currentColor"/>
+        </svg>
+      </button>
+      <button class="scq-back" id="s7-back" type="button" onclick="goBackFromS7()"><span class="nav-label" data-label="عودة"><span>عودة</span></span></button>
+    </section>
+
+    <!-- Feedback popup for S7 — outside all .screen divs -->
+    <div class="scq-popup hidden m-popup" id="s7-popup" onpointerdown="popupPointerDown(event, 's7-popup')">
+      <div class="scq-popup-header">
+        <p class="scq-popup-title" id="s7-popup-title"></p>
+      </div>
+      <div class="scq-popup-body" id="s7-popup-body"></div>
+    </div>
+    <!-- Hint overlay for S7 — outside all .screen divs -->
+    <div class="scq-hint-overlay hidden m-popup" id="s7-hint-overlay" onclick="s7CloseHintOnBackdrop(event)">
+      <div class="scq-hint-popup" role="dialog" aria-modal="true" aria-labelledby="s7-hint-title">
+        <div class="scq-hint-text">
+          <h2 class="scq-hint-title" id="s7-hint-title">
+            <svg class="scq-hint-title-icon" viewBox="0 0 25.9999 22.2883" fill="none" aria-hidden="true">
+              <path d="M17.7925 2.76345C16.3676 1.37911 14.5057 0.68776 12.5488 0.815545C9.07995 1.04163 6.27286 3.9168 6.01796 7.50134C5.85646 9.77363 6.7035 11.9443 8.34374 13.4548C9.23036 14.2723 9.74016 15.465 9.74016 16.7265H11.2284H14.7733H16.2615C16.2615 15.4847 16.7919 14.2707 17.7181 13.3959C19.17 12.0263 20.0012 10.0751 20.0012 8.04361C20.0012 6.01215 19.1953 4.12486 17.7909 2.76018L17.7925 2.76345ZM13.0001 5.54524C11.6701 5.54524 10.5856 6.66582 10.5856 8.04525C10.5856 8.46956 10.2515 8.81524 9.84149 8.81524C9.43143 8.81524 9.09736 8.46956 9.09736 8.04525C9.09736 5.8172 10.8484 4.00527 13.0001 4.00527C13.4133 4.00527 13.7473 4.35094 13.7473 4.77525C13.7473 5.19957 13.4133 5.54524 13.0001 5.54524Z" fill="currentColor"/>
+              <path d="M9.73858 19.6245C9.73858 20.3289 9.99823 20.9908 10.478 21.4904L10.4938 21.5068C10.9783 22.0098 11.6242 22.2883 12.3114 22.2883H13.6888C14.3775 22.2883 15.025 22.0114 15.5111 21.5052C15.9956 21.0039 16.2631 20.3355 16.2631 19.6277V17.9895H9.73858V19.6245ZM11.2268 19.5294H14.7717V19.6277C14.7717 19.9243 14.6609 20.2077 14.4566 20.419C14.254 20.6254 13.9753 20.7483 13.6888 20.7483H12.3114C12.028 20.7483 11.7588 20.6336 11.5561 20.4305L11.5451 20.4174C11.3424 20.211 11.2268 19.9226 11.2268 19.6261V19.5311V19.5294Z" fill="currentColor"/>
+              <path d="M25.2558 7.27531H22.607C22.1954 7.27531 21.8629 7.62099 21.8629 8.0453C21.8629 8.46961 22.197 8.81529 22.607 8.81529H25.2558C25.6674 8.81529 25.9999 8.46961 25.9999 8.0453C25.9999 7.62099 25.6658 7.27531 25.2558 7.27531Z" fill="currentColor"/>
+              <path d="M4.1386 8.0453C4.1386 7.61935 3.80453 7.27531 3.39447 7.27531H0.744124C0.332481 7.27531 0 7.62099 0 8.0453C0 8.46961 0.334064 8.81529 0.744124 8.81529H3.39289C3.80453 8.81529 4.13701 8.46961 4.13701 8.0453H4.1386Z" fill="currentColor"/>
+              <path d="M20.8702 3.11398C21.0175 3.11398 21.1663 3.06811 21.2961 2.97472L23.4667 1.40198C23.804 1.15788 23.8847 0.677863 23.6488 0.328911C23.4129 -0.0200418 22.949 -0.105232 22.6118 0.140509L20.4412 1.71325C20.1039 1.95736 20.0232 2.43737 20.2591 2.78632C20.4032 3.00094 20.6343 3.11562 20.8702 3.11562V3.11398Z" fill="currentColor"/>
+              <path d="M4.70372 13.1172L2.53309 14.69C2.19586 14.9341 2.11512 15.4141 2.35102 15.763C2.49509 15.9777 2.72625 16.0923 2.96215 16.0923C3.10939 16.0923 3.25822 16.0465 3.38804 15.9531L5.55867 14.3803C5.8959 14.1362 5.97665 13.6562 5.74074 13.3073C5.50484 12.9583 5.04095 12.8731 4.70372 13.1189V13.1172Z" fill="currentColor"/>
+              <path d="M23.4668 14.6884L21.2961 13.1157C20.9589 12.8716 20.495 12.9567 20.2591 13.3041C20.0232 13.653 20.1055 14.133 20.4412 14.3771L22.6118 15.9499C22.7416 16.0449 22.8904 16.0891 23.0377 16.0891C23.272 16.0891 23.5032 15.9744 23.6488 15.7598C23.8847 15.4109 23.8024 14.9309 23.4668 14.6868V14.6884Z" fill="currentColor"/>
+              <path d="M5.55869 1.71322L3.38806 0.140478C3.05083 -0.103625 2.58694 -0.0184349 2.35104 0.328879C2.11513 0.677832 2.19746 1.15785 2.53311 1.40195L4.70374 2.97469C4.83356 3.06971 4.98239 3.11395 5.12963 3.11395C5.36395 3.11395 5.5951 2.99927 5.74076 2.78465C5.97666 2.4357 5.89434 1.95569 5.55869 1.71158V1.71322Z" fill="currentColor"/>
+            </svg>
+            تلميح
+          </h2>
+          <div class="scq-hint-body">
+            <p>‎احسبوا كم طالبًا اختار البارك المائي وكم طالبًا اختار مجمع النينجا‎.</p>
+          </div>
+        </div>
+        <button class="scq-hint-close" type="button" onclick="s7CloseHint()"><span class="nav-label" data-label="عودة إلى السؤال"><span>عودة إلى السؤال</span></span></button>
+      </div>
+    </div>
+  <!-- ═══════════════════════════════════════════════════════════════
+       "מצאתם בעיה?" — שלושה דיאלוגים.
+       יושבים בתוך #app ומחוץ לכל .screen: ‎.report-modal-overlay הוא
+       position:absolute; inset:0, ו-#app הוא האב הממוקם שלו — מחוץ ל-#app
+       הכיסוי לא היה מתיישר לקנבס המוקטן.
+       ההתנהגות כולה ב-../unit-js/25-report.js, העיצוב ב-../unit-css/25-report.css.
+       כפתור ה-.flag-btn עצמו כבר קיים בכל סין ומחווט ב-delegation.
+  ════════════════════════════════════════════════════════════════ -->
+  <div id="report-modal"
+       class="report-modal-overlay"
+       hidden
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="report-modal-title">
+    <div class="report-modal-box">
+      <button class="report-close-btn" type="button" onclick="tryCloseReportModal()" aria-label="إغلاق">&#10005;</button>
+      <h2 class="report-modal-title" id="report-modal-title">דיווח על בעיה</h2>
+      <p class="report-modal-body">משהו לא ברור או לא עובד כמו שצריך?<br>ספרו לנו מה קרה כדי שנטפל.</p>
+
+      <div class="report-field">
+        <label class="report-label" for="report-type"><span class="required-star">*</span> מה סוג הבעיה</label>
+        <div class="report-custom-select" id="report-type-wrapper">
+          <button class="report-select-btn is-placeholder" type="button" aria-haspopup="listbox" aria-expanded="false">
+            <span class="report-select-value">בחרו סוג בעיה</span>
+          </button>
+          <ul class="report-select-list" role="listbox" hidden>
+            <li class="report-select-option" data-value="technical" role="option">תקלה טכנית או שמשהו לא עובד</li>
+            <li class="report-select-option" data-value="unclear" role="option">משהו לא ברור לי</li>
+            <li class="report-select-option" data-value="other" role="option">آخر</li>
+          </ul>
+          <input type="hidden" id="report-type" value="">
+        </div>
+        <span class="report-field-error" id="report-type-error" hidden>בחרו את סוג הבעיה</span>
+      </div>
+
+      <div class="report-field">
+        <label class="report-label" for="report-text"><span class="required-star">*</span> מה קרה?</label>
+        <textarea class="report-textarea" id="report-text" maxlength="250" rows="4" placeholder="פרטו מה קרה כדי שנוכל להבין את הבעיה" onblur="reportTextBlur()"></textarea>
+        <span class="report-field-error" id="report-text-error" hidden>כתבו מה קרה</span>
+        <span class="report-char-count" id="report-char-count">0 / 250</span>
+      </div>
+
+      <div class="report-actions">
+        <button class="report-cancel-btn" type="button" onclick="tryCloseReportModal()">ביטול</button>
+        <button class="report-submit-btn" type="button" onclick="submitReport()" disabled>שליחת דיווח</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- מצב "הדיווח נשלח". דיאלוג נפרד מדיאלוג הנטישה שמתחתיו — אין לאחד ביניהם. -->
+  <div id="report-thanks-modal"
+       class="report-modal-overlay"
+       hidden
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="report-thanks-title">
+    <div class="report-modal-box report-confirm-box">
+      <h2 class="report-modal-title" id="report-thanks-title">הדיווח נשלח, תודה!</h2>
+      <p class="report-modal-body">קיבלנו את הדיווח שלכם ונטפל בו בהקדם.</p>
+      <div class="report-actions">
+        <button class="report-submit-btn" type="button" onclick="closeReportThanks()">إغلاق</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- אישור נטישה: נפתח רק כשיש קלט שלא נשלח. -->
+  <div id="report-confirm-modal"
+       class="report-modal-overlay"
+       hidden
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="report-confirm-title">
+    <div class="report-modal-box report-confirm-box">
+      <h2 class="report-modal-title" id="report-confirm-title">בטוח לסגור את החלון?</h2>
+      <p class="report-modal-body">בלחיצה על סגירה לא יישלח דיווח</p>
+      <div class="report-actions">
+        <button class="report-cancel-btn" type="button" onclick="forceCloseReportModal()">סגור חלון</button>
+        <button class="report-submit-btn" type="button" onclick="backToReportForm()">אני רוצה לדווח</button>
+      </div>
+    </div>
+  </div>
+
+  </div>
+  <script src="../unit-js/05-motion.js?v=3"></script>
+  <script src="../unit-js/08-partnav.js?v=4"></script>
+  <script src="../unit-js/10-identity.js?v=4"></script>
+  <script src="../unit-js/15-ui.js?v=3"></script>
+  <script src="../unit-js/18-numeric-input.js?v=3"></script>
+  <script src="../unit-js/20-xapi.js?v=5"></script>
+  <script src="../unit-js/25-report.js?v=3"></script>
+  <script src="../unit-js/30-nav.js?v=3"></script>
+  <script src="../unit-js/35-charts.js?v=3"></script>
+  <script src="../unit-js/40-resume.js?v=4"></script>
+  <script src="../unit-js/45-painters.js?v=3"></script>
+  <script src="../unit-js/50-loader.js?v=4"></script>
+  <script src="../unit-js/60-devbridge.js?v=3"></script>
+  <script src="js/main.js?v=5"></script>
+  <script src="../unit-js/90-boot.js?v=4"></script>
+</body>
+</html>

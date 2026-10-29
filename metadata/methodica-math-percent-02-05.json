@@ -1,0 +1,74 @@
+{
+  "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-05/",
+  "title": "בואו נאתגר את עצמנו",
+  "learningUnitId": "methodica-math-percent-02",
+  "componentPurpose": "practice",
+  "isAssessment": false,
+  "recommendedAfterFail": [],
+  "isRequired": false,
+  "relativeDifficulty": 5,
+  "masteryLevel": null,
+  "order": 5,
+  "depthLevel": "core-curriculum-basic",
+  "cognitiveLevels": ["interpretation-and-reasoning"],
+  "languages": ["Hebrew"],
+  "skills": [],
+  "estimatedTimeInMinutes": 10,
+  "createdAt": "2026-07-29T00:00:00.000Z",
+  "updatedAt": "2026-09-09T00:00:00.000Z",
+  "subContent": [
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-05/methodica-math-percent-02-05-001/",
+      "title": "מגמות לימוד בכיתה י' לפי דיאגרמת עיגול",
+      "informationToBot": "מטרת הפריט: תרגול מתקדם המשלב חישוב אחוז מתוך כמות שלמה, ולאחר מכן עדכון שתי כמויות בעקבות מעבר חלקי בין קבוצות (חישוב דו-שלבי). מה התלמיד אמור להבין/לתרגל: 400 תלמידי ט' נרשמו למגמות לפי דיאגרמת עיגול. סעיף א - 35% נרשמו למחשבים = 140 תלמידים. סעיף ב - 20% מנרשמי המחשבים (28 תלמידים) עברו לביולוגיה; לפני המעבר היו 25%·400=100 תלמידים בביולוגיה. לאחר המעבר: מחשבים=140-28=112, ביולוגיה=100+28=128. כיווני חשיבה ואסטרטגיות: חישוב מספר העוברים כאחוז מהקבוצה המקורית (140), לא מ-400. טעויות נפוצות: חישוב 20% מתוך 400 במקום מתוך 140 הנרשמים למחשבים. מידע נוסף: נתוני האחוזים של המגמות מופיעים גם בטקסט הסבר התשובה, לא רק בדיאגרמת העיגול. צילום מסך: לא צורף.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-05/methodica-math-percent-02-05-001/q1",
+          "questionType": "numeric",
+          "questionText": "בסיום שנת הלימודים נרשמו 400 תלמידי שכבה ט' בבית הספר 'הראשונים' למגמות בכיתה י'. התפלגות הרישום מוצגת בדיאגרמת העיגול (מחשבים - 35%). א. כמה תלמידים נרשמו ללימודי מחשבים? פתרו באמצעות טבלת הפרופורציה.",
+          "answers": [],
+          "correctAnswers": [140]
+        },
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-05/methodica-math-percent-02-05-001/q2",
+          "questionType": "other",
+          "questionText": "מצאנו ש-140 תלמידים נרשמו ללימודי מחשבים. במהלך הקיץ יצא רכז לימודי ביולוגיה בקמפיין, ובעקבותיו 20% מהנרשמים למגמת מחשבים שינו את הבחירה שלהם ללימודי ביולוגיה. ב. כמה תלמידים יהיו רשומים לכל מגמה לאחר המעבר?",
+          "answers": "מחשבים (אחרי המעבר): 112, ביולוגיה (אחרי המעבר): 128",
+          "correctAnswers": []
+        }
+      ]
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-05/methodica-math-percent-02-05-002/",
+      "title": "תערובת פיצוחים למונדיאל",
+      "informationToBot": "מטרת הפריט: תרגול מתקדם המשלב חישוב אחוזים בודדים, חיבור אחוזים לפני כפל, וחלוקה מחדש של כמות אחרי הסרת מרכיב. מה התלמיד אמור להבין/לתרגל: תערובת פיצוחים 600 גרם: 18% אגוזי מלך, 15% שקדים, 45% בוטנים, השאר (22%) צימוקים. סעיף א - משקל אגוזי המלך: 18%·600=108 גרם. סעיף ב - משקל שקדים+בוטנים יחד: (15%+45%)·600=360 גרם. סעיף ג - לאחר הסרת הצימוקים (132 גרם) וחלוקתם שווה בשלושה (44 גרם לכל מרכיב): אגוזי מלך=152, שקדים=134, בוטנים=314. כיווני חשיבה ואסטרטגיות: בסעיף ב יש לחבר את האחוזים לפני הכפל בכמות השלמה, לא לחשב כל מרכיב בנפרד ואז לחבר. טעויות נפוצות: חישוב נפרד של שקדים ובוטנים ואז חיבור התוצאות (זהה מתמטית אך מסלול שונה מהמבוקש), או שכחת חלוקת משקל הצימוקים בסעיף ג. מידע נוסף: הקשר - צפייה בגמר מונדיאל. צילום מסך: לא צורף.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-05/methodica-math-percent-02-05-002/q1",
+          "questionType": "numeric",
+          "questionText": "רוני הכינה תערובת פיצוחים במשקל כולל של 600 גרם. התערובת מכילה: 18% אגוזי מלך, 15% שקדים, 45% בוטנים, והשאר צימוקים. א. כמה גרם של אגוזי מלך יש בתערובת?",
+          "answers": [],
+          "correctAnswers": [108]
+        },
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-05/methodica-math-percent-02-05-002/q2",
+          "questionType": "numeric",
+          "questionText": "ב. מה המשקל של השקדים והבוטנים יחד?",
+          "answers": [],
+          "correctAnswers": [360]
+        },
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-05/methodica-math-percent-02-05-002/q3",
+          "questionType": "other",
+          "questionText": "גילינו שיש 108 גרם אגוזי מלך ו-360 גרם של שקדים ובוטנים בתערובת. מסתבר שנריה לא אוהב צימוקים. רוני החליטה לא להכניס צימוקים לתערובת, ולחלק את המשקל שלהם באופן שווה בין יתר הרכיבים. ג. מה יהיה המשקל (בגרם) של כל אחד מיתר הרכיבים אחרי הורדת הצימוקים?",
+          "answers": "אגוזי מלך: 152, שקדים: 134, בוטנים: 314",
+          "correctAnswers": []
+        }
+      ]
+    }
+  ]
+}

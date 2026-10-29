@@ -1,0 +1,881 @@
+/* ═══════════════════════════════════════════════════════
+   css/style.css  —  methodica-math-percent-02-05
+   Canvas: 1280 × 710 px   (720 reference engine)
+
+   Parts of a lomda are separate pages with their own stylesheet, so the
+   GLOBAL blocks below (fonts, reset, Subject tokens, canvas, screen,
+   bottom bar, Report button, Continue/Back buttons, nav-label hover
+   guard) are carried over from part 04 VERBATIM so all parts look like
+   one product.
+   Screen blocks below those: .s0-* (TransitionScreen — "2 advanced
+   questions" bridge into part 05's harder practice set).
+   ═══════════════════════════════════════════════════════ */
+
+/* ─── Local fonts (Assistant) ───────────────────────────
+   ONE shared copy for the whole unit, at ../../unit-assets/fonts/.
+   Previously each part carried its own byte-identical set of seven
+   weights (7 parts x 7 files = 2,436,448 B); the four unused weights
+   are gone and the rest is shared.
+
+   Only 400 / 600 / 700 are declared, because only those are used: a
+   sweep of all seven stylesheets found no font-weight declaration
+   outside these blocks other than 400, 600 and 700, and no
+   bold/bolder/lighter keyword and no inline font-weight anywhere in
+   the HTML or JS. UA-default bold (<b>, <strong>, <h*>) maps to 700,
+   which is declared. Re-run that sweep before adding a weight back.
+
+   The Google Fonts <link> in index.html is still there and still
+   needed - NOT as a fallback for these files, but because it also
+   fetches Open Sans 700, which is used by .s2-slider-value in part 01
+   and is not self-hosted. Do not remove that link without either
+   self-hosting Open Sans or re-speccing that one rule.
+   ───────────────────────────────────────────────────────── */
+/* ─── Shared: Continue Button — gradient pill, bottom-left of bar.
+   Carried over verbatim so size/position stay identical across parts. ── */
+.btn-continue {
+  position: absolute;
+  bottom: 17.5px; left: 24px;
+  z-index: 12;
+  min-width: 140px;
+  height: 39px;
+  padding: 0 40px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--primary-action-gradient);
+  color: #fff;
+  border: none; border-radius: 1000px;
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 20px; font-weight: 400;
+  cursor: pointer; direction: rtl;
+  text-align: center; white-space: nowrap;
+}
+.btn-continue:not(:disabled):hover { font-weight: 600; }
+.btn-continue.hidden { display: none !important; }
+.btn-continue:disabled {
+  background: #AEAEAE;
+  color: #303030;
+  cursor: not-allowed;
+  opacity: 1;
+}
+
+/* ─── Shared: Back Button — outline pill, bottom-right of bar. Not used
+   by S0 (this part's first screen — see the header comment on #s0),
+   copied over unchanged for whichever future screen needs it first. ── */
+.scq-back {
+  position: absolute;
+  bottom: 17.5px;
+  right: 24px;
+  z-index: 12;
+  width: auto; min-width: 140px; height: 39px; padding: 0 40px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--subject-700); border-radius: 1000px; background: #fff;
+  color: var(--subject-700);
+  font-family: Calibri, Arial, sans-serif; font-size: 20px; font-weight: 400;
+  cursor: pointer; direction: rtl; white-space: nowrap;
+}
+.scq-back:hover { font-weight: 600; border-width: 1.5px; }
+
+/* ── HOVER STABILITY — every 720 button's hover flips font-weight
+   400→600; Bold Assistant is wider/taller, so without this guard a
+   hover silently reflows the button. Guard 1 (width): .nav-label
+   reserves the bold width up front via a hidden ::before ghost stacked
+   in the same grid cell. Guard 2 (height): the nav-bar pills
+   (.btn-continue/.scq-back/.scq-hint) now pin an explicit `height:39px`
+   + flex centering directly on each rule (2026-08-16 project-wide fix),
+   which already makes their height weight-independent — a fixed-height
+   box cannot resize on hover, so the old per-class line-height pin this
+   comment used to describe is no longer needed for these three.
+   Markup: <span class="nav-label" data-label="TEXT"><span>TEXT</span></span>
+   — data-label must repeat the visible text verbatim. ── */
+.nav-label { display: inline-grid; }
+.nav-label::before {
+  content: attr(data-label);
+  grid-area: 1 / 1;
+  font-weight: 600;
+  block-size: 0;
+  visibility: hidden;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.nav-label > span { grid-area: 1 / 1; }
+
+/* ═══════════════════════════════════════════════════════
+   TEMPLATE — TransitionScreen (Screen 01 · S0).
+   Source: math-target-4.2-script.pptx slide72.xml (deck maps 1:1 —
+   re-verified this session, presentation.xml's sldIdLst still confirms
+   1:1 for this range; the source pptx had been edited again since part
+   03's own session, so this was re-checked rather than trusted from an
+   older citation). Item ref: methodica-math-percent-02-05-001.
+
+   No presenter notes exist for this slide (its rels carry no
+   notesSlide relationship — same as part 04's own S0). No speech
+   bubble is authored on it. Character position/size (off
+   5275991,3215303 ext 1792417,2249893) is byte-identical to part 04's
+   S0 character shape — same generic template placeholder slot, not a
+   coincidence — but per the producer's explicit instruction this
+   screen gets a VIDEO placeholder box instead of a character image:
+   the real per-character video isn't ready yet, added later once
+   supplied (same "real video pending" placeholder convention part 01's
+   since-removed S7 VideoPathViewer used — reused verbatim: light-grey rounded box +
+   centered play-button circle with an inline SVG triangle, NOT a
+   functioning player).
+
+   Two-line copy (no separate plain intro line this time, unlike part
+   03's three-line S0): source's 48pt bold headline maps to the
+   established 40px H-5 token every other TransitionScreen/kickoff
+   headline in this lomda uses; the 28pt parenthetical sub-line maps
+   to this project's 28px size convention but unbolded (2026-08-30
+   producer instruction) rather than the bold "instruction/aside line
+   under a headline" weight part 01/03/04 use for their own equivalent
+   line. The source's sub-line has an empty run and an orphaned extra
+   space before the closing paren (likely a deleted inline icon) —
+   cleaned to a single space, matching this project's established
+   practice of not reproducing PowerPoint authoring artifacts as
+   content.
+   ═══════════════════════════════════════════════════════ */
+#s0 { background: #fff; }
+
+.s0-content {
+  position: absolute;
+  inset: 0 0 74px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+}
+
+.s0-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.s0-title {
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 40px; font-weight: 700; color: #303030;
+  margin: 0; line-height: 1.2;
+}
+.s0-note {
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 28px; font-weight: 400; color: #303030;
+  margin: 6px 0 0; line-height: 1.25;
+}
+
+/* Companion-character video stage — 640x360, this lomda's established
+   S0/kickoff video-box size (parts 02/03/06/07's own .s1-video-wrap/
+   .kick-stage all agree on 640x360; this part's box had been left at
+   the earlier 420x236 placeholder footprint, undersized relative to
+   every sibling part — 2026-08-30 producer instruction to match).
+   Same 16:9 ratio as the real 1280x720 asset, so no letterboxing.
+   Video and its still-image fallback share one box, matching every
+   other companion-character stage in this lomda — contain, not cover,
+   since the fallback PNG is a different (portrait) aspect than the
+   16:9 video. */
+.s0-video-wrap {
+  position: relative;
+  width: 640px; height: 360px;
+  flex-shrink: 0;
+}
+.s0-char-media {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* ═══════════════════════════════════════════════════════
+   TEMPLATE — ValueInputQuestion with pie chart (Screen 02 · S1)
+   Source: math-target-4.2-script.pptx slide73.xml (deck maps 1:1 —
+   re-verified fresh this session). Item methodica-math-percent-02-
+   04-001, sub-part א. Hint policy: hidden until first wrong attempt
+   (no override note on this slide — template baseline, matching part
+   02's own "תרגול סטנדרטי" default). Correct = 140 (35% of 400).
+
+   .scq-question/.viq-*/.scq-hint*/.scq-popup*/.eq-row/.frac/.pie-*
+   ported verbatim from part 03 (same component set S6-S9 and S13
+   there already established) — first use of any of these in part 05,
+   so the full apparatus is defined here rather than assumed present.
+   ═══════════════════════════════════════════════════════ */
+#s1 { background: #fff; }
+
+.scq-question {
+  position: absolute;
+  top: 110px; right: 40px;
+  width: 1188px;
+  display: flex; flex-direction: row; direction: rtl;
+  align-items: flex-start; gap: 24px;
+}
+.viq-text-col {
+  flex: 1 1 0; min-width: 0;
+  display: flex; flex-direction: column;
+}
+.viq-context {
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 24px; font-weight: 400; color: #303030;
+  text-align: right; line-height: 1.4; margin: 0;
+}
+.viq-context-gap { height: 34px; }
+.viq-qstem {
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 24px; font-weight: 700; color: var(--subject-500);
+  text-align: right; line-height: 1.3; margin: 0;
+}
+.viq-qinstr {
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 24px; font-weight: 400; color: #303030;
+  text-align: right; line-height: 1.3; margin: 12px 0 0;
+}
+.viq-qinstr strong { font-weight: 700; }
+
+.viq-input-row {
+  align-self: flex-start;
+  margin-top: 28px;
+  display: flex; align-items: center; gap: 10px;
+  direction: rtl;
+}
+/* S2's two blanks sit INLINE inside their own sentence ("ללימודי
+   מחשבים יהיו רשומים ___ תלמידים.") rather than below it like S1's
+   single .viq-input-row — first use of this shape in this project.
+   DOM order [lead text, field, trailing text] renders right-to-left
+   under this row's own direction:rtl exactly as a normal RTL sentence
+   would: lead-text rightmost (read first), field, trailing-text
+   leftmost (read last). */
+.viq-fillin-row {
+  display: flex; align-items: center; gap: 10px;
+  direction: rtl;
+  margin-top: 16px;
+}
+.viq-fillin-row:first-of-type { margin-top: 28px; }
+.viq-fillin-label {
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 24px; font-weight: 400; color: #303030;
+  line-height: 1.3;
+}
+.viq-unit-label {
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 22px; font-weight: 400; color: #303030;
+}
+.viq-field {
+  width: 120px; height: 42px;
+  box-sizing: border-box;
+  padding: 2px 16px;
+  border: 1.5px solid rgba(174, 174, 174, 0.5); border-radius: 10px;
+  background: #fff;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  overflow: hidden;
+  direction: ltr;
+}
+.viq-field:focus-within { border-color: var(--subject-500); }
+.viq-field.error   { border-color: #b20010; }
+.viq-field.correct { border-color: #609e12; }
+/* 64px, not 4ch (producer instruction, 2026-08-19, applied project-wide):
+   measured live, ch-based widths clipped by 1px regardless of count
+   (a rounding mismatch between the ch unit's advance-width estimate and
+   the digits' actual rendered width) — the "can't tell if I typed 100 or
+   1,000" failure the producer flagged. A fixed 64px clears a 4-digit
+   value with several px of real margin, immune to that rounding. */
+.viq-input {
+  flex: 0 0 auto;
+  width: 64px;
+  min-width: 0;
+  border: none; background: transparent; padding: 0;
+  color: #303030;
+  font-family: Calibri, Arial, sans-serif; font-size: 24px; font-weight: 400;
+  text-align: center; line-height: normal;
+  -moz-appearance: textfield;
+}
+.viq-input:focus { outline: none; }
+.viq-input::-webkit-outer-spin-button,
+.viq-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.viq-input:disabled { color: #303030; }
+.viq-input-ico {
+  flex: 0 0 16px;
+  width: 16px; height: 16px;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+}
+.viq-input-ico:empty { display: none; }
+.viq-input-ico svg { display: block; }
+
+/* Pie chart — drawn as live SVG rather than shipping the PPTX's own
+   "advanced1" image, which bakes every label into the bitmap (asset
+   rule: no learner-facing text in an image). Colours pixel-sampled
+   from that same source PNG (ppt/media/image63.png) via a headless-
+   Chrome canvas harness, not eyeballed, so the palette matches the
+   producer's design exactly — same method part 03's own pie chart
+   ("basic5") used. Labels sit INSIDE each wedge in bold white text,
+   matching THIS slide's own alt-text description of the intended
+   design ("כל פרוסה כוללת את אחוז הנתח שלה ואת שם תחום הלימוד בטקסט
+   לבן ומודגש") rather than part 03's outside-the-ring convention —
+   the two pie charts are different components with different source
+   specs, not the same one reused. */
+.pie-figure {
+  position: relative;
+  flex: 0 0 auto;
+  width: 470px;
+  display: flex; align-items: center; justify-content: center;
+}
+.pie-figure svg { width: 100%; height: auto; display: block; overflow: visible; }
+.pie-label {
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 18px; font-weight: 700;
+  fill: #fff;
+  direction: rtl;
+}
+
+/* ═══════════════════════════════════════════════════════
+   TEMPLATE — ValueInputQuestion with content image (Screen 04 · S3,
+   slide75.xml). Item methodica-math-percent-02-05-002 (a NEW item, not
+   a lettered continuation of -001). Presenter note: "שימו לב שאין
+   רמז" — this screen has NO hint at all, the first ValueInputQuestion
+   in this part without one. Correct = 108 (18% of 600).
+
+   First content-image screen in part 05, so the row-layout override
+   and the whole image-zoom apparatus (.scq-img/.img-zoom-*) are ported
+   here fresh from part 03's own S3/S4/S5 convention — the base
+   .scq-question above was written for S1/S2's pie-chart row
+   (top:110/gap:24) and doesn't fit a photo row, hence the #s3-scoped
+   override below (top:139/gap:16, matching part 03's own image-row
+   screens exactly). ═══════════════════════════════════════════════════════ */
+#s3 { background: #fff; }
+#s4 { background: #fff; }
+#s5 { background: #fff; }
+#s3 .scq-question,
+#s4 .scq-question,
+#s5 .scq-question {
+  top: 139px; gap: 16px;
+}
+
+/* "מונדיאל!!!" — bold, off-canvas-headline-scale (the source's own
+   20pt bold, mapped to this project's established 28px/700 convention
+   for a "bold emphasis line" role rather than the literal source size,
+   same mapping every other such line in this project uses). Plain
+   #303030, not Subject-colored — that token is reserved for the actual
+   question sentence (.viq-qstem). */
+.viq-hook-title {
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 28px; font-weight: 700; color: #303030;
+  text-align: right; line-height: 1.3; margin: 0 0 4px;
+}
+
+/* Generic content-image frame — DEFAULT square 380×380 (part 03's own
+   established generic default, carried over even though no other
+   screen in this part currently uses it as-is), left plain so an
+   ID-scoped per-screen override (see #s3 below) is what the on-screen
+   instance actually renders with. Deliberately NOT sized/aspect-ratio'd
+   here: the image-zoom clone keeps this class name when cloned into
+   #img-zoom-stage, which sits OUTSIDE #s3, so any fixed width/
+   aspect-ratio written directly on this unscoped rule would also cap
+   the zoomed clone at the on-screen size and defeat the zoom entirely
+   — confirmed as a real bug this session (producer reported the
+   zoomed image "doesn't look bigger"): the fix was moving the 480px/
+   16:9 sizing to #s3 .scq-img-inner specifically, per this same
+   established part 03 pattern (#s4 .scq-img-inner / #s5 .scq-img-inner
+   are also ID-scoped for exactly this reason). */
+.scq-img {
+  position: relative;
+  flex: 0 0 380px;
+  width: 380px; height: 380px; padding: 8px;
+}
+.scq-img-inner {
+  width: 100%; height: 100%;
+  position: relative;
+  background: #f2f2f2; border: 0.5px solid rgba(174, 174, 174, 0.5);
+  border-radius: 16px; overflow: hidden;
+}
+.scq-img-inner img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+}
+
+/* image66.png is LANDSCAPE 1672×941 (≈16:9) — `aspect-ratio` drives one
+   dimension so the content box lands on the image's exact ratio, and
+   the hairline moves to a box-shadow so it doesn't consume layout,
+   same technique as part 03's #s4/#s5. The frame shifts left to line
+   up with the flag button's own left edge (producer request,
+   2026-08-11 — the frame sat noticeably closer to the question text
+   than to the canvas edge) via `left` (not margin) so it moves ONLY
+   this element and cannot shift the text column or this row's own Y
+   position — same non-participating-in-flex-layout property a
+   transform would have given, without the transform itself.
+   CHANGED 2026-08-16 (animation-system wiring): was `transform:
+   translateX(-44px)` — switched to `left:-44px` (relying on the base
+   .scq-img rule's own `position:relative` above) because this
+   container is now marked data-reveal="2" for the screen-reveal
+   float-in, which animates the `transform` property itself; a static
+   transform here would have been silently overridden for the whole
+   reveal (DECISIONS.md transform-conflict rule). Identical visual
+   position, zero layout impact, no more conflict. */
+/* S4 reuses this exact same image (see the header comment on S4V in
+   main.js — its own slide's picture embed is a confirmed authoring
+   mistake), so it shares every one of these rules rather than
+   duplicating them. */
+#s3 .scq-img,
+#s4 .scq-img,
+#s5 .scq-img {
+  flex: 0 0 auto;
+  width: auto; height: auto;
+  left: -44px;
+}
+#s3 .scq-img-inner,
+#s4 .scq-img-inner,
+#s5 .scq-img-inner {
+  width: 480px; height: auto;
+  aspect-ratio: 1672 / 941;
+  border: 0;
+  box-shadow: 0 0 0 0.5px rgba(174, 174, 174, 0.5);
+  background: none;
+}
+
+/* ── Recall button — 720-templates pattern, ported verbatim (same
+   visual spec, just this deck's own text) from methodica-science-mass-
+   liquid-01-06's S2-S5 ("אפשר להיזכר בפרטי המשימה?"): visually
+   IDENTICAL to .scq-hint (that reference reuses .scq-hint as-is), just
+   positioned inline in the question content rather than the bottom
+   bar. This screen's recall button additionally gets disabled while
+   its popup is open — notesSlide68.xml's own instruction for this
+   slide's "לצפייה בנתונים" button specifically ("הכפתור לא פעיל כשהחלון
+   פתוח"), not part of the shared pattern itself. */
+/* Compound selector (not a bare .s5-recall-btn class) so this out-
+   specificities .scq-hint's own position:absolute/bottom/left rules
+   regardless of which rule comes later in the file — a same-
+   specificity bare class here would depend on source order and
+   silently lose (confirmed earlier: position:absolute + only a top/
+   left override, with .scq-hint's own bottom:15px still cascading in,
+   stretched the box into a giant circle instead of a pill).
+   Producer wants this button flowed in-column, right-aligned, below
+   ALL the question content (context + qstem + all three answer rows)
+   — not floating over the photo. Taken OUT of .scq-hint's normal
+   position:absolute (the bottom-bar placement) entirely: `position:
+   static` makes it the last flex item of .viq-text-col (a `flex-
+   direction:column` container), so it naturally sits below the three
+   .viq-fillin-rows in document flow; `align-self:flex-start` is
+   physical RIGHT under this column's inherited direction:rtl (RTL:
+   flex-start = the row's own "start" edge = right — same convention
+   the reference lomda's own .s2q-recall-btn comment documents). */
+.scq-hint.s5-recall-btn {
+  position: static;
+  align-self: flex-start;
+  margin-top: 24px;
+}
+
+/* ── Recall modal (Figma "ContentPopup") — same overlay/card/close-
+   button treatment as that reference lomda's #recall-overlay (translucent
+   backdrop, 1px #303030 border, 48px radius, self-contained circular
+   close button top-left with CSS-drawn X bars), sized down for this
+   deck's own short recap text instead of that lomda's 1090×623 task-
+   intro card. ── */
+.recall-overlay {
+  position: absolute; inset: 0; z-index: 60;
+  background: rgba(255, 255, 255, 0.78);
+  display: flex; align-items: center; justify-content: center;
+}
+.recall-overlay.hidden { display: none !important; }
+/* Text bumped 18px -> 24px (producer instruction, 2026-08-20), with the
+   box scaled by the same 4/3 so the card doesn't end up cramped around
+   the bigger type: width 480 -> 640, padding 32/36 -> 42/48. 640px still
+   leaves ~320px of backdrop on each side of the 1280px canvas, and the
+   recap text is short enough that the taller card stays well inside the
+   710px height. */
+.recall-popup {
+  position: relative;
+  width: 640px;
+  background: #fff; border: 1px solid #303030; border-radius: 48px;
+  padding: 42px 48px;
+  direction: rtl;
+}
+.recall-popup p {
+  font-family: Calibri, Arial, sans-serif; font-size: 24px; font-weight: 400;
+  color: #303030; line-height: 1.4; margin: 0 0 13px;
+}
+.recall-popup p:last-child { margin-bottom: 0; }
+.recall-popup-title { font-weight: 700; }
+.recall-popup-close {
+  position: absolute; top: 16px; left: 16px; z-index: 2;
+  flex-shrink: 0;
+  width: 30px; height: 30px;
+  border: 1px solid #303030; border-radius: 50%;
+  background: #fff; color: transparent;
+  font-size: 0; line-height: 0; cursor: pointer;
+  padding: 0;
+}
+.recall-popup-close::before,
+.recall-popup-close::after {
+  content: ''; position: absolute; left: 50%; top: 50%;
+  width: 11.31px; height: 1.333px; background: #303030; border-radius: 999px;
+  transform-origin: center;
+}
+.recall-popup-close::before { transform: translate(-50%, -50%) rotate(45deg); }
+.recall-popup-close::after  { transform: translate(-50%, -50%) rotate(-45deg); }
+
+/* Nut-type sub-headers inside S5V_EXPLAIN — bold label, bullet marker
+   immediately to its right (see main.js's s5NutRow() for why this is a
+   flex row rather than a real <ul>/<li>). */
+.scq-popup-body p.s5-nut-row {
+  display: flex; direction: rtl; align-items: center; gap: 6px;
+  font-weight: 700;
+}
+/* `.s5-nut-bullet` removed 2026-08-20 together with the bullet markers
+   it styled (producer instruction) — the rule had no remaining consumer
+   and dead CSS is a publish-time liability. */
+
+/* ── Image zoom — global component, standard clone-based behavior
+   (720-templates → _global-components.md → "Image zoom"), ported
+   verbatim from parts 01-03. ── */
+.img-zoom-btn {
+  position: absolute; top: 10px; right: 10px; z-index: 5;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: #fff; border: 2px solid var(--subject-500);
+  display: flex; align-items: center; justify-content: center;
+  padding: 0; cursor: pointer; color: var(--subject-500);
+}
+.img-zoom-btn:hover { background: var(--subject-500); color: #fff; }
+.img-zoom-btn:focus-visible { outline: 2px solid var(--subject-700); outline-offset: 2px; }
+.img-zoom-btn__icon { width: 20px; height: 20px; display: block; }
+
+.img-zoom-modal {
+  position: absolute; inset: 0; z-index: 60;
+  display: flex; align-items: center; justify-content: center;
+}
+.img-zoom-modal.hidden { display: none !important; }
+.img-zoom-backdrop {
+  position: absolute; inset: 0;
+  background: rgba(255, 255, 255, 0.78);
+}
+.img-zoom-panel {
+  position: relative; z-index: 1;
+  width: 900px; height: 640px;
+  background: #fff; border-radius: 24px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  box-sizing: border-box;
+  padding: 60px 24px 24px;
+  display: flex; align-items: center; justify-content: center;
+}
+.img-zoom-close-btn {
+  position: absolute; top: 16px; left: 16px;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: #fff; border: 2px solid var(--subject-500);
+  display: flex; align-items: center; justify-content: center;
+  padding: 0; cursor: pointer; color: var(--subject-500);
+}
+.img-zoom-close-btn:hover { background: var(--subject-500); color: #fff; }
+.img-zoom-close-btn:focus-visible { outline: 2px solid var(--subject-700); outline-offset: 2px; }
+.img-zoom-close-btn svg { width: 15px; height: 15px; display: block; }
+.img-zoom-stage {
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+}
+#img-zoom-stage .scq-img-inner {
+  border: 0;
+  box-shadow: 0 0 0 0.5px rgba(174, 174, 174, 0.5);
+  background: none;
+}
+
+/* ── Hint button — bottom-left, next to Continue. ── */
+.scq-hint {
+  position: absolute;
+  bottom: 17.5px; left: 264px;   /* ar: Continue/check button is 221px wide (24 + 221 + 16 gap + 3 safety), was 180px for the Hebrew label */
+  z-index: 12;
+  min-width: 140px;
+  height: 39px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 0 24px;
+  border: 1px solid var(--subject-700); border-radius: 1000px; background: #fff;
+  color: var(--subject-700);
+  font-family: Calibri, Arial, sans-serif; font-size: 20px; font-weight: 400;
+  cursor: pointer; direction: rtl;
+}
+.scq-hint:hover:not(:disabled) { font-weight: 600; }
+.scq-hint:disabled { border-color: #aeaeae; color: #aeaeae; cursor: default; }
+.scq-hint-ico { width: 26px; height: 22.3px; flex: 0 0 26px; display: block; }
+
+/* ── Feedback popup — draggable, no close button. ── */
+.scq-popup {
+  position: absolute;
+  left: 2px; bottom: 76px;
+  width: 426px;
+  height: auto;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.18);
+  display: flex; flex-direction: column; gap: 4px;
+  direction: rtl; z-index: 50;
+  cursor: move;
+}
+.scq-popup.hidden { display: none !important; }
+.scq-popup-header {
+  display: flex; align-items: flex-start; gap: 8px;
+  direction: ltr;
+  width: 100%;
+}
+.scq-popup-title {
+  flex: 1;
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 20px; font-weight: 700;
+  text-align: right; direction: rtl;
+  line-height: normal; margin: 0;
+  padding-top: 4px;
+}
+.scq-popup-body { direction: rtl; }
+.scq-popup-body p {
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 20px; font-weight: 400; color: #222;
+  text-align: right; direction: rtl;
+  line-height: normal; margin: 0 0 4px;
+}
+.scq-popup-body p:last-child { margin-bottom: 0; }
+/* Feedback popups (correct AND wrong) render at 20px throughout —
+   prose, equations, fractions and tables alike (producer instruction,
+   2026-08-20). The shared maths classes carry their own smaller sizes
+   for on-screen use (.frac at 18px in parts 03/05/06, .s19-eq-sign at
+   16px in part 01), so this is scoped to .scq-popup-body rather than
+   changing those base rules — an on-screen fraction or equation sign
+   keeps the size its own layout was built around. */
+.scq-popup-body .frac,
+.scq-popup-body .eq-row,
+.scq-popup-body .s19-eq-sign,
+.scq-popup-body .eq-table th,
+.scq-popup-body .eq-table td { font-size: 20px; }
+.scq-popup-actions {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: 20px;
+}
+.popup-action {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 39px;
+  padding: 7.5px 20px;
+  line-height: 22px;
+  flex: 0 0 auto; width: auto;
+  border: 1px solid #484848; border-radius: 1000px; background: #fff;
+  color: #222;
+  font-family: Calibri, Arial, sans-serif; font-size: 20px; font-weight: 400;
+  direction: rtl; white-space: nowrap;
+  cursor: pointer;
+}
+.popup-action:hover { font-weight: 600; }
+.scq-hint-close { line-height: 32px; white-space: nowrap; }
+
+/* ── Hint overlay. ── */
+.scq-hint-overlay {
+  position: absolute; inset: 0; z-index: 60;
+  background: rgba(255, 255, 255, 0.78);
+  display: flex; align-items: center; justify-content: center;
+}
+.scq-hint-overlay.hidden { display: none !important; }
+.scq-hint-popup {
+  background: var(--subject-500); border-radius: 48px;
+  padding: 40px;
+  display: flex; flex-direction: column; align-items: center; gap: 24px;
+  width: 546px; max-width: 92%;
+}
+.scq-hint-content {
+  display: flex; flex-direction: column; gap: 24px;
+  width: 462px; max-width: 100%; direction: rtl;
+  color: #fff;
+}
+.scq-hint-title {
+  width: 100%; text-align: right; position: relative;
+  padding-right: 56px;
+  font-family: Calibri, Arial, sans-serif; font-weight: 700; font-size: 32px;
+  color: #fff; line-height: normal; margin: 0;
+}
+.scq-hint-title-ico {
+  position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+  width: 40px; height: 34.3px; display: block; color: #fff;
+}
+.scq-hint-body {
+  width: 100%; text-align: right;
+  font-family: Calibri, Arial, sans-serif; font-weight: 400; font-size: 24px;
+  color: #fff; line-height: normal;
+}
+.scq-hint-body p { margin: 0; line-height: normal; }
+/* Numbered sub-list inside a hint body — the source explicitly numbers
+   these two lines (producer flagged the built version as missing the
+   numbering, 2026-08-11), so a real <ol> is used instead of plain
+   stacked <p>s. Same RTL marker convention already established for
+   part 01's .s14-list (browser default places the marker on the
+   physical right under direction:rtl — no explicit list-style-position
+   override needed), just inheriting .scq-hint-body's own white/24px
+   type instead of redeclaring it. */
+.scq-hint-body ol {
+  margin: 0; padding-inline-start: 28px;
+  line-height: 1.4;
+}
+.scq-hint-body ol li { margin: 0 0 4px; }
+.scq-hint-body ol li:last-child { margin-bottom: 0; }
+.scq-hint-close {
+  min-width: 196px; width: auto; padding: 16px 40px;
+  border: none; border-radius: 1000px; background: #fff;
+  color: #303030;
+  font-family: Calibri, Arial, sans-serif; font-size: 24px; font-weight: 400;
+  cursor: pointer;
+}
+.scq-hint-close:hover { font-weight: 600; }
+
+/* ── Equations inside the feedback body — live HTML, not the PPTX's own
+   rendered PNG mockup (asset rule: no learner-facing text baked into an
+   image). dir:ltr so the "=" chain reads in standard maths order inside
+   the RTL popup. ── */
+.eq-row {
+  display: flex; flex-direction: row; align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px; direction: ltr;
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 20px; font-weight: 700; color: #222;
+  margin: 6px 0;
+}
+/* Equations inside feedback popups are NOT bold (producer instruction,
+   2026-08-20, applied to every correct/wrong feedback project-wide) —
+   they read as body copy alongside the prose rather than as emphasised
+   headings. Scoped to .scq-popup-body so an on-screen .eq-row (outside a
+   popup) keeps the bold weight its own layout was built around. The
+   fractions inherit the weight from the row, so they follow too;
+   <strong> runs in the prose are untouched and stay bold. */
+.scq-popup-body .eq-row { font-weight: 400; }
+.frac {
+  display: inline-flex; flex-direction: column; align-items: center;
+  vertical-align: middle; font-size: 18px; line-height: 1.15;
+}
+.frac-num, .frac-den { display: block; padding: 0 3px; }
+.frac-num { border-bottom: 2px solid currentColor; }
+
+/* Feedback-popup table — this project's own confirmed spec for ANY
+   table in a 720 lomda (ported verbatim from parts 01-03's `.eq-table`:
+   20px font, 600 header weight, fixed 38px cell height, #f2f2f2/#fff/
+   #c9ced8 — not part-specific despite the shared class name). First
+   use in part 05: S1V's own proportion-table explanation was missing
+   it entirely (producer caught it against the PPTX mockup). */
+.eq-table {
+  width: 322px;
+  table-layout: fixed;
+  border-collapse: collapse;
+  margin: 8px 0;
+  direction: rtl;
+  font-family: Calibri, Arial, sans-serif; font-size: 20px;
+}
+.eq-table th, .eq-table td {
+  height: 38px;
+  border: 1px solid #c9ced8;
+  padding: 6px 12px;
+  text-align: center;
+  line-height: 1.2;
+}
+.eq-table th { background: #f2f2f2; color: #303030; font-weight: 600; }
+.eq-table td { background: #fff; color: #303030; font-weight: 400; }
+
+/* Ported VERBATIM from part 03's own copy of this component (same Figma
+   source, node 96:1127 + 96:812) — added 2026-08-20 when this part gained
+   its own two-question nav. Only the question COUNT differs, and that
+   lives in the markup and in PRACTICE_QUESTIONS, not here. */
+
+/* ═══════════════════════════════════════════════════════
+   GLOBAL COMPONENT — Progress Question nav (בסיסי תרגול set).
+   Figma: eSbp4bKHgBky0rakDb8l9N node 96:1127 ("Progress question"
+   instance) + node 96:812 ("Progress Status Icons" component set, the
+   4 named variants: Current / not visited / Correct / Incorrect) —
+   colors/geometry below are read directly off those nodes' own
+   exported SVG assets, not estimated. 720-templates skill's own
+   `_global-components.md` → "Progress Question" section gives the
+   state/markup/JS CONTRACT (states, click-to-navigate rule, connector
+   rule) but no colors/sizes; this block supplies those from Figma.
+
+   Confirmed from the actual assets (both pulls agreed once resolved
+   through each call's own scrambled local variable names):
+     not-answered : 24px white circle, #ECECEC 1.5px ring
+                     + 7.2px #D9D9D9 dot (also #ECECEC-stroked)
+     current      : 3 concentric circles — 24px #E1D9FF halo (no
+                     stroke), 19.2px white ring w/ 2px #3B2FC2 border,
+                     7.2px solid #3B2FC2 dot
+     correct      : 24px solid var(--subject-500) circle + white
+                     checkmark glyph
+     incorrect    : SAME 24px solid var(--subject-500) circle
+                     (not red) + white X glyph — the glyph is the
+                     ONLY thing distinguishing it from correct
+   Label: #ececec + right-aligned when NOT visited; #222 + centered
+   once visited (visited = current, correct, or incorrect — anything
+   but the default not-answered state). Connector: #ececec when its
+   left-hand (lower-numbered) question isn't resolved yet, rgba(0,0,0,.6)
+   once it is — NOT purple.
+   ═══════════════════════════════════════════════════════ */
+.progress-question {
+  position: absolute; top: 16px; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: flex-start; justify-content: center;
+  gap: 4px; direction: rtl; z-index: 20;
+}
+.progress-question__item {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 8px; width: 43px; flex: 0 0 auto;
+}
+.progress-question__connector {
+  display: flex; align-items: center; justify-content: center;
+  padding-top: 11.5px; width: 64px; flex: 0 0 auto;
+}
+.progress-question__connector-line {
+  width: 100%; height: 1.5px; border-radius: 2px;
+  background: #ececec;
+}
+.progress-question__connector--visited .progress-question__connector-line {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+/* Icon — one 24x24 element per item, base rule = not-answered ("not
+   visited" in Figma's own naming), overridden per state below. The two
+   glyphs (check/X) are real DOM children so an arbitrary path shape is
+   available for both without needing two separate background-images;
+   they stay hidden unless their matching state class is present. */
+.progress-question__icon {
+  position: relative;
+  width: 24px; height: 24px; flex: 0 0 24px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 1.5px #ececec;   /* ring, doesn't consume layout */
+}
+.progress-question__icon::after {
+  content: ''; position: absolute; inset: 0; margin: auto;
+  width: 7.2px; height: 7.2px; border-radius: 50%;
+  background: #d9d9d9; box-shadow: 0 0 0 1px #ececec;
+}
+.progress-question__icon-check,
+.progress-question__icon-x {
+  display: none;
+  position: absolute; inset: 0; margin: auto;
+  color: #fff;
+}
+.progress-question__icon-check { width: 12.7px; height: 9.2px; }
+.progress-question__icon-x { width: 10px; height: 10px; }
+
+.progress-question__icon--current {
+  background: #e1d9ff; box-shadow: none;
+}
+.progress-question__icon--current::before {
+  content: ''; position: absolute; inset: 0; margin: auto;
+  width: 19.2px; height: 19.2px; border-radius: 50%;
+  background: #fff; box-shadow: 0 0 0 2px var(--subject-500);
+}
+.progress-question__icon--current::after {
+  background: var(--subject-500); box-shadow: none;   /* solid dot, no grey ring */
+  z-index: 1;   /* sit above the ::before ring */
+}
+
+.progress-question__icon--correct,
+.progress-question__icon--incorrect {
+  background: var(--subject-500); box-shadow: none;
+}
+.progress-question__icon--correct::after,
+.progress-question__icon--incorrect::after { content: none; }
+.progress-question__icon--correct .progress-question__icon-check { display: block; }
+.progress-question__icon--incorrect .progress-question__icon-x { display: block; }
+
+.progress-question__label {
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 15px; font-weight: 400; color: #ececec;
+  text-align: right; white-space: nowrap; line-height: normal;
+}
+.progress-question__label--visited { color: #222; text-align: center; }
+

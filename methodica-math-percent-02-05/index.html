@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>النسب المئوية 02 — الجزء 05</title>
+  <link rel="stylesheet" href="../unit-css/00-tokens.css?v=2">
+  <link rel="stylesheet" href="../unit-css/10-base.css?v=2">
+  <link rel="stylesheet" href="css/style.css?v=2">
+  <link rel="stylesheet" href="../unit-css/20-motion.css?v=2">
+  <link rel="stylesheet" href="../unit-css/25-report.css?v=2">
+</head>
+<!-- data-subject-theme activates the Math token override block in
+     css/style.css. Must stay identical to parts 01-04's <body> so all
+     parts render in the same subject theme. -->
+<body data-subject-theme="math">
+  <!-- ═══ כיסוי האתחול ═══
+       מסתיר את החלון שבו מסך 0 כבר גלוי (class="screen active" מקובע ב-markup
+       כאן למטה) אבל מסמך ה-state עוד לא נקרא. בלעדיו לומד שממשיך ממחשב אחר
+       רואה אווטאר בצבע הלא-נכון ואז החלפה — בדיוק ההבהוב שכלל 1 ב-CLAUDE.md
+       אוסר, כי הדמות נקראת מהמסמך ולא מ-localStorage מ-v4 והלאה.
+
+       אח של #app ולא בן שלו: scaleApp() מזיז ומקטין את #app, ובן היה יורש
+       את ה-transform. הסגנון inline ולא ב-styles.css במכוון — הכיסוי חייב
+       להיצבע בפריים הראשון, ו-inline הוא היחיד שלא תלוי בקאש של CSS.
+
+       ⚠️ הסקריפט שאחריו הוא רשת הביטחון, ואין לו שום תלות בקובץ JS: גם אם
+       40-resume.js או 50-loader.js נכשלים בטעינה, הכיסוי נופל אחרי 800ms.
+       ההסרה בנתיב הרגיל היא dropBootCover() מ-50-loader.js, שרצה מוקדם יותר
+       מזה ברוב הטעינות.
+       אם bootXAPI הספיק להדליק את window.__resumeInFlight (כלומר resume פעיל
+       והשחזור בדרך), הרשת ממתינה לו במקום לחשוף את מסך 0 באמצע — עד תקרה
+       קשיחה של 6 שניות, שאחריה היא חושפת בכל מקרה. הדגל נקרא הגנתית, ולכן
+       50-loader.js שנכשל בטעינה מחזיר בדיוק את התנהגות ה-800ms. -->
+  <div id="boot-cover" style="position:fixed;inset:0;z-index:9999;background:#fff"></div>
+  <script>
+  (function () {
+    var t0 = Date.now();
+    function tick() {
+      var c = document.getElementById('boot-cover');
+      if (!c || !c.parentNode) return;
+      if (window.__resumeInFlight && Date.now() - t0 < 6000) { setTimeout(tick, 100); return; }
+      c.parentNode.removeChild(c);
+    }
+    setTimeout(tick, 800);
+  })();
+  </script>
+
+  <!-- Inline SVG sprite — the hint bulb+gear glyph, defined ONCE and
+       instanced with <use>. Same pattern parts 01-03 use for it. Paths
+       are the Figma export (node 196:6024) and draw on currentColor, so
+       the glyph inherits whatever colour its host button sets and stays
+       theme-aware — never bake a subject hex into an externally-
+       referenced SVG, it cannot read page CSS vars. -->
+  <svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
+    <symbol id="hint-bulb-glyph" viewBox="0 0 25.9999 22.2883">
+      <path d="M17.7925 2.76345C16.3676 1.37911 14.5057 0.68776 12.5488 0.815545C9.07995 1.04163 6.27286 3.9168 6.01796 7.50134C5.85646 9.77363 6.7035 11.9443 8.34374 13.4548C9.23036 14.2723 9.74016 15.465 9.74016 16.7265H11.2284H14.7733H16.2615C16.2615 15.4847 16.7919 14.2707 17.7181 13.3959C19.17 12.0263 20.0012 10.0751 20.0012 8.04361C20.0012 6.01215 19.1953 4.12486 17.7909 2.76018L17.7925 2.76345ZM13.0001 5.54524C11.6701 5.54524 10.5856 6.66582 10.5856 8.04525C10.5856 8.46956 10.2515 8.81524 9.84149 8.81524C9.43143 8.81524 9.09736 8.46956 9.09736 8.04525C9.09736 5.8172 10.8484 4.00527 13.0001 4.00527C13.4133 4.00527 13.7473 4.35094 13.7473 4.77525C13.7473 5.19957 13.4133 5.54524 13.0001 5.54524Z" fill="currentColor"/>
+      <path d="M9.73858 19.6245C9.73858 20.3289 9.99823 20.9908 10.478 21.4904L10.4938 21.5068C10.9783 22.0098 11.6242 22.2883 12.3114 22.2883H13.6888C14.3775 22.2883 15.025 22.0114 15.5111 21.5052C15.9956 21.0039 16.2631 20.3355 16.2631 19.6277V17.9895H9.73858V19.6245ZM11.2268 19.5294H14.7717V19.6277C14.7717 19.9243 14.6609 20.2077 14.4566 20.419C14.254 20.6254 13.9753 20.6336 13.6888 20.7483H12.3114C12.028 20.7483 11.7588 20.6336 11.5561 20.4305L11.5451 20.4174C11.3424 20.211 11.2268 19.9226 11.2268 19.6261V19.5311V19.5294Z" fill="currentColor"/>
+      <path d="M25.2558 7.27531H22.607C22.1954 7.27531 21.8629 7.62099 21.8629 8.0453C21.8629 8.46961 22.197 8.81529 22.607 8.81529H25.2558C25.6674 8.81529 25.9999 8.46961 25.9999 8.0453C25.9999 7.62099 25.6658 7.27531 25.2558 7.27531Z" fill="currentColor"/>
+      <path d="M4.1386 8.0453C4.1386 7.61935 3.80453 7.27531 3.39447 7.27531H0.744124C0.332481 7.27531 0 7.62099 0 8.0453C0 8.46961 0.334064 8.81529 0.744124 8.81529H3.39289C3.80453 8.81529 4.13701 8.46961 4.13701 8.0453H4.1386Z" fill="currentColor"/>
+      <path d="M20.8702 3.11398C21.0175 3.11398 21.1663 3.06811 21.2961 2.97472L23.4667 1.40198C23.804 1.15788 23.8847 0.677863 23.6488 0.328911C23.4129 -0.0200418 22.949 -0.105232 22.6118 0.140509L20.4412 1.71325C20.1039 1.95736 20.0232 2.43737 20.2591 2.78632C20.4032 3.00094 20.6343 3.11562 20.8702 3.11562V3.11398Z" fill="currentColor"/>
+      <path d="M4.70372 13.1172L2.53309 14.69C2.19586 14.9341 2.11512 15.4141 2.35102 15.763C2.49509 15.9777 2.72625 16.0923 2.96215 16.0923C3.10939 16.0923 3.25822 16.0465 3.38804 15.9531L5.55867 14.3803C5.8959 14.1362 5.97665 13.6562 5.74074 13.3073C5.50484 12.9583 5.04095 12.8731 4.70372 13.1189V13.1172Z" fill="currentColor"/>
+      <path d="M23.4668 14.6884L21.2961 13.1157C20.9589 12.8716 20.495 12.9567 20.2591 13.3041C20.0232 13.653 20.1055 14.133 20.4412 14.3771L22.6118 15.9499C22.7416 16.0449 22.8904 16.0891 23.0377 16.0891C23.272 16.0891 23.5032 15.9744 23.6488 15.7598C23.8847 15.4109 23.8024 14.9309 23.4668 14.6868V14.6884Z" fill="currentColor"/>
+      <path d="M5.55869 1.71322L3.38806 0.140478C3.05083 -0.103625 2.58694 -0.0184349 2.35104 0.328879C2.11513 0.677832 2.19746 1.15785 2.53311 1.40195L4.70374 2.97469C4.83356 3.06971 4.98239 3.11395 5.12963 3.11395C5.36395 3.11395 5.5951 2.99927 5.74076 2.78465C5.97666 2.4357 5.89434 1.95569 5.55869 1.71158V1.71322Z" fill="currentColor"/>
+    </symbol>
+    <!-- Progress Question status glyphs (Figma node 96:812, "Progress
+         Status Icons"). Kept as sprite symbols rather than inlined per
+         item the way part 03 does it — this part repeats the nav on five
+         screens, and inlining both paths ten times would add ~4KB of
+         duplicated markup for no benefit. Both draw on currentColor. -->
+    <symbol id="pq-check-glyph" viewBox="0 0 12.7273 9.18763">
+      <path d="M4.10942 9.18763C3.74814 9.18778 3.40167 9.04418 3.14642 8.78851L0.234956 5.87812C-0.0783188 5.56475 -0.0783188 5.05677 0.234956 4.74339C0.548332 4.43012 1.05631 4.43012 1.36969 4.74339L4.10942 7.48312L11.3576 0.234956C11.671 -0.0783188 12.1789 -0.0783188 12.4923 0.234956C12.8056 0.548332 12.8056 1.05631 12.4923 1.36969L5.07242 8.78851C4.81717 9.04418 4.47069 9.18778 4.10942 9.18763Z" fill="currentColor"/>
+    </symbol>
+    <symbol id="pq-x-glyph" viewBox="0 0 10 10">
+      <path d="M9.76736 0.232637C9.61836 0.0836796 9.4163 0 9.20561 0C8.99492 0 8.79286 0.0836796 8.64386 0.232637L5 3.87649L1.35615 0.232637C1.20714 0.0836796 1.00508 0 0.794391 0C0.583702 0 0.381639 0.0836796 0.232637 0.232637C0.0836796 0.381639 0 0.583702 0 0.794391C0 1.00508 0.0836796 1.20714 0.232637 1.35615L3.87649 5L0.232637 8.64386C0.0836796 8.79286 0 8.99492 0 9.20561C0 9.4163 0.0836796 9.61836 0.232637 9.76736C0.381639 9.91632 0.583702 10 0.794391 10C1.00508 10 1.20714 9.91632 1.35615 9.76736L5 6.12351L8.64386 9.76736C8.79286 9.91632 8.99492 10 9.20561 10C9.4163 10 9.61836 9.91632 9.76736 9.76736C9.91632 9.61836 10 9.4163 10 9.20561C10 8.99492 9.91632 8.79286 9.76736 8.64386L6.12351 5L9.76736 1.35615C9.91632 1.20714 10 1.00508 10 0.794391C10 0.583702 9.91632 0.381639 9.76736 0.232637Z" fill="currentColor"/>
+    </symbol>
+  </svg>
+
+  <div id="app">
+
+    <!-- Report / Issue button — global, outside all .screen divs. -->
+    <button class="flag-btn" type="button" aria-label="هل وجدتم مشكلة؟">
+      <span class="flag-btn-icon">
+        <span class="flag-btn-glyph" aria-hidden="true">
+          <svg class="flag-btn-glyph-pole" viewBox="0 0 0.794329 17.0005" preserveAspectRatio="none" fill="none"><path d="M0.397164 17C0.177722 17 0 16.8239 0 16.6065V0.393501C0 0.176082 0.177722 0 0.397164 0C0.616607 0 0.794329 0.176082 0.794329 0.393501V16.607C0.794329 16.8245 0.616607 17.0005 0.397164 17.0005V17Z" fill="currentColor"/></svg>
+          <svg class="flag-btn-glyph-banner" viewBox="0 0 12 9.31542" preserveAspectRatio="none" fill="none"><path d="M2.76227 9.31542C1.91972 9.31542 1.06958 9.15545 0.213483 8.71363C0.0823588 8.64599 0 8.51124 0 8.36469V0.950975C0 0.814619 0.0715221 0.687925 0.188558 0.615989C0.305594 0.54459 0.45189 0.537611 0.574886 0.598811C0.577053 0.599884 0.578679 0.600958 0.580846 0.602032C2.31309 1.49586 4.05563 1.046 5.90003 0.569821C7.80946 0.0770055 9.78336 -0.431915 11.7865 0.601495C11.9176 0.669136 12 0.803882 12 0.950438V8.36415C12 8.4946 11.9344 8.617 11.8255 8.69001C11.7166 8.76302 11.5774 8.77805 11.4555 8.72974C11.443 8.7249 11.4311 8.71954 11.4197 8.71363C9.68745 7.8198 7.94491 8.26967 6.10051 8.7453C5.00709 9.02714 3.89199 9.31489 2.76281 9.31489L2.76227 9.31542ZM0.793787 8.11935C2.45559 8.87307 4.13094 8.44038 5.90003 7.98407C7.62469 7.53903 9.40191 7.08057 11.2062 7.75806V1.19631C9.54441 0.442591 7.86906 0.875281 6.09997 1.33159C4.37531 1.77663 2.59755 2.23509 0.793787 1.5576V8.11935Z" fill="currentColor"/></svg>
+        </span>
+      </span>
+      <span class="flag-btn-label">هل وجدتم مشكلة؟</span>
+    </button>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 01 (S0) — TransitionScreen bridge into part 05's harder
+         practice set. Source: math-target-4.2-script.pptx,
+         slide72.xml (deck maps 1:1 — re-verified this session, see the
+         note in js/main.js: the source pptx had been edited again
+         since part 04's own session).
+         Item ref: methodica-math-percent-02-05-001
+
+         No presenter notes exist for this slide (its rels carry no
+         notesSlide relationship). No speech bubble is authored on it.
+         The slide's own character-image shape sits at the exact same
+         off/ext as part 04's S0 character (generic template
+         placeholder slot).
+
+         Character video supplied 2026-08-11 (Character-{1,2}-Workout.mp4,
+         1280x720, 6s) — decorative, matched to whichever character the
+         learner picked in part 01 (CHARACTER_STORAGE_KEY), no sound and
+         no player controls (producer instruction; same
+         disablepictureinpicture/controlsList treatment every decorative
+         video in this lomda uses — see [[feedback_decorative_video_no_controls]]).
+         Replaces the earlier "real video pending" grey placeholder box
+         (the convention part 01's since-removed video screen used) now that the real asset exists.
+
+         Copy is two bold lines, no separate plain intro line (unlike
+         part 04's three-line S0) — see the header comment above #s0
+         in style.css for the exact size/weight sourcing of each. -->
+    <section class="screen active" data-screen="0" id="s0">
+      <div class="s0-content">
+        <div class="s0-text" data-reveal="1">
+          <p class="s0-title">حان الوقت لسؤالين متقدمين</p>
+          <p class="s0-note">(هذا يعني أننا تقدّمنا في المستوى)</p>
+        </div>
+        <!-- Video zone: DECISIONS.md "Video zones" rule -- fades in as
+             its OWN animation type but starts together with group 1
+             (no separate stagger slot), so it shares the group-1 number
+             with data-reveal-fade switching its animation to fade. -->
+        <div class="s0-video-wrap" data-reveal="1" data-reveal-fade>
+          <video class="s0-char-media" id="s0-char-video" autoplay muted playsinline disablepictureinpicture controlsList="nodownload noremoteplayback noplaybackrate"></video>
+          <img class="s0-char-media hidden" id="s0-char-img" alt="">
+        </div>
+      </div>
+      <button class="btn-continue" type="button" onclick="advanceFromS0()">
+        <span class="nav-label" data-label="متابعة"><span>متابعة</span></span>
+      </button>
+      <!-- Cross-part Back — see the identical block in part 02's S0.
+           Hidden until PartNav.mountBack() confirms a recorded crossing
+           into this part (here: only ever from part 04). -->
+      <button class="scq-back hidden" id="s0-back" type="button" onclick="goBackFromS0()">
+        <span class="nav-label" data-label="عودة"><span>عودة</span></span>
+      </button>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 02 (S1) — ValueInputQuestion + pie chart, slide73.xml.
+         Item methodica-math-percent-02-05-001, sub-part א. Presenter
+         note (notesSlide64.xml): Figma template ValueInputQuestion,
+         content image "advanced1" — a pie chart. Per the producer's
+         explicit instruction (2026-08-11), the chart is NOT the PPTX's
+         own baked-label image; it's drawn as live SVG (pieChartSVG() in
+         main.js) using the producer's own clean reference image for the
+         visual design and the PPTX's exact percentage data (35/25/15/
+         15/10) for which live text goes on which slice — see the
+         .pie-figure comment in style.css for the full color/geometry
+         sourcing (pixel-sampled from ppt/media/image63.png, which is
+         byte-identical in composition to the producer's reference).
+
+         Context/question copy mapped to this project's established
+         24px ValueInputQuestion typography (.viq-context/.viq-qstem/
+         .viq-qinstr) rather than the source's literal 20pt runs, same
+         convention every other ValueInputQuestion screen in this
+         series uses. Hint hidden until first wrong attempt (template
+         baseline — no override note on this slide). -->
+    <section class="screen" data-screen="1" id="s1">
+      <!-- Progress Question nav — 2 questions for this part's five
+           question screens: Q1 = S1+S2 (sub-parts א+ב), Q2 = S3+S4+S5
+           (א+ב+ג). Q1 is first in DOM so it renders physically RIGHTMOST
+           under direction:rtl. A question only turns V/X once EVERY one
+           of its screens has been answered, and V requires all of them
+           correct — see practiceQuestionState() in js/main.js. -->
+      <nav class="progress-question" aria-label="التنقُّل بين الأسئلة">
+        <div class="progress-question__item" data-question="1">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" aria-hidden="true"><use href="#pq-check-glyph"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" aria-hidden="true"><use href="#pq-x-glyph"/></svg></div>
+          <span class="progress-question__label">سؤال 1</span>
+        </div>
+        <div class="progress-question__connector" data-connector="1"><div class="progress-question__connector-line"></div></div>
+        <div class="progress-question__item" data-question="2">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" aria-hidden="true"><use href="#pq-check-glyph"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" aria-hidden="true"><use href="#pq-x-glyph"/></svg></div>
+          <span class="progress-question__label">سؤال 2</span>
+        </div>
+      </nav>      <div class="scq-question">
+        <div class="viq-text-col" data-reveal="1">
+          <p class="viq-context">في نهاية العام الدراسي، سجل 400 طالب من الصف التاسع في مدرسة "آفاق" للتخصصات في الصف العاشر‎.</p>
+          <p class="viq-context">توزيع التسجيل في يظهر المخطط الدائري‎.</p>
+          <div class="viq-context-gap" aria-hidden="true"></div>
+          <p class="viq-qstem">أ. كم طالبًا سجلوا لتخصص الحاسوب؟</p>
+          <p class="viq-qinstr">‎حلّوا بواسطة <strong>جدول التناسب‎</strong>.</p>
+
+          <div class="viq-input-row">
+            <div class="viq-field" id="s1v-field">
+              <input id="s1v-input" class="viq-input" type="text" inputmode="numeric"
+                     step="any" dir="ltr" aria-label="الإجابة: كم طالبًا سجلوا لتخصص الحاسوب"
+                     oninput="s1vInputChange()">
+              <span class="viq-input-ico" id="s1v-input-ico" aria-hidden="true"></span>
+            </div>
+            <span class="viq-unit-label">طالبًا</span>
+          </div>
+        </div>
+
+        <div class="pie-figure" data-reveal="2" aria-label="مخطط توزيع التسجيل للتخصصات"></div>
+      </div>
+
+      <button class="btn-continue" id="s1v-check" type="button" disabled onclick="s1vCheck()"><span class="nav-label" data-label="هل إجابتي صحيحة؟"><span>هل إجابتي صحيحة؟</span></span></button>
+      <button class="scq-hint hidden" id="s1v-hint" type="button" onclick="s1vOpenHint()">
+        <svg class="scq-hint-ico" viewBox="0 0 25.9999 22.2883" fill="none" aria-hidden="true">
+          <use href="#hint-bulb-glyph"/>
+        </svg>
+        <span class="nav-label" data-label="هل يمكنني الحصول على تلميح؟"><span>هل يمكنني الحصول على تلميح؟</span></span>
+      </button>
+      <button class="scq-back" type="button" onclick="goBackFromS1()"><span class="nav-label" data-label="عودة"><span>عودة</span></span></button>
+    </section>
+
+    <div class="scq-popup hidden m-popup" id="s1v-popup" role="status" aria-live="polite"
+         onpointerdown="popupPointerDown(event, 's1v-popup')">
+      <div class="scq-popup-header">
+        <p class="scq-popup-title" id="s1v-popup-title"></p>
+      </div>
+      <div class="scq-popup-body" id="s1v-popup-body"></div>
+    </div>
+
+    <div class="scq-hint-overlay hidden m-popup" id="s1v-hint-overlay" onclick="s1vCloseHintOnBackdrop(event)">
+      <div class="scq-hint-popup" role="dialog" aria-modal="true" aria-labelledby="s1v-hint-title">
+        <div class="scq-hint-content">
+          <h2 class="scq-hint-title" id="s1v-hint-title">تلميح
+            <svg class="scq-hint-title-ico" viewBox="0 0 25.9999 22.2883" fill="none" aria-hidden="true">
+              <use href="#hint-bulb-glyph"/>
+            </svg>
+          </h2>
+          <div class="scq-hint-body">
+            <p>ابنوا معادلة التناسب‎.</p>
+          </div>
+        </div>
+        <button class="scq-hint-close" type="button" onclick="s1vCloseHint()"><span class="nav-label" data-label="عودة إلى السؤال"><span>عودة إلى السؤال</span></span></button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 04 (S2) — ValueInputQuestion, two INLINE blanks + the
+         same pie chart, slide74.xml. Item -001 sub-part ב (continues
+         S1's item — same 400-student registration data). Hint hidden
+         until first wrong (template baseline — no override note).
+         Correct = {מחשבים: 112, ביולוגיה: 128}, validated holistically
+         (one combined outcome, matching the source's own single
+         נכון!/טעית popup covering both blanks together).
+
+         Both blanks sit INLINE inside their own sentence (see the
+         .viq-fillin-row comment in style.css) — first use of this
+         shape in this project; every other ValueInputQuestion so far
+         put its single input on its own line below the question.
+
+         Explanation is fully OMML in the source, including a whole
+         extra paragraph the flattened text dump didn't show at all
+         (see the header comment on S2V_EXPLAIN in main.js) — rebuilt
+         from the rendered mockup, not the incomplete dump. -->
+    <section class="screen" data-screen="2" id="s2">
+      <!-- Progress Question nav — 2 questions for this part's five
+           question screens: Q1 = S1+S2 (sub-parts א+ב), Q2 = S3+S4+S5
+           (א+ב+ג). Q1 is first in DOM so it renders physically RIGHTMOST
+           under direction:rtl. A question only turns V/X once EVERY one
+           of its screens has been answered, and V requires all of them
+           correct — see practiceQuestionState() in js/main.js. -->
+      <nav class="progress-question" aria-label="التنقُّل بين الأسئلة">
+        <div class="progress-question__item" data-question="1">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" aria-hidden="true"><use href="#pq-check-glyph"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" aria-hidden="true"><use href="#pq-x-glyph"/></svg></div>
+          <span class="progress-question__label">سؤال 1</span>
+        </div>
+        <div class="progress-question__connector" data-connector="1"><div class="progress-question__connector-line"></div></div>
+        <div class="progress-question__item" data-question="2">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" aria-hidden="true"><use href="#pq-check-glyph"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" aria-hidden="true"><use href="#pq-x-glyph"/></svg></div>
+          <span class="progress-question__label">سؤال 2</span>
+        </div>
+      </nav>      <div class="scq-question">
+        <div class="viq-text-col" data-reveal="1">
+          <p class="viq-context">وجدنا أن 140 طالبًا سجلوا لتخصص الحاسوب‎.</p>
+          <p class="viq-context">خلال الصيف أطلق مركّز تخصص البيولوجيا حملة، ونتيجة لذلك غيّر %20 من المسجلين في تخصص الحاسوب اختيارهم إلى تخصص البيولوجيا.</p>
+          <div class="viq-context-gap" aria-hidden="true"></div>
+          <p class="viq-qstem">ب. كم طالبًا سيكونون مسجلين في التخصصات التالية بعد الانتقال؟</p>
+
+          <div class="viq-fillin-row">
+            <span class="viq-fillin-label">لتخصص الحاسوب سيكون هناك</span>
+            <div class="viq-field" id="s2v-field-cs">
+              <input id="s2v-input-cs" class="viq-input" type="text" inputmode="numeric"
+                     step="any" dir="ltr" aria-label="كم طالبًا سيكونون مسجلين لتخصص الحاسوب"
+                     oninput="s2vInputChange()">
+              <span class="viq-input-ico" id="s2v-input-ico-cs" aria-hidden="true"></span>
+            </div>
+            <span class="viq-fillin-label">طالبًا مسجّلًا.</span>
+          </div>
+          <div class="viq-fillin-row">
+            <span class="viq-fillin-label">لتخصص البيولوجيا سيكون هناك</span>
+            <div class="viq-field" id="s2v-field-bio">
+              <input id="s2v-input-bio" class="viq-input" type="text" inputmode="numeric"
+                     step="any" dir="ltr" aria-label="‎كم طالبًا سيكونون مسجلين لتخصص البيولوجيا"
+                     oninput="s2vInputChange()">
+              <span class="viq-input-ico" id="s2v-input-ico-bio" aria-hidden="true"></span>
+            </div>
+            <span class="viq-fillin-label">طالبًا مسجّلًا.</span>
+          </div>
+        </div>
+
+        <!-- No data-reveal here (unlike S1's own pie-figure): this is
+             the same unchanging chart the learner already saw enter on
+             S1 (see renderPieCharts() in main.js), so it shows already
+             in place rather than replaying an entrance. -->
+        <div class="pie-figure" aria-label="مخطط توزيع التسجيل للتخصصات"></div>
+      </div>
+
+      <button class="btn-continue" id="s2v-check" type="button" disabled onclick="s2vCheck()"><span class="nav-label" data-label="هل إجابتي صحيحة؟"><span>هل إجابتي صحيحة؟</span></span></button>
+      <button class="scq-hint hidden" id="s2v-hint" type="button" onclick="s2vOpenHint()">
+        <svg class="scq-hint-ico" viewBox="0 0 25.9999 22.2883" fill="none" aria-hidden="true">
+          <use href="#hint-bulb-glyph"/>
+        </svg>
+        <span class="nav-label" data-label="هل يمكنني الحصول على تلميح؟"><span>هل يمكنني الحصول على تلميح؟</span></span>
+      </button>
+      <button class="scq-back" type="button" onclick="goBackFromS2()"><span class="nav-label" data-label="عودة"><span>عودة</span></span></button>
+    </section>
+
+    <div class="scq-popup hidden m-popup" id="s2v-popup" role="status" aria-live="polite"
+         onpointerdown="popupPointerDown(event, 's2v-popup')">
+      <div class="scq-popup-header">
+        <p class="scq-popup-title" id="s2v-popup-title"></p>
+      </div>
+      <div class="scq-popup-body" id="s2v-popup-body"></div>
+    </div>
+
+    <div class="scq-hint-overlay hidden m-popup" id="s2v-hint-overlay" onclick="s2vCloseHintOnBackdrop(event)">
+      <div class="scq-hint-popup" role="dialog" aria-modal="true" aria-labelledby="s2v-hint-title">
+        <div class="scq-hint-content">
+          <h2 class="scq-hint-title" id="s2v-hint-title">تلميح
+            <svg class="scq-hint-title-ico" viewBox="0 0 25.9999 22.2883" fill="none" aria-hidden="true">
+              <use href="#hint-bulb-glyph"/>
+            </svg>
+          </h2>
+          <div class="scq-hint-body">
+            <p>احسبوا‎:</p>
+            <ol>
+              <li>كم طالبًا انتقلوا من تخصص الحاسوب‎.</li>
+              <li>كم طالبًا كانوا في تخصص البيولوجيا قبل الانتقال‎.</li>
+            </ol>
+          </div>
+        </div>
+        <button class="scq-hint-close" type="button" onclick="s2vCloseHint()"><span class="nav-label" data-label="عودة إلى السؤال"><span>عودة إلى السؤال</span></span></button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 05 (S3) — ValueInputQuestion + content image, slide75.
+         Item methodica-math-percent-02-05-002 (a NEW item, not a
+         lettered sub-part of -001). Presenter note (notesSlide66.xml):
+         "שימו לב שאין רמז" — NO HINT on this screen at all, unlike
+         every other question in this part. Correct = 108 (18% of 600).
+
+         "שאלה אוריינית" (literacy question) badge from the source slide
+         is DELIBERATELY NOT built — producer instruction (2026-08-11):
+         it's an internal/production-facing label meant for the script
+         only, never intended as learner-facing UI, despite sitting
+         on-canvas in the PPTX (same class of "don't build this even
+         though it's visible in PowerPoint" call as the internal
+         מסלול A/B labels flagged elsewhere in this project).
+
+         Image is the producer's own AI-generated scene (alt text:
+         four teens watching the Argentina-Spain final, snacks
+         scattered on the table) — ppt/media/image66.png, copied here
+         as assets/img/mondial-scene.png. Not the two other same-slide
+         relationship images (image110/111.png): those are the
+         rendered correct/wrong2 feedback MOCKUPS (same pattern as
+         every other item in this series — referenced but never drawn
+         as a visible picture shape), used only to source S3V_EXPLAIN's
+         content in main.js, not shipped as an asset. -->
+    <section class="screen" data-screen="3" id="s3">
+      <!-- Progress Question nav — 2 questions for this part's five
+           question screens: Q1 = S1+S2 (sub-parts א+ב), Q2 = S3+S4+S5
+           (א+ב+ג). Q1 is first in DOM so it renders physically RIGHTMOST
+           under direction:rtl. A question only turns V/X once EVERY one
+           of its screens has been answered, and V requires all of them
+           correct — see practiceQuestionState() in js/main.js. -->
+      <nav class="progress-question" aria-label="التنقُّل بين الأسئلة">
+        <div class="progress-question__item" data-question="1">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" aria-hidden="true"><use href="#pq-check-glyph"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" aria-hidden="true"><use href="#pq-x-glyph"/></svg></div>
+          <span class="progress-question__label">سؤال 1</span>
+        </div>
+        <div class="progress-question__connector" data-connector="1"><div class="progress-question__connector-line"></div></div>
+        <div class="progress-question__item" data-question="2">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" aria-hidden="true"><use href="#pq-check-glyph"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" aria-hidden="true"><use href="#pq-x-glyph"/></svg></div>
+          <span class="progress-question__label">سؤال 2</span>
+        </div>
+      </nav>      <div class="scq-question">
+        <div class="viq-text-col" data-reveal="1">
+          <p class="viq-hook-title">مونديال!!!</p>
+          <p class="viq-context">رنين، نسرين، أمجد وأشرف يخططون لمشاهدة النهائي بين الأرجنتين وإسبانيا‎.</p>
+          <p class="viq-context">‎حضّرت رنين خليطًا من المكسرات بوزن إجمالي 600 غرام‎.</p>
+          <p class="viq-context">يحتوي الخليط على: %18 جوز، %15 لوز، %45 فول سوداني، والباقي زبيب‎.</p>
+          <div class="viq-context-gap" aria-hidden="true"></div>
+          <p class="viq-qstem">أ. كم غرام من الجوز يوجد في الخليط؟</p>
+
+          <div class="viq-input-row">
+            <div class="viq-field" id="s3v-field">
+              <input id="s3v-input" class="viq-input" type="text" inputmode="numeric"
+                     step="any" dir="ltr" aria-label="كم غرام من الجوز يوجد في الخليط"
+                     oninput="s3vInputChange()">
+              <span class="viq-input-ico" id="s3v-input-ico" aria-hidden="true"></span>
+            </div>
+            <span class="viq-unit-label">غرام</span>
+          </div>
+        </div>
+
+        <div class="scq-img" data-reveal="2">
+          <div class="scq-img-inner">
+            <button class="img-zoom-btn" type="button" aria-label="تكبير الصورة"
+                    data-zoom-src="assets/img/mondial-scene.png">
+              <svg class="img-zoom-btn__icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <circle cx="8.5" cy="8.5" r="6.5" stroke="currentColor" stroke-width="1.6"/>
+                <path d="M13.3 13.3L17.6 17.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              </svg>
+            </button>
+            <img src="assets/img/mondial-scene.png"
+                 alt="أربعة شباب يجلسون على كنبة ويشاهدون على تلفزيون كبير نهائي كرة قدم بين الأرجنتين وإسبانيا. الاثنان على اليسار يرتديان بلوزات الأرجنتين (ميسي رقم 10، دي ماريا رقم 7). والاثنان على اليمين يرتديان بلوزات إسبانيا (بيدري رقم 20، لامين يامال رقم 19) ويشجعان بحماس. على طاولة القهوة وعاء مكسرات وتسالي ومشروبات، وبذور متناثرة على الطاولة‎.">
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-continue" id="s3v-check" type="button" disabled onclick="s3vCheck()"><span class="nav-label" data-label="هل إجابتي صحيحة؟"><span>هل إجابتي صحيحة؟</span></span></button>
+      <button class="scq-back" type="button" onclick="goBackFromS3()"><span class="nav-label" data-label="عودة"><span>عودة</span></span></button>
+    </section>
+
+    <div class="scq-popup hidden m-popup" id="s3v-popup" role="status" aria-live="polite"
+         onpointerdown="popupPointerDown(event, 's3v-popup')">
+      <div class="scq-popup-header">
+        <p class="scq-popup-title" id="s3v-popup-title"></p>
+      </div>
+      <div class="scq-popup-body" id="s3v-popup-body"></div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 07 (S4) — ValueInputQuestion + content image, slide76.
+         Item methodica-math-percent-02-05-002, sub-part ב (continues
+         S3's item — same "מונדיאל" context, same photo). Hint IS
+         present here (template baseline — no override note, unlike
+         S3's explicit "no hint").
+
+         Reuses assets/img/mondial-scene.png, NOT the slide's own
+         picture embed (image70.png) — that embed is a confirmed
+         authoring mistake (a duplicate of the correct-feedback mockup
+         landed in the content-image shape instead of the scene photo;
+         see the full reasoning in main.js's header comment on S4V).
+
+         The on-canvas "לא ראיתי יעד שמדבר על חיבור או חיסור אחוזים..."
+         shape is a reviewer/production note, not learner content —
+         deliberately not built, same call as S3's removed "שאלה
+         אוריינית" badge (second occurrence of this pattern in this
+         project). -->
+    <section class="screen" data-screen="4" id="s4">
+      <!-- Progress Question nav — 2 questions for this part's five
+           question screens: Q1 = S1+S2 (sub-parts א+ב), Q2 = S3+S4+S5
+           (א+ב+ג). Q1 is first in DOM so it renders physically RIGHTMOST
+           under direction:rtl. A question only turns V/X once EVERY one
+           of its screens has been answered, and V requires all of them
+           correct — see practiceQuestionState() in js/main.js. -->
+      <nav class="progress-question" aria-label="التنقُّل بين الأسئلة">
+        <div class="progress-question__item" data-question="1">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" aria-hidden="true"><use href="#pq-check-glyph"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" aria-hidden="true"><use href="#pq-x-glyph"/></svg></div>
+          <span class="progress-question__label">سؤال 1</span>
+        </div>
+        <div class="progress-question__connector" data-connector="1"><div class="progress-question__connector-line"></div></div>
+        <div class="progress-question__item" data-question="2">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" aria-hidden="true"><use href="#pq-check-glyph"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" aria-hidden="true"><use href="#pq-x-glyph"/></svg></div>
+          <span class="progress-question__label">سؤال 2</span>
+        </div>
+      </nav>      <div class="scq-question">
+        <div class="viq-text-col">
+          <!-- No data-reveal: identical hook title + context paragraphs
+               already animated once on S3 (producer instruction,
+               2026-08-19) — the question/input below are new to this
+               screen and keep their own reveal, moved down individually
+               so this repeated block can be skipped. -->
+          <p class="viq-hook-title">مونديال!!!</p>
+          <p class="viq-context">رنين، نسرين، أمجد وأشرف يخططون لمشاهدة النهائي بين الأرجنتين وإسبانيا‎.</p>
+          <p class="viq-context">‎حضّرت رنين خليطًا من المكسرات بوزن إجمالي 600 غرام‎.</p>
+          <p class="viq-context">يحتوي الخليط على: %18 جوز، %15 لوز، %45 فول سوداني، والباقي زبيب‎.</p>
+          <div class="viq-context-gap" aria-hidden="true"></div>
+          <p class="viq-qstem" data-reveal="1">ب. ما هو وزن اللوز والفول السوداني معًا؟</p>
+
+          <div class="viq-input-row" data-reveal="1">
+            <div class="viq-field" id="s4v-field">
+              <input id="s4v-input" class="viq-input" type="text" inputmode="numeric"
+                     step="any" dir="ltr" aria-label="ما هو وزن اللوز والفول السوداني معًا"
+                     oninput="s4vInputChange()">
+              <span class="viq-input-ico" id="s4v-input-ico" aria-hidden="true"></span>
+            </div>
+            <span class="viq-unit-label">غرام</span>
+          </div>
+        </div>
+
+        <!-- No data-reveal here (unlike S3's own scq-img): this is the
+             same unchanging image the learner already saw enter on S3,
+             so it shows already in place rather than replaying an
+             entrance. -->
+        <div class="scq-img">
+          <div class="scq-img-inner">
+            <button class="img-zoom-btn" type="button" aria-label="تكبير الصورة"
+                    data-zoom-src="assets/img/mondial-scene.png">
+              <svg class="img-zoom-btn__icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <circle cx="8.5" cy="8.5" r="6.5" stroke="currentColor" stroke-width="1.6"/>
+                <path d="M13.3 13.3L17.6 17.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              </svg>
+            </button>
+            <img src="assets/img/mondial-scene.png"
+                 alt="أربعة شباب يجلسون على كنبة ويشاهدون على تلفزيون كبير نهائي كرة قدم بين الأرجنتين وإسبانيا. الاثنان على اليسار يرتديان بلوزات الأرجنتين (ميسي رقم 10، دي ماريا رقم 7). والاثنان على اليمين يرتديان بلوزات إسبانيا (بيدري رقم 20، لامين يامال رقم 19) ويشجعان بحماس. على طاولة القهوة وعاء مكسرات وتسالي ومشروبات، وبذور متناثرة على الطاولة‎.">
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-continue" id="s4v-check" type="button" disabled onclick="s4vCheck()"><span class="nav-label" data-label="هل إجابتي صحيحة؟"><span>هل إجابتي صحيحة؟</span></span></button>
+      <button class="scq-hint hidden" id="s4v-hint" type="button" onclick="s4vOpenHint()">
+        <svg class="scq-hint-ico" viewBox="0 0 25.9999 22.2883" fill="none" aria-hidden="true">
+          <use href="#hint-bulb-glyph"/>
+        </svg>
+        <span class="nav-label" data-label="هل يمكنني الحصول على تلميح؟"><span>هل يمكنني الحصول على تلميح؟</span></span>
+      </button>
+      <button class="scq-back" type="button" onclick="goBackFromS4()"><span class="nav-label" data-label="عودة"><span>عودة</span></span></button>
+    </section>
+
+    <div class="scq-popup hidden m-popup" id="s4v-popup" role="status" aria-live="polite"
+         onpointerdown="popupPointerDown(event, 's4v-popup')">
+      <div class="scq-popup-header">
+        <p class="scq-popup-title" id="s4v-popup-title"></p>
+      </div>
+      <div class="scq-popup-body" id="s4v-popup-body"></div>
+    </div>
+
+    <div class="scq-hint-overlay hidden m-popup" id="s4v-hint-overlay" onclick="s4vCloseHintOnBackdrop(event)">
+      <div class="scq-hint-popup" role="dialog" aria-modal="true" aria-labelledby="s4v-hint-title">
+        <div class="scq-hint-content">
+          <h2 class="scq-hint-title" id="s4v-hint-title">تلميح
+            <svg class="scq-hint-title-ico" viewBox="0 0 25.9999 22.2883" fill="none" aria-hidden="true">
+              <use href="#hint-bulb-glyph"/>
+            </svg>
+          </h2>
+          <div class="scq-hint-body">
+            <p>اجمعوا النسب المئوية للوز والفول السوداني ثم احسبوا الكمية‎.</p>
+          </div>
+        </div>
+        <button class="scq-hint-close" type="button" onclick="s4vCloseHint()"><span class="nav-label" data-label="عودة إلى السؤال"><span>عودة إلى السؤال</span></span></button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 09 (S5) — ValueInputQuestion, THREE stacked blanks +
+         content image, slide77. Item methodica-math-percent-02-05-002,
+         sub-part ג (continues S3/S4's item — same photo, same mixture).
+         Hint hidden until first wrong (template baseline).
+
+         Reuses assets/img/mondial-scene.png (byte-identical to the
+         slide's own image67.png embed — confirmed via md5, no new
+         asset needed).
+
+         New "לצפייה בנתונים" button overlays a reference-data card on
+         the photo (see main.js's header comment on S5V for the source
+         behavior: opens on click, closes via X, trigger disabled while
+         open). No hint-limit / no view-toggle on this screen's popup —
+         see main.js for why. -->
+    <section class="screen" data-screen="5" id="s5">
+      <!-- Progress Question nav — 2 questions for this part's five
+           question screens: Q1 = S1+S2 (sub-parts א+ב), Q2 = S3+S4+S5
+           (א+ב+ג). Q1 is first in DOM so it renders physically RIGHTMOST
+           under direction:rtl. A question only turns V/X once EVERY one
+           of its screens has been answered, and V requires all of them
+           correct — see practiceQuestionState() in js/main.js. -->
+      <nav class="progress-question" aria-label="التنقُّل بين الأسئلة">
+        <div class="progress-question__item" data-question="1">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" aria-hidden="true"><use href="#pq-check-glyph"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" aria-hidden="true"><use href="#pq-x-glyph"/></svg></div>
+          <span class="progress-question__label">سؤال 1</span>
+        </div>
+        <div class="progress-question__connector" data-connector="1"><div class="progress-question__connector-line"></div></div>
+        <div class="progress-question__item" data-question="2">
+          <div class="progress-question__icon"><svg class="progress-question__icon-check" viewBox="0 0 12.7273 9.18763" aria-hidden="true"><use href="#pq-check-glyph"/></svg><svg class="progress-question__icon-x" viewBox="0 0 10 10" aria-hidden="true"><use href="#pq-x-glyph"/></svg></div>
+          <span class="progress-question__label">سؤال 2</span>
+        </div>
+      </nav>      <div class="scq-question">
+        <div class="viq-text-col" data-reveal="1">
+          <p class="viq-context">اكتشفنا أن هناك 108 غرام من الجوز و-360 غرام من اللوز والفول السوداني في الخليط‎.</p>
+          <p class="viq-context">تبيّنَ أن أمجد لا يحب الزبيب‎.</p>
+          <p class="viq-context">قرّرت رنين ألّا تضع الزبيب في الخليط، وأن توزع وزنه بالتساوي بين باقي المكونات‎.</p>
+          <div class="viq-context-gap" aria-hidden="true"></div>
+          <p class="viq-qstem">ت. ما هو وزن كل واحد من بقية المكونات بعد إزالة الزبيب؟ </p>
+
+          <div class="viq-fillin-row">
+            <span class="viq-fillin-label">الجوز:</span>
+            <div class="viq-field" id="s5v-field-wa">
+              <input id="s5v-input-wa" class="viq-input" type="text" inputmode="numeric"
+                     step="any" dir="ltr" aria-label="وزن الجوز"
+                     oninput="s5vInputChange()">
+              <span class="viq-input-ico" id="s5v-input-ico-wa" aria-hidden="true"></span>
+            </div>
+            <span class="viq-unit-label">غرام</span>
+          </div>
+          <div class="viq-fillin-row">
+            <span class="viq-fillin-label">اللوز:</span>
+            <div class="viq-field" id="s5v-field-al">
+              <input id="s5v-input-al" class="viq-input" type="text" inputmode="numeric"
+                     step="any" dir="ltr" aria-label="وزن اللوز"
+                     oninput="s5vInputChange()">
+              <span class="viq-input-ico" id="s5v-input-ico-al" aria-hidden="true"></span>
+            </div>
+            <span class="viq-unit-label">غرام</span>
+          </div>
+          <div class="viq-fillin-row">
+            <span class="viq-fillin-label">الفول السوداني:</span>
+            <div class="viq-field" id="s5v-field-pe">
+              <input id="s5v-input-pe" class="viq-input" type="text" inputmode="numeric"
+                     step="any" dir="ltr" aria-label="وزن الفول السوداني"
+                     oninput="s5vInputChange()">
+              <span class="viq-input-ico" id="s5v-input-ico-pe" aria-hidden="true"></span>
+            </div>
+            <span class="viq-unit-label">غرام</span>
+          </div>
+
+          <!-- Recall button — visually identical to .scq-hint (720-
+               templates "recall" pattern, reused verbatim from
+               methodica-science-mass-liquid-01-06's own S2-S5), flowed
+               as the last item of the question content column (right-
+               aligned, below all three answer rows — producer request)
+               rather than absolutely positioned or living in the
+               bottom bar. Text is this deck's own ("לצפייה בנתונים"),
+               icon/styling otherwise unchanged. -->
+          <!-- Rule precedence #3 (recall/info button always LAST): this
+               button is nested inside the group-1 text column, but per
+               the Step-2 table ("Recall/info button embedded in the
+               content body... own group, always LAST") it gets its OWN
+               later group (3) rather than inheriting group 1 from its
+               parent -- overriding what plain DOM nesting would suggest. -->
+          <button class="scq-hint s5-recall-btn" id="s5-databtn" type="button" data-reveal="3" onclick="s5OpenRecallPopup()">
+            <svg class="scq-hint-ico" viewBox="0 0 25.9999 22.2883" fill="none" aria-hidden="true">
+              <use href="#hint-bulb-glyph"/>
+            </svg>
+            <span class="nav-label" data-label="لعرض المعطيات"><span>لعرض المعطيات</span></span>
+          </button>
+        </div>
+
+        <!-- No data-reveal here (unlike S3's own scq-img): this is the
+             same unchanging image the learner already saw enter on S3,
+             so it shows already in place rather than replaying an
+             entrance. -->
+        <div class="scq-img">
+          <div class="scq-img-inner">
+            <button class="img-zoom-btn" type="button" aria-label="تكبير الصورة"
+                    data-zoom-src="assets/img/mondial-scene.png">
+              <svg class="img-zoom-btn__icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <circle cx="8.5" cy="8.5" r="6.5" stroke="currentColor" stroke-width="1.6"/>
+                <path d="M13.3 13.3L17.6 17.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              </svg>
+            </button>
+            <img src="assets/img/mondial-scene.png"
+                 alt="أربعة شباب يجلسون على كنبة ويشاهدون على تلفزيون كبير نهائي كرة قدم بين الأرجنتين وإسبانيا. الاثنان على اليسار يرتديان بلوزات الأرجنتين (ميسي رقم 10، دي ماريا رقم 7). والاثنان على اليمين يرتديان بلوزات إسبانيا (بيدري رقم 20، لامين يامال رقم 19) ويشجعان بحماس. على طاولة القهوة وعاء مكسرات وتسالي ومشروبات، وبذور متناثرة على الطاولة‎.">
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-continue" id="s5v-check" type="button" disabled onclick="s5vCheck()"><span class="nav-label" data-label="هل إجابتي صحيحة؟"><span>هل إجابتي صحيحة؟</span></span></button>
+      <button class="scq-hint hidden" id="s5v-hint" type="button" onclick="s5vOpenHint()">
+        <svg class="scq-hint-ico" viewBox="0 0 25.9999 22.2883" fill="none" aria-hidden="true">
+          <use href="#hint-bulb-glyph"/>
+        </svg>
+        <span class="nav-label" data-label="هل يمكنني الحصول على تلميح؟"><span>هل يمكنني الحصول على تلميح؟</span></span>
+      </button>
+      <button class="scq-back" type="button" onclick="goBackFromS5()"><span class="nav-label" data-label="عودة"><span>عودة</span></span></button>
+    </section>
+
+    <div class="scq-popup hidden m-popup" id="s5v-popup" role="status" aria-live="polite"
+         onpointerdown="popupPointerDown(event, 's5v-popup')">
+      <div class="scq-popup-header">
+        <p class="scq-popup-title" id="s5v-popup-title"></p>
+      </div>
+      <div class="scq-popup-body" id="s5v-popup-body"></div>
+    </div>
+
+    <div class="scq-hint-overlay hidden m-popup" id="s5v-hint-overlay" onclick="s5vCloseHintOnBackdrop(event)">
+      <div class="scq-hint-popup" role="dialog" aria-modal="true" aria-labelledby="s5v-hint-title">
+        <div class="scq-hint-content">
+          <h2 class="scq-hint-title" id="s5v-hint-title">تلميح
+            <svg class="scq-hint-title-ico" viewBox="0 0 25.9999 22.2883" fill="none" aria-hidden="true">
+              <use href="#hint-bulb-glyph"/>
+            </svg>
+          </h2>
+          <div class="scq-hint-body">
+            <p>احسبوا أولًا وزن الزبيب‎.</p>
+          </div>
+        </div>
+        <button class="scq-hint-close" type="button" onclick="s5vCloseHint()"><span class="nav-label" data-label="عودة إلى السؤال"><span>عودة إلى السؤال</span></span></button>
+      </div>
+    </div>
+
+    <!-- Recall modal (Figma "ContentPopup") — shared overlay pattern
+         ported from methodica-science-mass-liquid-01-06's own recall
+         popup (same class/id names: #recall-overlay/.recall-popup/
+         .recall-popup-close), sized to THIS deck's own short recap
+         text rather than that lomda's 1090×623 task-intro card. Only
+         S5's recall button opens it today; any future recall button
+         in this part reuses this same overlay + openRecallPopup(). -->
+    <div class="recall-overlay hidden m-popup" id="recall-overlay" onclick="closeRecallPopupOnBackdrop(event)">
+      <div class="recall-popup" role="dialog" aria-modal="true" aria-label="تذكّروا المعطيات">
+        <button class="recall-popup-close" type="button" onclick="closeRecallPopup()" aria-label="إغلاق"></button>
+        <p class="recall-popup-title">تذكّروا المعطيات‎:</p>
+        <p>يحتوي الخليط على: %18 جوز، %15 لوز، %45 فول سوداني، والباقي زبيب‎.</p>
+        <p>اكتشفنا أن هناك 108 غرام من الجوز و-360 غرام من اللوز والفول السوداني في الخليط‎.</p>
+      </div>
+    </div>
+
+    <!-- Shared image-zoom modal — ONE per part, outside all .screen
+         divs, standard clone-based behavior. Any future .img-zoom-btn
+         in this part reuses this same modal. -->
+    <div id="img-zoom-modal" class="img-zoom-modal hidden">
+      <div class="img-zoom-backdrop" data-zoom-close="true"></div>
+      <div class="img-zoom-panel" role="dialog" aria-modal="true" aria-label="تكبير الصورة">
+        <button class="img-zoom-close-btn" type="button" id="img-zoom-close" aria-label="إغلاق" data-zoom-close="true">
+          <svg viewBox="0 0 15 15" fill="none" aria-hidden="true">
+            <path d="M1 1L14 14M14 1L1 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <div class="img-zoom-stage" id="img-zoom-stage"></div>
+      </div>
+    </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       "מצאתם בעיה?" — שלושה דיאלוגים.
+       יושבים בתוך #app ומחוץ לכל .screen: ‎.report-modal-overlay הוא
+       position:absolute; inset:0, ו-#app הוא האב הממוקם שלו — מחוץ ל-#app
+       הכיסוי לא היה מתיישר לקנבס המוקטן.
+       ההתנהגות כולה ב-../unit-js/25-report.js, העיצוב ב-../unit-css/25-report.css.
+       כפתור ה-.flag-btn עצמו כבר קיים בכל סין ומחווט ב-delegation.
+  ════════════════════════════════════════════════════════════════ -->
+  <div id="report-modal"
+       class="report-modal-overlay"
+       hidden
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="report-modal-title">
+    <div class="report-modal-box">
+      <button class="report-close-btn" type="button" onclick="tryCloseReportModal()" aria-label="إغلاق">&#10005;</button>
+      <h2 class="report-modal-title" id="report-modal-title">דיווח על בעיה</h2>
+      <p class="report-modal-body">משהו לא ברור או לא עובד כמו שצריך?<br>ספרו לנו מה קרה כדי שנטפל.</p>
+
+      <div class="report-field">
+        <label class="report-label" for="report-type"><span class="required-star">*</span> מה סוג הבעיה</label>
+        <div class="report-custom-select" id="report-type-wrapper">
+          <button class="report-select-btn is-placeholder" type="button" aria-haspopup="listbox" aria-expanded="false">
+            <span class="report-select-value">בחרו סוג בעיה</span>
+          </button>
+          <ul class="report-select-list" role="listbox" hidden>
+            <li class="report-select-option" data-value="technical" role="option">תקלה טכנית או שמשהו לא עובד</li>
+            <li class="report-select-option" data-value="unclear" role="option">משהו לא ברור לי</li>
+            <li class="report-select-option" data-value="other" role="option">آخر</li>
+          </ul>
+          <input type="hidden" id="report-type" value="">
+        </div>
+        <span class="report-field-error" id="report-type-error" hidden>בחרו את סוג הבעיה</span>
+      </div>
+
+      <div class="report-field">
+        <label class="report-label" for="report-text"><span class="required-star">*</span> מה קרה?</label>
+        <textarea class="report-textarea" id="report-text" maxlength="250" rows="4" placeholder="פרטו מה קרה כדי שנוכל להבין את הבעיה" onblur="reportTextBlur()"></textarea>
+        <span class="report-field-error" id="report-text-error" hidden>כתבו מה קרה</span>
+        <span class="report-char-count" id="report-char-count">0 / 250</span>
+      </div>
+
+      <div class="report-actions">
+        <button class="report-cancel-btn" type="button" onclick="tryCloseReportModal()">ביטול</button>
+        <button class="report-submit-btn" type="button" onclick="submitReport()" disabled>שליחת דיווח</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- מצב "הדיווח נשלח". דיאלוג נפרד מדיאלוג הנטישה שמתחתיו — אין לאחד ביניהם. -->
+  <div id="report-thanks-modal"
+       class="report-modal-overlay"
+       hidden
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="report-thanks-title">
+    <div class="report-modal-box report-confirm-box">
+      <h2 class="report-modal-title" id="report-thanks-title">הדיווח נשלח, תודה!</h2>
+      <p class="report-modal-body">קיבלנו את הדיווח שלכם ונטפל בו בהקדם.</p>
+      <div class="report-actions">
+        <button class="report-submit-btn" type="button" onclick="closeReportThanks()">إغلاق</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- אישור נטישה: נפתח רק כשיש קלט שלא נשלח. -->
+  <div id="report-confirm-modal"
+       class="report-modal-overlay"
+       hidden
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="report-confirm-title">
+    <div class="report-modal-box report-confirm-box">
+      <h2 class="report-modal-title" id="report-confirm-title">בטוח לסגור את החלון?</h2>
+      <p class="report-modal-body">בלחיצה על סגירה לא יישלח דיווח</p>
+      <div class="report-actions">
+        <button class="report-cancel-btn" type="button" onclick="forceCloseReportModal()">סגור חלון</button>
+        <button class="report-submit-btn" type="button" onclick="backToReportForm()">אני רוצה לדווח</button>
+      </div>
+    </div>
+  </div>
+
+  </div>
+
+  <script src="../unit-js/05-motion.js?v=3"></script>
+  <script src="../unit-js/08-partnav.js?v=4"></script>
+  <script src="../unit-js/10-identity.js?v=4"></script>
+  <script src="../unit-js/15-ui.js?v=3"></script>
+  <script src="../unit-js/18-numeric-input.js?v=3"></script>
+  <script src="../unit-js/20-xapi.js?v=5"></script>
+  <script src="../unit-js/25-report.js?v=3"></script>
+  <script src="../unit-js/30-nav.js?v=3"></script>
+  <script src="../unit-js/35-charts.js?v=3"></script>
+  <script src="../unit-js/40-resume.js?v=4"></script>
+  <script src="../unit-js/45-painters.js?v=3"></script>
+  <script src="../unit-js/50-loader.js?v=4"></script>
+  <script src="../unit-js/60-devbridge.js?v=3"></script>
+  <script src="js/main.js?v=5"></script>
+  <script src="../unit-js/90-boot.js?v=4"></script>
+</body>
+</html>

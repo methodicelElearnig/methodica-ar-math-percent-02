@@ -1,0 +1,29 @@
+{
+  "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-04/",
+  "title": "משימה בכיתה",
+  "learningUnitId": "methodica-math-percent-02",
+  "componentPurpose": "practice",
+  "isAssessment": false,
+  "recommendedAfterFail": [],
+  "isRequired": true,
+  "relativeDifficulty": 3,
+  "masteryLevel": null,
+  "order": 4,
+  "depthLevel": "core-curriculum-basic",
+  "cognitiveLevels": ["process-thinking"],
+  "languages": ["Hebrew"],
+  "skills": [],
+  "estimatedTimeInMinutes": 1,
+  "createdAt": "2026-07-29T00:00:00.000Z",
+  "updatedAt": "2026-09-09T00:00:00.000Z",
+  "subContent": [
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-04/methodica-math-percent-02-04-001/",
+      "title": "סקר תחביבי הכיתה לפי אחוזים",
+      "informationToBot": "מטרת הפריט: יישום מציאותי של חישוב אחוזים - איסוף נתונים אמיתיים מהכיתה וחישוב האחוז של כל סוג פעילות פנאי. מה התלמיד אמור להבין/לתרגל: התלמיד סופר את מספר התלמידים בכיתה, מזהה את פעילות הפנאי המועדפת על כל תלמיד (ספורט / אומנות / גיימינג ורשתות חברתיות / אחר), ומזין בטבלה את מספר התלמידים בכל קטגוריה. לאחר מכן מחשב את האחוז של כל קטגוריה מתוך סך התלמידים, באמצעות המרת אחוז לשבר או טבלת פרופורציה, וקובע איזו פעילות הכי נפוצה. טעויות נפוצות: מדידה בשטח שלא נאספת/נבדקת על ידי המערכת - אין תשובה 'נכונה' קבועה מראש, כי הנתונים תלויים בכיתה הספציפית. מידע נוסף: המערכת מציגה תזכורת ('לא מילאתם את כל הנתונים בטבלה') אם התלמיד מנסה להמשיך בלי להשלים את כל 4 השורות בטבלה. צילום מסך: לא צורף.",
+      "contentType": "project-or-inquiry-task",
+      "mediaFormat": "text",
+      "questions": []
+    }
+  ]
+}

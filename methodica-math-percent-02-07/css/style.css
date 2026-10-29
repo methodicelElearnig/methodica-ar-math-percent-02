@@ -1,0 +1,662 @@
+/* ═══════════════════════════════════════════════════════
+   css/style.css  —  methodica-math-percent-02-07
+   Canvas: 1280 × 710 px   (720 reference engine)
+
+   GLOBAL blocks below (fonts, reset, Subject tokens, canvas, screen,
+   bottom bar, Report button, Continue/Back buttons, nav-label hover
+   guard) carried over from part 06 VERBATIM so all parts look like one
+   product.
+
+   Source: math-target-4.2-script.pptx, section "שאלת שיא מועד ב"
+   (slides 85-90). Slide 85 is only the section divider (no content).
+   Slides 89-90 (a pass/fail branching summary) are a scripting mistake
+   per producer instruction (2026-08-12) and are NOT built.
+
+   This part is the REMEDIAL twin of part 06's climax question — reached
+   only when the learner fails part 06's own climax question (scores
+   below 3/4 correct on its sub-parts, per part 06 S0's own "עליכם
+   להצליח ב-3 לפחות" promise). See part 06's own js/main.js
+   `climaxPassed()`/`advanceScreen()` override for the navigation side
+   of this contract.
+   ═══════════════════════════════════════════════════════ */
+
+/* ─── Local fonts (Assistant) ───────────────────────────
+   ONE shared copy for the whole unit, at ../../unit-assets/fonts/.
+   Previously each part carried its own byte-identical set of seven
+   weights (7 parts x 7 files = 2,436,448 B); the four unused weights
+   are gone and the rest is shared.
+
+   Only 400 / 600 / 700 are declared, because only those are used: a
+   sweep of all seven stylesheets found no font-weight declaration
+   outside these blocks other than 400, 600 and 700, and no
+   bold/bolder/lighter keyword and no inline font-weight anywhere in
+   the HTML or JS. UA-default bold (<b>, <strong>, <h*>) maps to 700,
+   which is declared. Re-run that sweep before adding a weight back.
+
+   The Google Fonts <link> in index.html is still there and still
+   needed - NOT as a fallback for these files, but because it also
+   fetches Open Sans 700, which is used by .s2-slider-value in part 01
+   and is not self-hosted. Do not remove that link without either
+   self-hosting Open Sans or re-speccing that one rule.
+   ───────────────────────────────────────────────────────── */
+/* ─── Shared: Continue Button — gradient pill, bottom-left of bar.
+   Carried over verbatim so size/position stay identical across parts. ── */
+.btn-continue {
+  position: absolute;
+  bottom: 17.5px; left: 24px;
+  z-index: 12;
+  min-width: 140px;
+  height: 39px;
+  padding: 0 40px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--primary-action-gradient);
+  color: #fff;
+  border: none; border-radius: 1000px;
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 20px; font-weight: 400;
+  cursor: pointer; direction: rtl;
+  text-align: center; white-space: nowrap;
+}
+.btn-continue:not(:disabled):hover { font-weight: 600; }
+.btn-continue.hidden { display: none !important; }
+.btn-continue:disabled {
+  background: #AEAEAE;
+  color: #303030;
+  cursor: not-allowed;
+  opacity: 1;
+}
+
+/* ─── Shared: Back Button — outline pill, bottom-right of bar. Not used
+   by S0 (this part's first screen — see the header comment on #s0),
+   copied over unchanged for whichever future screen needs it first. ── */
+.scq-back {
+  position: absolute;
+  bottom: 17.5px;
+  right: 24px;
+  z-index: 12;
+  width: auto; min-width: 140px; height: 39px; padding: 0 40px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--subject-700); border-radius: 1000px; background: #fff;
+  color: var(--subject-700);
+  font-family: Calibri, Arial, sans-serif; font-size: 20px; font-weight: 400;
+  cursor: pointer; direction: rtl; white-space: nowrap;
+}
+.scq-back:hover { font-weight: 600; border-width: 1.5px; }
+
+/* ── HOVER STABILITY — every 720 button's hover flips font-weight
+   400→600; Bold Assistant is wider/taller, so without this guard a
+   hover silently reflows the button. Guard 1 (width): .nav-label
+   reserves the bold width up front via a hidden ::before ghost stacked
+   in the same grid cell. Guard 2 (height): the nav-bar pills
+   (.btn-continue/.scq-back/.scq-hint) now pin an explicit `height:39px`
+   + flex centering directly on each rule (2026-08-16 project-wide fix),
+   which already makes their height weight-independent — a fixed-height
+   box cannot resize on hover, so the old per-class line-height pin this
+   comment used to describe is no longer needed for these three.
+   Markup: <span class="nav-label" data-label="TEXT"><span>TEXT</span></span>
+   — data-label must repeat the visible text verbatim. ── */
+.nav-label { display: inline-grid; }
+.nav-label::before {
+  content: attr(data-label);
+  grid-area: 1 / 1;
+  font-weight: 600;
+  block-size: 0;
+  visibility: hidden;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.nav-label > span { grid-area: 1 / 1; }
+
+/* ═══════════════════════════════════════════════════════
+   TEMPLATE — TransitionScreen (Screen 01 · S0), remedial climax-
+   question kickoff. Source: slide85.xml (the section's own divider
+   slide) carries NO learner-facing copy of its own — unlike part 06's
+   S0 (slide79), this "מועד ב" section has no dedicated kickoff slide
+   in the script. Producer decision (2026-08-12, chat): still build a
+   TransitionScreen here for visual/structural consistency with every
+   other part's own S0. Copy is producer-DICTATED, not extracted from
+   any slide — verbatim reuse of part 06's own S0 text, with only the
+   sub-part count/threshold line swapped (2 sub-parts / succeed in
+   both, vs. part 06's 4 sub-parts / succeed in 3+). An earlier draft
+   used an original retry-toned "לא נורא!" opener instead of "כל
+   הכבוד!", reasoning that this screen is only reached after failing
+   part 06's climax question — the producer overrode that and asked
+   for the identical opening line regardless.
+
+   Reuses part 06's `.s1-*` component set verbatim (same shape as part
+   02's S0 / part 06's S0), but with its OWN per-character video asset
+   — Character-{1,2}-Rocket.mp4 (rocket-wheelchair / jetpack-flight),
+   swapped in 2026-08-12 per producer decision, replacing part 06's own
+   "climbing to the summit" clip. Same box/sizing spec either way — only
+   the asset differs, see `S0_CHARACTER` in js/main.js.
+
+   No Back button: this is part 07's first screen (same deliberate
+   omission every other part's own S0 has made against its
+   predecessor). Continue is ungated (established TransitionScreen
+   convention). */
+#s0 { background: #fff; }
+
+.s1-content {
+  position: absolute;
+  inset: 0 0 74px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+
+.s1-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.s1-title {
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 40px;
+  font-weight: 700;
+  color: #303030;
+  margin: 0;
+}
+
+.s1-subtitle {
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 28px;
+  font-weight: 400;
+  color: #303030;
+  margin: 0;
+}
+/* Source has these three plain lines at 20pt; enlarged to 24px by
+   producer instruction (2026-08-26, applied identically in part 06's
+   matching S0) — a deliberate deviation from the source measurement,
+   do not "restore" it to 20px. */
+.s1-subtitle--regular { font-size: 24px; font-weight: 400; }
+
+/* Video wrap is the ONLY layout-participating element here, so it stays
+   exactly centered by .s1-content regardless of the text block's own
+   line count. */
+.s1-video-wrap {
+  position: relative;
+  width: 640px;
+  height: 360px;
+  flex-shrink: 0;
+}
+.s1-char-media {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* ═══════════════════════════════════════════════════════
+   Screen 02 · S1 — scenario/context intro (image + text, no input),
+   slide86.xml. Reuses the ValueInputQuestion layout shape
+   (`.scq-question`/`.viq-text-col`/`.scq-img`) minus the input row —
+   ported verbatim from part 06's own S1. Item ref:
+   methodica-math-percent-02-07-001 (shared with S0/S2/S3 — none of
+   this item's 2 lettered sub-parts is its own separate item number).
+   ═══════════════════════════════════════════════════════ */
+#s1 { background: #fff; }
+
+.scq-question {
+  position: absolute;
+  top: 110px; right: 40px;
+  width: 1188px;
+  display: flex; flex-direction: row; direction: rtl;
+  align-items: flex-start; gap: 24px;
+}
+.viq-text-col {
+  flex: 1 1 0; min-width: 0;
+  display: flex; flex-direction: column;
+}
+.viq-context {
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 24px; font-weight: 400; color: #303030;
+  text-align: right; line-height: 1.4; margin: 0;
+}
+.viq-context-gap { height: 34px; }
+.viq-qstem {
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 24px; font-weight: 700; color: var(--subject-500);
+  text-align: right; line-height: 1.3; margin: 0;
+}
+
+/* Content image frame — default 380×380 square, object-fit:contain
+   (720-templates → _global-components.md → "Transparent PNG asset
+   fitting" applies the same contain principle to a photo). */
+.scq-img {
+  position: relative;
+  flex: 0 0 380px;
+  width: 380px; height: 380px; padding: 8px;
+}
+.scq-img-inner {
+  width: 100%; height: 100%;
+  position: relative;
+  background: #f2f2f2; border: 0.5px solid rgba(174, 174, 174, 0.5);
+  border-radius: 16px; overflow: hidden;
+}
+.scq-img-inner img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+}
+
+/* steps-app-phones.png is LANDSCAPE 1024×572 (≈1.79:1), not square —
+   same aspect-ratio-driven frame technique as part 06's #s1 (its own
+   hotel-room.jpeg override) rather than the default padded square,
+   for the same reason: a square box leaves visible empty gray space
+   below a landscape photo. This image is reused on S2 AND S3 as well
+   (same producer-cited reference image, "see_b_1", on all three
+   slides — confirmed on slide88 via its own rendered export, not
+   assumed from the template name alone), so the override is shared
+   rather than scoped to #s1 alone. */
+#s1 .scq-img, #s2 .scq-img, #s3 .scq-img {
+  flex: 0 0 auto;
+  width: auto; height: auto;
+}
+#s1 .scq-img-inner, #s2 .scq-img-inner, #s3 .scq-img-inner {
+  width: 480px; height: auto;
+  aspect-ratio: 1024 / 572;
+  border: 0;
+  box-shadow: 0 0 0 0.5px rgba(174, 174, 174, 0.5);
+  background: none;
+}
+
+/* ── Image zoom — global component, standard clone-based behavior
+   (720-templates → _global-components.md → "Image zoom"), ported
+   verbatim from part 06. ── */
+.img-zoom-btn {
+  position: absolute; top: 10px; right: 10px; z-index: 5;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: #fff; border: 2px solid var(--subject-500);
+  display: flex; align-items: center; justify-content: center;
+  padding: 0; cursor: pointer; color: var(--subject-500);
+}
+.img-zoom-btn:hover { background: var(--subject-500); color: #fff; }
+.img-zoom-btn:focus-visible { outline: 2px solid var(--subject-700); outline-offset: 2px; }
+.img-zoom-btn__icon { width: 20px; height: 20px; display: block; }
+
+.img-zoom-modal {
+  position: absolute; inset: 0; z-index: 60;
+  display: flex; align-items: center; justify-content: center;
+}
+.img-zoom-modal.hidden { display: none !important; }
+.img-zoom-backdrop {
+  position: absolute; inset: 0;
+  background: rgba(255, 255, 255, 0.78);
+}
+.img-zoom-panel {
+  position: relative; z-index: 1;
+  width: 900px; height: 640px;
+  background: #fff; border-radius: 24px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  box-sizing: border-box;
+  padding: 60px 24px 24px;
+  display: flex; align-items: center; justify-content: center;
+}
+.img-zoom-close-btn {
+  position: absolute; top: 16px; left: 16px;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: #fff; border: 2px solid var(--subject-500);
+  display: flex; align-items: center; justify-content: center;
+  padding: 0; cursor: pointer; color: var(--subject-500);
+}
+.img-zoom-close-btn:hover { background: var(--subject-500); color: #fff; }
+.img-zoom-close-btn:focus-visible { outline: 2px solid var(--subject-700); outline-offset: 2px; }
+.img-zoom-close-btn svg { width: 15px; height: 15px; display: block; }
+.img-zoom-stage {
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+}
+#img-zoom-stage .scq-img-inner { border: 0; }
+
+/* ═══════════════════════════════════════════════════════
+   Screen 03 · S2 — SingleChoiceQuestion, slide87.xml. Item ref:
+   methodica-math-percent-02-07-001 sub-part א. Reuses the SAME
+   `.scq-answers`/`.scq-opt`/`.scq-radio` apparatus as part 06's S3-S5
+   (this project's own established SCQ implementation). Reference image
+   is the SAME steps-app-phones.png as S1 (producer note "see_b_1"
+   reused on both slides), so `.scq-question` here holds BOTH
+   `.viq-text-col` and `.scq-img` (unlike part 06's S3-S5, whose
+   reference was a table, not an image).
+
+   **Hint policy differs from part 06's S3-S5**: those explicitly had
+   "no hint" (per producer note); THIS slide's own text dump includes
+   real hint copy ("לא ניתן להסיק מסקנות...") — confirmed present via
+   the rendered slide export (slide87.png), not assumed. Hint hidden
+   until first wrong attempt — producer decision (2026-08-12 chat),
+   overriding this build's own initial "visible from start" call (the
+   generic template default, applied for lack of a documented local
+   SCQ-hint precedent at the time); the producer wants this part's two
+   question screens (S2 and S3) to share one consistent hint policy,
+   matching this project's own established ValueInputQuestion
+   convention (part 06's S2).
+
+   4 options, correctId 'b' — confirmed BOTH by the rendered slide
+   (slide87.png: 2nd option's radio circle is pre-filled green) and by
+   matching the explanation body's own reasoning (a bigger daily goal
+   can "contain" more actual steps even at a lower completion percent)
+   against each option's text. Two of the four options both open with
+   "שי טועה" (Shai is wrong) but only option b's REASONING matches the
+   explanation — option c's "יכול להניב כמות זהה" (could yield an EQUAL
+   amount) is a plausible-sounding but incorrect distractor, since this
+   problem's own numbers are NOT equal (6,400 vs 7,200 — see S3). Visual
+   top-to-bottom order confirmed identical to the raw text-dump order
+   this time (verified via slide87.png rendered export, not assumed).
+   ═══════════════════════════════════════════════════════ */
+#s2 { background: #fff; }
+
+#s2 .scq-question, #s3 .scq-question { width: 1240px; }
+
+.scq-answers {
+  /* fit-content + a 604px ceiling: the column sizes itself to its
+     WIDEST option and `align-items: stretch` gives every other capsule
+     that same width, so a screen never renders a slab wider than its
+     longest distractor needs. The cap preserves the long-sentence
+     screens, whose text still wraps at 604 exactly as before. Producer
+     instruction 2026-08-19 — see part 01 css for the full reasoning. */
+  width: fit-content; max-width: 604px;
+  display: flex; flex-direction: column; gap: 12px;
+  margin-top: 16px;
+}
+.scq-opt {
+  /* auto, NOT fixed — the column decides the shared width and a fixed
+     width here would block its `stretch`. */
+  width: auto; min-height: 46px;
+  border: 2px solid var(--subject-500); border-radius: 1000px;
+  background: #fff; padding: 7px 20px;
+  display: flex; align-items: center; gap: 10px;
+  direction: rtl; cursor: pointer;
+  font-family: Calibri, Arial, sans-serif;
+  overflow: visible;
+}
+.scq-opt-text {
+  flex: 1; text-align: right;
+  font-size: 22px; font-weight: 400; color: #222; line-height: 1.1;
+}
+.scq-opt:focus-visible { outline: 2px solid var(--subject-700); outline-offset: 2px; }
+.scq-opt:disabled { cursor: default; }
+.scq-opt.correct { background: #edf8ed; border: 2px solid #609e12; }
+.scq-opt.wrong   { background: #fff0f4; border: 2px solid #b20010; }
+
+/* Radio indicator (22px) — RTL: sits on the RIGHT (reading start) of the pill */
+.scq-radio {
+  width: 22px; height: 22px; flex-shrink: 0;
+  border: 2px solid var(--subject-500); border-radius: 1000px;
+  position: relative; box-sizing: border-box;
+  order: -1;
+}
+.scq-opt.selected .scq-radio { background: var(--subject-500); }
+.scq-opt.correct  .scq-radio { background: #609e12; border-color: #609e12; }
+.scq-opt.wrong    .scq-radio { background: #b20010; border-color: #b20010; }
+.scq-opt.correct .scq-radio::after,
+.scq-opt.wrong .scq-radio::after {
+  content: ''; position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  background-repeat: no-repeat; background-position: center; background-size: contain;
+}
+.scq-opt.correct .scq-radio::after {
+  width: 13px; height: 11px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 12' fill='none'%3E%3Cpath d='M4.52036 12C4.12296 12.0002 3.74183 11.8126 3.46106 11.4787L0.258452 7.67744C-0.0861507 7.26814 -0.0861507 6.60467 0.258452 6.19536C0.603165 5.78619 1.16194 5.78619 1.50666 6.19536L4.52036 9.77374L12.4933 0.306878C12.8381 -0.102293 13.3968 -0.102293 13.7415 0.306878C14.0862 0.716179 14.0862 1.37966 13.7415 1.78896L5.57966 11.4787C5.29889 11.8126 4.91776 12.0002 4.52036 12Z' fill='white'/%3E%3C/svg%3E");
+}
+.scq-opt.wrong .scq-radio::after {
+  width: 11px; height: 11px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14' fill='none'%3E%3Cpath d='M13.6743 0.325691C13.4657 0.117151 13.1828 0 12.8879 0C12.5929 0 12.31 0.117151 12.1014 0.325691L7 5.42709L1.8986 0.325691C1.69 0.117151 1.40711 0 1.11215 0C0.817183 0 0.534294 0.117151 0.325691 0.325691C0.117151 0.534294 0 0.817183 0 1.11215C0 1.40711 0.117151 1.69 0.325691 1.8986L5.42709 7L0.325691 12.1014C0.117151 12.31 0 12.5929 0 12.8879C0 13.1828 0.117151 13.4657 0.325691 13.6743C0.534294 13.8829 0.817183 14 1.11215 14C1.40711 14 1.69 13.8829 1.8986 13.6743L7 8.57291L12.1014 13.6743C12.31 13.8829 12.5929 14 12.8879 14C13.1828 14 13.4657 13.8829 13.6743 13.6743C13.8829 13.4657 14 13.1828 14 12.8879C14 12.5929 13.8829 12.31 13.6743 12.1014L8.57291 7L13.6743 1.8986C13.8829 1.69 14 1.40711 14 1.11215C14 0.817183 13.8829 0.534294 13.6743 0.325691Z' fill='white'/%3E%3C/svg%3E");
+}
+
+/* Hint button (bottom bar) — shared by S2 (visible-from-start) and S3
+   (hidden-until-first-wrong). */
+.scq-hint {
+  position: absolute;
+  bottom: 17.5px; left: 264px;   /* ar: Continue/check button is 221px wide (24 + 221 + 16 gap + 3 safety), was 180px for the Hebrew label */
+  z-index: 12;
+  min-width: 140px;
+  height: 39px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 0 24px;
+  border: 1px solid var(--subject-700); border-radius: 1000px; background: #fff;
+  color: var(--subject-700);
+  font-family: Calibri, Arial, sans-serif; font-size: 20px; font-weight: 400;
+  cursor: pointer; direction: rtl;
+}
+.scq-hint:hover:not(:disabled) { font-weight: 600; }
+.scq-hint:disabled { border-color: #aeaeae; color: #aeaeae; cursor: default; }
+.scq-hint-ico { width: 26px; height: 22.3px; flex: 0 0 26px; display: block; }
+
+/* Feedback popup — draggable, no close button. */
+.scq-popup {
+  position: absolute;
+  left: 2px; bottom: 76px;
+  width: 426px;
+  height: auto;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.18);
+  display: flex; flex-direction: column; gap: 4px;
+  direction: rtl; z-index: 50;
+  cursor: move;
+}
+.scq-popup.hidden { display: none !important; }
+.scq-popup-header {
+  display: flex; align-items: flex-start; gap: 8px;
+  direction: ltr;
+  width: 100%;
+}
+.scq-popup-title {
+  flex: 1;
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 20px; font-weight: 700;
+  text-align: right; direction: rtl;
+  line-height: normal; margin: 0;
+  padding-top: 4px;
+}
+.scq-popup-body { direction: rtl; }
+.scq-popup-body p {
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 20px; font-weight: 400; color: #222;
+  text-align: right; direction: rtl;
+  line-height: normal; margin: 0 0 4px;
+}
+.scq-popup-body p:last-child { margin-bottom: 0; }
+/* Feedback popups (correct AND wrong) render at 20px throughout —
+   prose, equations, fractions and tables alike (producer instruction,
+   2026-08-20). The shared maths classes carry their own smaller sizes
+   for on-screen use (.frac at 18px in parts 03/05/06, .s19-eq-sign at
+   16px in part 01), so this is scoped to .scq-popup-body rather than
+   changing those base rules — an on-screen fraction or equation sign
+   keeps the size its own layout was built around. */
+.scq-popup-body .frac,
+.scq-popup-body .eq-row,
+.scq-popup-body .s19-eq-sign,
+.scq-popup-body .eq-table th,
+.scq-popup-body .eq-table td { font-size: 20px; }
+
+/* Equations inside the feedback body — live HTML, not a rendered PNG
+   mockup (asset rule: no learner-facing text baked into an image).
+   dir:ltr so the "=" chain reads in standard maths order inside the
+   RTL popup. First needed in part 07 by S3's own explanation body. */
+.eq-row {
+  display: flex; flex-direction: row; align-items: center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px; direction: ltr;
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 20px; font-weight: 700; color: #222;
+  margin: 6px 0;
+}
+/* Equations inside feedback popups are NOT bold (producer instruction,
+   2026-08-20, applied to every correct/wrong feedback project-wide) —
+   they read as body copy alongside the prose rather than as emphasised
+   headings. Scoped to .scq-popup-body so an on-screen .eq-row (outside a
+   popup) keeps the bold weight its own layout was built around. The
+   fractions inherit the weight from the row, so they follow too;
+   <strong> runs in the prose are untouched and stay bold. */
+.scq-popup-body .eq-row { font-weight: 400; }
+/* .frac/.frac-num/.frac-den (ported verbatim from part 06, which took
+   them from part 05) — added 2026-08-20 for S3's feedback equations,
+   the first fractions this part needed. The popup rule above already
+   sizes them to 20px inside .scq-popup-body. */
+.frac {
+  display: inline-flex; flex-direction: column; align-items: center;
+  vertical-align: middle; font-size: 18px; line-height: 1.15;
+}
+.frac-num, .frac-den { display: block; padding: 0 3px; }
+.frac-num { border-bottom: 2px solid currentColor; }
+.scq-popup-actions {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: 20px;
+}
+.popup-action {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 39px;
+  padding: 7.5px 20px;
+  line-height: 22px;
+  flex: 0 0 auto; width: auto;
+  border: 1px solid #484848; border-radius: 1000px; background: #fff;
+  color: #222;
+  font-family: Calibri, Arial, sans-serif; font-size: 20px; font-weight: 400;
+  direction: rtl; white-space: nowrap;
+  cursor: pointer;
+}
+.popup-action:hover { font-weight: 600; }
+
+/* Hint overlay. */
+.scq-hint-overlay {
+  position: absolute; inset: 0; z-index: 60;
+  background: rgba(255, 255, 255, 0.78);
+  display: flex; align-items: center; justify-content: center;
+}
+.scq-hint-overlay.hidden { display: none !important; }
+.scq-hint-popup {
+  background: var(--subject-500); border-radius: 48px;
+  padding: 40px;
+  display: flex; flex-direction: column; align-items: center; gap: 24px;
+  width: 546px; max-width: 92%;
+}
+.scq-hint-content {
+  display: flex; flex-direction: column; gap: 24px;
+  width: 462px; max-width: 100%; direction: rtl;
+  color: #fff;
+}
+.scq-hint-title {
+  width: 100%; text-align: right; position: relative;
+  padding-right: 56px;
+  font-family: Calibri, Arial, sans-serif; font-weight: 700; font-size: 32px;
+  color: #fff; line-height: normal; margin: 0;
+}
+.scq-hint-title-ico {
+  position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+  width: 40px; height: 34.3px; display: block; color: #fff;
+}
+.scq-hint-body {
+  width: 100%; text-align: right;
+  font-family: Calibri, Arial, sans-serif; font-weight: 400; font-size: 24px;
+  color: #fff; line-height: normal;
+}
+.scq-hint-body p { margin: 0; line-height: normal; }
+.scq-hint-close {
+  min-width: 196px; width: auto; padding: 16px 40px;
+  border: none; border-radius: 1000px; background: #fff;
+  color: #303030;
+  font-family: Calibri, Arial, sans-serif; font-size: 24px; font-weight: 400;
+  cursor: pointer;
+}
+.scq-hint-close:hover { font-weight: 600; }
+.scq-hint-close { line-height: 32px; white-space: nowrap; }
+
+/* ═══════════════════════════════════════════════════════
+   Screen 04 · S3 — ValueInputQuestion, slide88.xml. Item ref:
+   methodica-math-percent-02-07-001 sub-part ב. Same reference image as
+   S1/S2. TWO inline blanks inside two running sentences ("ביום הראשון
+   לאתגר שי צעדה ___ צעדים.") — a NEW content shape not yet seen in
+   this project (every prior ValueInputQuestion here used either a
+   standalone below-question input or a table cell, never an inline
+   blank inside prose; 720-templates' own "same template does not
+   imply identical content structure" rule applies directly). Reuses
+   `.viq-field`/`.viq-input`/`.viq-input-ico` verbatim, with a new
+   `.viq-field--inline` modifier (span, not div, so it nests validly
+   inside a `<p>`) for inline-with-text placement instead of the
+   block-level row layout.
+
+   Both fields validated holistically as one combined outcome (same
+   pattern as part 06's S2 table). **DOES use the View My Answer
+   Toggle** (corrected 2026-08-12, producer-reported bug — the initial
+   build wrongly skipped it because the source script only provides
+   one shared explanation body; that fact is irrelevant to the
+   Applicability rule, which is purely about UI mechanics — see
+   `js/main.js`'s own header comment on S3 for the full correction
+   rationale). `.scq-popup-actions`/`.popup-action` (ported from part
+   05) render the toggle's own neutral `מעבר לתשובה שלי`/`התשובה הנכונה`
+   button inside the shared `.scq-popup`.
+
+   Hint hidden until first wrong attempt — this project's own
+   established LOCAL convention for every ValueInputQuestion hint so
+   far (part 06's S2), followed here for consistency (unlike S2's SCQ
+   hint above, which has no prior local precedent and so follows the
+   generic template default instead).
+   ═══════════════════════════════════════════════════════ */
+#s3 { background: #fff; }
+
+.viq-field {
+  width: 120px; height: 42px;
+  box-sizing: border-box;
+  padding: 2px 16px;
+  border: 1.5px solid rgba(174, 174, 174, 0.5); border-radius: 10px;
+  background: #fff;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  overflow: hidden;
+  direction: ltr;
+}
+.viq-field:focus-within { border-color: var(--subject-500); }
+.viq-field.error   { border-color: #b20010; }
+.viq-field.correct { border-color: #609e12; }
+/* 64px, not 4ch (producer instruction, 2026-08-19, applied project-wide):
+   measured live, ch-based widths clipped by 1px regardless of count
+   (a rounding mismatch between the ch unit's advance-width estimate and
+   the digits' actual rendered width) — the "can't tell if I typed 100 or
+   1,000" failure the producer flagged. A fixed 64px clears a 4-digit
+   value with several px of real margin, immune to that rounding. */
+.viq-input {
+  flex: 0 0 auto;
+  width: 64px;
+  min-width: 0;
+  border: none; background: transparent; padding: 0;
+  color: #303030;
+  font-family: Calibri, Arial, sans-serif; font-size: 24px; font-weight: 400;
+  text-align: center; line-height: normal;
+  -moz-appearance: textfield;
+}
+.viq-input:focus { outline: none; }
+.viq-input::-webkit-outer-spin-button,
+.viq-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.viq-input:disabled { color: #303030; }
+.viq-input-ico {
+  flex: 0 0 16px;
+  width: 16px; height: 16px;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+}
+.viq-input-ico:empty { display: none; }
+.viq-input-ico svg { display: block; }
+
+/* Inline blank variant — `.viq-field` sits INSIDE a `.viq-context`
+   sentence rather than below it. Same box, just inline-flex + a small
+   horizontal margin so it doesn't touch the surrounding words; vertical-
+   align keeps it on the text baseline instead of the block default. */
+.viq-field--inline {
+  display: inline-flex;
+  vertical-align: middle;
+  margin: 0 6px;
+}
+.s3v-blank-line { margin-bottom: 12px; }
+.s3v-blank-line:last-of-type { margin-bottom: 0; }
+
+/* Same wide reference-photo layout as S1/S2 (steps-app-phones.png,
+   1024×572) — this screen's own `.scq-question` needs the S2/S3 shared
+   1240px width override above since it too shows a `.scq-img` beside
+   text (see the `#s2 .scq-question, #s3 .scq-question` rule). */

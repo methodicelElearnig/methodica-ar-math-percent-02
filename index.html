@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>אחוזים — לומדה | תכנית 720</title>
+  <script>
+    /* The unit's ONLY entry point (§5.2). The platform launches THIS, with
+       ?slxapi= (the LRS config and the learner's actor) and ?registration=
+       (which addresses the resume state document).
+
+       ⚠️ The redirect MUST carry window.location.search. Without it the LRS
+       config is lost the moment the learner arrives and every component
+       reports nothing — silently, because a part with no ?slxapi simply
+       behaves like an uninstrumented lomda. The same rule is why
+       PartNav.forward()/back() carry it across every part boundary; see the
+       note on partUrl() in unit-js/08-partnav.js.
+
+       ⚠️ Lowercase the folder name. §4.5 records this exact line shipping with
+       a capital initial in a sibling unit, which 404s on a case-sensitive
+       host while working fine on Windows.
+
+       location.replace, not href: it keeps this page out of the back-stack,
+       so the browser's Back cannot land on a URL that immediately redirects
+       forward again. */
+    function toFirstComponent() {
+      window.location.replace('./methodica-math-percent-02-01/index.html' + window.location.search);
+    }
+
+    toFirstComponent();
+  </script>
+</head>
+<body>
+  <p>
+    מעבירים אותך ללומדה… <br />
+    <span onclick="toFirstComponent();" style="text-decoration: underline; color: blue; cursor: pointer;">לחצו כאן אם הדף לא נטען</span>
+  </p>
+</body>
+</html>

@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>النسب المئوية 02 — الجزء 04</title>
+  <link rel="stylesheet" href="../unit-css/00-tokens.css?v=2">
+  <link rel="stylesheet" href="../unit-css/10-base.css?v=2">
+  <link rel="stylesheet" href="css/style.css?v=2">
+  <link rel="stylesheet" href="../unit-css/20-motion.css?v=2">
+  <link rel="stylesheet" href="../unit-css/25-report.css?v=2">
+</head>
+<!-- data-subject-theme activates the Math token override block in
+     css/style.css. Must stay identical to parts 01-03's <body> so all
+     parts render in the same subject theme. -->
+<body data-subject-theme="math">
+  <!-- ═══ כיסוי האתחול ═══
+       מסתיר את החלון שבו מסך 0 כבר גלוי (class="screen active" מקובע ב-markup
+       כאן למטה) אבל מסמך ה-state עוד לא נקרא. בלעדיו לומד שממשיך ממחשב אחר
+       רואה אווטאר בצבע הלא-נכון ואז החלפה — בדיוק ההבהוב שכלל 1 ב-CLAUDE.md
+       אוסר, כי הדמות נקראת מהמסמך ולא מ-localStorage מ-v4 והלאה.
+
+       אח של #app ולא בן שלו: scaleApp() מזיז ומקטין את #app, ובן היה יורש
+       את ה-transform. הסגנון inline ולא ב-styles.css במכוון — הכיסוי חייב
+       להיצבע בפריים הראשון, ו-inline הוא היחיד שלא תלוי בקאש של CSS.
+
+       ⚠️ הסקריפט שאחריו הוא רשת הביטחון, ואין לו שום תלות בקובץ JS: גם אם
+       40-resume.js או 50-loader.js נכשלים בטעינה, הכיסוי נופל אחרי 800ms.
+       ההסרה בנתיב הרגיל היא dropBootCover() מ-50-loader.js, שרצה מוקדם יותר
+       מזה ברוב הטעינות.
+       אם bootXAPI הספיק להדליק את window.__resumeInFlight (כלומר resume פעיל
+       והשחזור בדרך), הרשת ממתינה לו במקום לחשוף את מסך 0 באמצע — עד תקרה
+       קשיחה של 6 שניות, שאחריה היא חושפת בכל מקרה. הדגל נקרא הגנתית, ולכן
+       50-loader.js שנכשל בטעינה מחזיר בדיוק את התנהגות ה-800ms. -->
+  <div id="boot-cover" style="position:fixed;inset:0;z-index:9999;background:#fff"></div>
+  <script>
+  (function () {
+    var t0 = Date.now();
+    function tick() {
+      var c = document.getElementById('boot-cover');
+      if (!c || !c.parentNode) return;
+      if (window.__resumeInFlight && Date.now() - t0 < 6000) { setTimeout(tick, 100); return; }
+      c.parentNode.removeChild(c);
+    }
+    setTimeout(tick, 800);
+  })();
+  </script>
+
+  <!-- Shared inline SVG sprite for speech bubbles. Lives here (not as an
+       external .svg file) because a CSS-referenced external SVG cannot
+       read the page's custom properties, so its outline could only ever
+       hold one theme's colour — every bubble outline is var(--subject-500). -->
+  <svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true" focusable="false">
+    <!-- Tail at bottom-centre, pointing DOWN onto the character's head —
+         the TALL/multi-line variant of this project's speech-bubble
+         family (part 01's own #bubble-tail-down is the same tail shape
+         but the short 216x89 single-line variant; this is Figma
+         dpY9DTl41tzW8SKvcPWU0C node 2622:5136, "Image Text Bubble
+         States", 216x188, used for S1's nudge). Geometry preserved
+         exactly from the Figma export (stroke-width 3, preserveAspectRatio
+         none so it stretches to the CSS box); the export's own #3B2FC2
+         stroke is this theme's Subject/500, confirmed via
+         get_variable_defs, so it's reproduced here as the token, not a
+         baked hex. -->
+    <symbol id="bubble-tail-down-tall" viewBox="0 0 216 188" preserveAspectRatio="none">
+      <path d="M11.0303 1.5H204.971C210.216 1.50027 214.5 5.81093 214.5 11.168V161.94C214.5 167.298 210.216 171.609 204.971 171.609H124.429L124.001 171.994L108.473 185.969L93.3936 172.008L92.9619 171.609H11.0303C5.78471 171.609 1.5 167.298 1.5 161.94V11.168C1.50019 5.81076 5.78483 1.5 11.0303 1.5Z" fill="#fff" style="stroke: var(--subject-500)" stroke-width="3"/>
+    </symbol>
+  </svg>
+
+  <div id="app">
+
+    <!-- Report / Issue button — global, outside all .screen divs. -->
+    <button class="flag-btn" type="button" aria-label="هل وجدتم مشكلة؟">
+      <span class="flag-btn-icon">
+        <span class="flag-btn-glyph" aria-hidden="true">
+          <svg class="flag-btn-glyph-pole" viewBox="0 0 0.794329 17.0005" preserveAspectRatio="none" fill="none"><path d="M0.397164 17C0.177722 17 0 16.8239 0 16.6065V0.393501C0 0.176082 0.177722 0 0.397164 0C0.616607 0 0.794329 0.176082 0.794329 0.393501V16.607C0.794329 16.8245 0.616607 17.0005 0.397164 17.0005V17Z" fill="currentColor"/></svg>
+          <svg class="flag-btn-glyph-banner" viewBox="0 0 12 9.31542" preserveAspectRatio="none" fill="none"><path d="M2.76227 9.31542C1.91972 9.31542 1.06958 9.15545 0.213483 8.71363C0.0823588 8.64599 0 8.51124 0 8.36469V0.950975C0 0.814619 0.0715221 0.687925 0.188558 0.615989C0.305594 0.54459 0.45189 0.537611 0.574886 0.598811C0.577053 0.599884 0.578679 0.600958 0.580846 0.602032C2.31309 1.49586 4.05563 1.046 5.90003 0.569821C7.80946 0.0770055 9.78336 -0.431915 11.7865 0.601495C11.9176 0.669136 12 0.803882 12 0.950438V8.36415C12 8.4946 11.9344 8.617 11.8255 8.69001C11.7166 8.76302 11.5774 8.77805 11.4555 8.72974C11.443 8.7249 11.4311 8.71954 11.4197 8.71363C9.68745 7.8198 7.94491 8.26967 6.10051 8.7453C5.00709 9.02714 3.89199 9.31489 2.76281 9.31489L2.76227 9.31542ZM0.793787 8.11935C2.45559 8.87307 4.13094 8.44038 5.90003 7.98407C7.62469 7.53903 9.40191 7.08057 11.2062 7.75806V1.19631C9.54441 0.442591 7.86906 0.875281 6.09997 1.33159C4.37531 1.77663 2.59755 2.23509 0.793787 1.5576V8.11935Z" fill="currentColor"/></svg>
+        </span>
+      </span>
+      <span class="flag-btn-label">هل وجدتم مشكلة؟</span>
+    </button>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 01 (S0) — TransitionScreen bridge out of the practice
+         set. Source: math-target-4.2-script.pptx, slide69.xml (deck
+         maps 1:1 — confirmed fresh this session via presentation.xml's
+         sldIdLst; the source pptx was edited the same day this part
+         was started, see the note in js/main.js).
+         Item ref: methodica-math-percent-02-04-001
+
+         No presenter notes exist for this slide (its rels carry no
+         notesSlide relationship). No speech bubble is authored on it
+         at all (unlike part 03's S0, where a bubble shape existed but
+         was hidden="1" — here there simply is none). Character is a
+         producer-supplied video per character (2026-08-09:
+         character-{1,2}-hoilding-bag.mp4), same still-image fallback
+         pattern as parts 01-03's own kickoff/transition videos
+         (S0_CHARACTER there; S0_CHARACTER here in this part's main.js) —
+         the img only shows if the video fails to load.
+
+         Copy is verbatim from the slide (no producer deviation on
+         record for this screen, unlike part 03's S0): opening line
+         regular, headline bold+oversized, closing line bold — same
+         three-part shape parts 01-03 already established for this
+         role. See the header comment above #s0 in style.css for the
+         exact size/weight sourcing of each line. -->
+    <section class="screen active" data-screen="0" id="s0">
+      <div class="s0-content">
+        <!-- animation-system: header text (float) and the companion-character
+             video zone (fade) share group 1 — DECISIONS.md "Video zones":
+             the video zone starts together with the rest of the screen
+             entrance rather than staggering after it. -->
+        <div class="s0-text" data-reveal="1">
+          <p class="s0-line">أنهيت التمرين بنجاح - كل الاحترام!</p>
+          <p class="s0-title">هذا وقت مناسب للتعلم بطريقة مختلفة أيضًا،</p>
+          <p class="s0-note">لأن التعلم يتم بعدّة طرق.</p>
+        </div>
+        <div class="s0-stage" data-reveal="1" data-reveal-fade>
+          <video class="s0-char" id="s0-char-video" autoplay muted playsinline disablepictureinpicture controlsList="nodownload noremoteplayback noplaybackrate"></video>
+          <img class="s0-char hidden" id="s0-char-img" alt="">
+        </div>
+      </div>
+      <button class="btn-continue" type="button" onclick="advanceFromS0()">
+        <span class="nav-label" data-label="متابعة"><span>متابعة</span></span>
+      </button>
+      <!-- Cross-part Back — see the identical block in part 02's S0.
+           This is the screen the whole mechanism exists for: part 04 is
+           reachable from part 02 (practice passed, remediation skipped)
+           AND from part 03 (remediation completed), so the destination
+           cannot be derived from the part number — it comes from the
+           trail PartNav recorded at the actual crossing. -->
+      <button class="scq-back hidden" id="s0-back" type="button" onclick="goBackFromS0()">
+        <span class="nav-label" data-label="عودة"><span>عودة</span></span>
+      </button>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 02 (S1) — classroom-task table. Source: slide70.xml.
+         Item ref methodica-math-percent-02-04-001 (same item, no
+         lettered sub-part — a continuation, not a new question).
+
+         Presenter note (notesSlide63.xml): "תבנית בפיגמה:
+         ValueInputQuestion. הזנת טקסט בלי משוב. אם הם מנסים להתקדם
+         בלי הזנה עולה הדמות, אבל לא מונע מהם להתקדם בלחיצה נוספת."
+         — an offline classroom activity self-report table with NO
+         correctness model and NO feedback popup anywhere. The only
+         behavior beyond plain data entry is the one-time nudge if
+         Continue is clicked before the table is filled in — see
+         s1AdvanceOrNudge() in main.js and the .s1-nudge comment in
+         style.css for the full reasoning (including the table's
+         column-order derivation, which is NOT a literal copy of the
+         PPTX's own run order — see that comment).
+
+         Table row labels/order are verbatim from Table 12 in the
+         source: ספורט / אומנות - ציור, תיאטרון, מוזיקה / גיימינג-
+         רשתות חברתיות / אחר. The closing line "מהי הפעילות שהכי הרבה
+         תלמידים מבצעים?" is a plain reflection question with no input
+         of its own — nothing on this slide provides an interactive
+         answer field for it (checked: no dropdown/text-input shape
+         exists near it), it is left for classroom discussion.
+
+         Paragraph/bold/bullet structure below is re-verified run-level
+         (2026-08-10, producer-caught first-pass mismatch): para 0 is
+         its OWN bold line (not folded into the next paragraph); para 1
+         ("רשמו לעצמכם במחברת:") is a separate plain line; the next 3
+         paragraphs carry an explicit `<a:buChar char="•">` bullet
+         (marL/indent 342900/-342900) and are a real 3-item list, not
+         plain paragraphs; several genuinely-empty bulleted paragraphs
+         follow (PPTX spacer content where the table sits in the
+         source layout, skipped — not real content); the closing line
+         is ALSO a bulleted paragraph (a 1-item list), not plain body
+         text. All at the source's own 20pt/regular except para 0's
+         20pt/bold. -->
+    <section class="screen" data-screen="1" id="s1">
+      <!-- animation-system: the instructions + table read as ONE
+           "question + answers" unit (DECISIONS.md Step 2 table) — the
+           table's inputs are plain text/number fields (not a
+           measured/interactive component), so they may float per
+           "Interaction safety rules" (verified: no static transform,
+           focus/caret/typing unaffected). -->
+      <div class="s1-text-col" data-reveal="1">
+        <p class="s1-strong">الآن انهضوا عن الكرسي وانظروا حولكم‎.</p>
+        <p>اكتبوا في دفاتركم‎:</p>
+        <ul class="s1-list">
+          <li>كم طالبًا وطالبة يتعلمون في الصف؟</li>
+          <li>استنادًا إلى معرفتكم بطلاب الصف، اكتبوا النشاط الترفيهي المفضل لكل طالب (إذا كنتم لا تعرفون، اسألوا)‎.</li>
+          <li>والآن، اكتبوا في الجدول عدد الطلاب في كل نوع من الأنشطة واحسبوا النسبة المئوية بواسطة تحويل النسبة المئوية إلى كسر أو بواسطة جدول التناسب‎.</li>
+        </ul>
+
+        <table class="s1-table">
+          <colgroup>
+            <col class="s1-col-type"><col class="s1-col-count"><col class="s1-col-percent">
+          </colgroup>
+          <tr>
+            <th>نوع النشاط</th>
+            <th>عدد الطلاب</th>
+            <th>النسبة المئوية للطلاب</th>
+          </tr>
+          <tr>
+            <td class="s1-type-cell">رياضة</td>
+            <td><span class="s1-field"><input id="s1-r1-count" class="s1-input" type="text" inputmode="numeric" aria-label="عدد الطلاب، رياضة" oninput="s1OnInput()"></span></td>
+            <td><span class="s1-field"><input id="s1-r1-pct" class="s1-input" type="text" inputmode="numeric" aria-label="النسبة المئوية، رياضة" oninput="s1OnInput()"><span class="s1-pct-suffix">%</span></span></td>
+          </tr>
+          <tr>
+            <td class="s1-type-cell">فن - رسم، مسرح، موسيقى</td>
+            <td><span class="s1-field"><input id="s1-r2-count" class="s1-input" type="text" inputmode="numeric" aria-label="عدد الطلاب، فن" oninput="s1OnInput()"></span></td>
+            <td><span class="s1-field"><input id="s1-r2-pct" class="s1-input" type="text" inputmode="numeric" aria-label="النسبة المئوية، فن" oninput="s1OnInput()"><span class="s1-pct-suffix">%</span></span></td>
+          </tr>
+          <tr>
+            <td class="s1-type-cell">ألعاب/شبكات اجتماعية</td>
+            <td><span class="s1-field"><input id="s1-r3-count" class="s1-input" type="text" inputmode="numeric" aria-label="عدد الطلاب، ألعاب" oninput="s1OnInput()"></span></td>
+            <td><span class="s1-field"><input id="s1-r3-pct" class="s1-input" type="text" inputmode="numeric" aria-label="النسبة المئوية، ألعاب" oninput="s1OnInput()"><span class="s1-pct-suffix">%</span></span></td>
+          </tr>
+          <tr>
+            <td class="s1-type-cell">آخر</td>
+            <td><span class="s1-field"><input id="s1-r4-count" class="s1-input" type="text" inputmode="numeric" aria-label="عدد الطلاب، آخر" oninput="s1OnInput()"></span></td>
+            <td><span class="s1-field"><input id="s1-r4-pct" class="s1-input" type="text" inputmode="numeric" aria-label="النسبة المئوية، آخر" oninput="s1OnInput()"><span class="s1-pct-suffix">%</span></span></td>
+          </tr>
+        </table>
+
+        <ul class="s1-list">
+          <li>ما هو النشاط الذي يمارسه أكبر عدد من الطلاب؟</li>
+        </ul>
+      </div>
+
+      <!-- Nudge — hidden until the first blocked Continue click. Bubble
+           corrected (2026-08-11) to match Figma dpY9DTl41tzW8SKvcPWU0C
+           node 2622:5136 exactly ("Image Text Bubble States", 216x188)
+           rather than the earlier CSS-triangle approximation — see the
+           #bubble-tail-down-tall symbol above and .s1-nudge-bubble* in
+           style.css for the full geometry/token trail. Character
+           enlarged to 150px (producer: "at least 150%" of the previous
+           96px) — the bubble sits above it automatically via the flex
+           column + bottom-anchored container, no manual repositioning
+           needed. -->
+      <!-- animation-system: classified as a popup (m-popup), not a screen-
+           reveal group — it stays hidden through the screen entrance and
+           opens later on a conditional user action via the same .hidden
+           toggle the popup engine watches, and it must be able to replay
+           on a later blocked attempt, which the reveal system's once-
+           per-session model does not support. -->
+      <div class="s1-nudge hidden m-popup" id="s1-nudge" aria-live="polite">
+        <div class="s1-nudge-bubble">
+          <svg class="s1-nudge-bubble-shape" viewBox="0 0 216 188" preserveAspectRatio="none" aria-hidden="true"><use href="#bubble-tail-down-tall"/></svg>
+          <div class="s1-nudge-bubble-text">
+            <p>لحظة، لا تهربوا‎.</p>
+            <p>لم تملؤوا كل المعطيات في الجدول‎.</p>
+            <p>أليس خسارة؟</p>
+            <p>أنصحكم بإكمالها قبل المتابعة‎.</p>
+          </div>
+        </div>
+        <img class="s1-nudge-char" id="s1-nudge-char-img" src="" alt="">
+      </div>
+
+      <button class="btn-continue" type="button" onclick="s1AdvanceOrNudge()">
+        <span class="nav-label" data-label="متابعة"><span>متابعة</span></span>
+      </button>
+      <button class="scq-back" type="button" onclick="goBackFromS1()">
+        <span class="nav-label" data-label="عودة"><span>عودة</span></span>
+      </button>
+    </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       "מצאתם בעיה?" — שלושה דיאלוגים.
+       יושבים בתוך #app ומחוץ לכל .screen: ‎.report-modal-overlay הוא
+       position:absolute; inset:0, ו-#app הוא האב הממוקם שלו — מחוץ ל-#app
+       הכיסוי לא היה מתיישר לקנבס המוקטן.
+       ההתנהגות כולה ב-../unit-js/25-report.js, העיצוב ב-../unit-css/25-report.css.
+       כפתור ה-.flag-btn עצמו כבר קיים בכל סין ומחווט ב-delegation.
+  ════════════════════════════════════════════════════════════════ -->
+  <div id="report-modal"
+       class="report-modal-overlay"
+       hidden
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="report-modal-title">
+    <div class="report-modal-box">
+      <button class="report-close-btn" type="button" onclick="tryCloseReportModal()" aria-label="إغلاق">&#10005;</button>
+      <h2 class="report-modal-title" id="report-modal-title">דיווח על בעיה</h2>
+      <p class="report-modal-body">משהו לא ברור או לא עובד כמו שצריך?<br>ספרו לנו מה קרה כדי שנטפל.</p>
+
+      <div class="report-field">
+        <label class="report-label" for="report-type"><span class="required-star">*</span> מה סוג הבעיה</label>
+        <div class="report-custom-select" id="report-type-wrapper">
+          <button class="report-select-btn is-placeholder" type="button" aria-haspopup="listbox" aria-expanded="false">
+            <span class="report-select-value">בחרו סוג בעיה</span>
+          </button>
+          <ul class="report-select-list" role="listbox" hidden>
+            <li class="report-select-option" data-value="technical" role="option">תקלה טכנית או שמשהו לא עובד</li>
+            <li class="report-select-option" data-value="unclear" role="option">משהו לא ברור לי</li>
+            <li class="report-select-option" data-value="other" role="option">آخر</li>
+          </ul>
+          <input type="hidden" id="report-type" value="">
+        </div>
+        <span class="report-field-error" id="report-type-error" hidden>בחרו את סוג הבעיה</span>
+      </div>
+
+      <div class="report-field">
+        <label class="report-label" for="report-text"><span class="required-star">*</span> מה קרה?</label>
+        <textarea class="report-textarea" id="report-text" maxlength="250" rows="4" placeholder="פרטו מה קרה כדי שנוכל להבין את הבעיה" onblur="reportTextBlur()"></textarea>
+        <span class="report-field-error" id="report-text-error" hidden>כתבו מה קרה</span>
+        <span class="report-char-count" id="report-char-count">0 / 250</span>
+      </div>
+
+      <div class="report-actions">
+        <button class="report-cancel-btn" type="button" onclick="tryCloseReportModal()">ביטול</button>
+        <button class="report-submit-btn" type="button" onclick="submitReport()" disabled>שליחת דיווח</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- מצב "הדיווח נשלח". דיאלוג נפרד מדיאלוג הנטישה שמתחתיו — אין לאחד ביניהם. -->
+  <div id="report-thanks-modal"
+       class="report-modal-overlay"
+       hidden
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="report-thanks-title">
+    <div class="report-modal-box report-confirm-box">
+      <h2 class="report-modal-title" id="report-thanks-title">הדיווח נשלח, תודה!</h2>
+      <p class="report-modal-body">קיבלנו את הדיווח שלכם ונטפל בו בהקדם.</p>
+      <div class="report-actions">
+        <button class="report-submit-btn" type="button" onclick="closeReportThanks()">إغلاق</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- אישור נטישה: נפתח רק כשיש קלט שלא נשלח. -->
+  <div id="report-confirm-modal"
+       class="report-modal-overlay"
+       hidden
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="report-confirm-title">
+    <div class="report-modal-box report-confirm-box">
+      <h2 class="report-modal-title" id="report-confirm-title">בטוח לסגור את החלון?</h2>
+      <p class="report-modal-body">בלחיצה על סגירה לא יישלח דיווח</p>
+      <div class="report-actions">
+        <button class="report-cancel-btn" type="button" onclick="forceCloseReportModal()">סגור חלון</button>
+        <button class="report-submit-btn" type="button" onclick="backToReportForm()">אני רוצה לדווח</button>
+      </div>
+    </div>
+  </div>
+
+  </div>
+
+  <script src="../unit-js/05-motion.js?v=3"></script>
+  <script src="../unit-js/08-partnav.js?v=4"></script>
+  <script src="../unit-js/10-identity.js?v=4"></script>
+  <script src="../unit-js/15-ui.js?v=3"></script>
+  <script src="../unit-js/18-numeric-input.js?v=3"></script>
+  <script src="../unit-js/20-xapi.js?v=5"></script>
+  <script src="../unit-js/25-report.js?v=3"></script>
+  <script src="../unit-js/30-nav.js?v=3"></script>
+  <script src="../unit-js/35-charts.js?v=3"></script>
+  <script src="../unit-js/40-resume.js?v=4"></script>
+  <script src="../unit-js/45-painters.js?v=3"></script>
+  <script src="../unit-js/50-loader.js?v=4"></script>
+  <script src="../unit-js/60-devbridge.js?v=3"></script>
+  <script src="js/main.js?v=5"></script>
+  <script src="../unit-js/90-boot.js?v=4"></script>
+</body>
+</html>

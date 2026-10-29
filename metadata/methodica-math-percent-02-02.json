@@ -1,0 +1,169 @@
+{
+  "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-02/",
+  "title": "זמן תרגול",
+  "learningUnitId": "methodica-math-percent-02",
+  "componentPurpose": "practice",
+  "isAssessment": false,
+  "recommendedAfterFail": [],
+  "isRequired": true,
+  "relativeDifficulty": 3,
+  "masteryLevel": null,
+  "order": 2,
+  "depthLevel": "core-curriculum-basic",
+  "cognitiveLevels": ["process-thinking"],
+  "languages": ["Hebrew"],
+  "skills": [],
+  "estimatedTimeInMinutes": 30,
+  "createdAt": "2026-07-29T00:00:00.000Z",
+  "updatedAt": "2026-09-09T00:00:00.000Z",
+  "subContent": [
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-02/methodica-math-percent-02-02-003/",
+      "title": "יום גיבוש מועדון נוער",
+      "informationToBot": "מטרת הפריט: תרגול עצמאי מלא (3 סעיפים) המשלב הצבה בטבלה, פתרון, והסקת מסקנה מהתוצאה המספרית. מה התלמיד אמור להבין/לתרגל: 60 מתנדבים רשומים במועדון נוער, 65% נרשמו לפעילות, ותנאי לקיום יום גיבוש הוא לפחות 40 נרשמים. סעיף א - הצבה נכונה בטבלה (65% מול x, 100% מול 60). סעיף ב - פתרון: 39 מתנדבים נרשמו. סעיף ג - מסקנה: 39<40, לכן המנהלת לא תאשר את יום הגיבוש. כיווני חשיבה ואסטרטגיות: מעבר מהצבה נכונה, דרך פתרון מספרי, ועד השוואה לתנאי הסף שניתן בשאלה. טעויות נפוצות: התעלמות מתנאי הסף (40) בסעיף ג ומסקנה שגויה. מידע נוסף: תרחיש רב-שלבי מציאותי. צילום מסך: לא צורף.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-02/methodica-math-percent-02-02-003/q1",
+          "questionType": "matching",
+          "questionText": "במועדון הנוער רשומים 60 מתנדבים. מנהלת המועדון מוכנה לארגן יום גיבוש למתנדבים, אבל רק בתנאי שיגיעו לפחות 40 מתנדבים. לפעילות נרשמו 65% מהמתנדבים. א. התאימו את הנתונים לטבלת הפרופורציה.",
+          "answers": {
+            "source": [
+              "כמות נרשמים חלקית",
+              "כמות נרשמים מלאה",
+              "אחוז חלקי",
+              "אחוז שלם"
+            ],
+            "target": ["x", "60", "65%", "100%"]
+          },
+          "correctAnswers": [
+            {"source": "כמות נרשמים חלקית", "target": "x"},
+            {"source": "כמות נרשמים מלאה", "target": "60"},
+            {"source": "אחוז חלקי", "target": "65%"},
+            {"source": "אחוז שלם", "target": "100%"}
+          ]
+        },
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-02/methodica-math-percent-02-02-003/q2",
+          "questionType": "numeric",
+          "questionText": "ב. כמה מתנדבים נרשמו לפעילות?",
+          "answers": [],
+          "correctAnswers": [39]
+        },
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-02/methodica-math-percent-02-02-003/q3",
+          "questionType": "choice",
+          "questionText": "ג. האם המנהלת תאשר את קיומו של יום הגיבוש?",
+          "answers": ["כן", "לא", "לא ניתן להחליט"],
+          "correctAnswers": ["לא"]
+        }
+      ]
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-02/methodica-math-percent-02-02-004/",
+      "title": "חלוקת נפח ציוד במכולה",
+      "informationToBot": "מטרת הפריט: תרגול חישוב מספר ערכי אחוז מתוך אותה כמות שלמה, בשיטת המרת האחוז לשבר. מה התלמיד אמור להבין/לתרגל: מכולה בנפח 200 מ\"ק, מחולקת ל-4 סוגי ציוד לפי אחוזים: בישול ומטבח 45% (90 מ\"ק), אוהלים ומבנים 40% (80 מ\"ק), ציוד חבלים ובטיחות 12% (24 מ\"ק), עזרה ראשונה 3% (6 מ\"ק). כיווני חשיבה ואסטרטגיות: חישוב נפרד לכל שורה בטבלה, תוך שימת לב שסך האחוזים=100% וסך הנפח=200 מ\"ק (בקרה עצמית). טעויות נפוצות: טעות בהמרת אחוז לשבר עשרוני עבור מספרים לא עגולים (כמו 12%, 3%). מידע נוסף: הקשר - מחנה קיץ של שכבת ח'. צילום מסך: לא צורף.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-02/methodica-math-percent-02-02-004/q1",
+          "questionType": "other",
+          "questionText": "הנפח הכולל של המכולה הוא 200 מ\"ק (מטר מעוקב). השלימו את עמודת הנפח (מ\"ק) בטבלה לפי האחוזים הנתונים לכל סוג ציוד.",
+          "answers": "בישול ומטבח (45%): 90, אוהלים ומבנים (40%): 80, ציוד חבלים ובטיחות (12%): 24, עזרה ראשונה (3%): 6",
+          "correctAnswers": []
+        }
+      ]
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-02/methodica-math-percent-02-02-005/",
+      "title": "חלוקת כרטיסים לגמר הארצי",
+      "informationToBot": "מטרת הפריט: תרגול הבנה שהחלוקה לפי אחוזים בין קבוצות עלולה ליצור פער מול המספר בפועל שהגיע, ובחירת כל המסקנות הנכונות מתוך אפשרויות. מה התלמיד אמור להבין/לתרגל: 150 כרטיסים הוזמנו, 80% (120 כרטיסים) לתלמידים כולל חולצה, השאר (20%=30 כרטיסים) למורים. הגיעו 118 תלמידים ו-32 מורים - כלומר חסרים 2 כרטיסי מורים ונותרו 2 כרטיסי תלמידים לא מנוצלים (וגם 2 חולצות מיותרות). כיווני חשיבה ואסטרטגיות: חישוב מספר הכרטיסים לכל קבוצה מתוך האחוזים, השוואה למספר שהגיע בפועל בכל קבוצה בנפרד. טעויות נפוצות: הנחה שסך הכרטיסים=סך המוזמנים אוטומטית פותר הכל, בלי לבדוק כל קבוצה בנפרד. מידע נוסף: שאלת בחירה מרובה (יותר מתשובה נכונה אחת). צילום מסך: לא צורף.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-02/methodica-math-percent-02-02-005/q1",
+          "questionType": "choice",
+          "questionText": "רכזת שכבת ח' הזמינה 150 כרטיסים לעידוד הנבחרת בגמר. 80% מהכרטיסים היו מיועדים לתלמידי בית הספר וכללו חולצות, השאר (הזולים יותר, ללא חולצות) למורים המלווים. בבוקר הפעילות הגיעו 118 תלמידים ו-32 מורים. מה הבעיה שתיווצר לרכזת השכבה כשתחלק את 150 הכרטיסים? בחרו את כל התשובות הנכונות.",
+          "answers": [
+            "אין בעיה - הוזמנו 150 כרטיסים והגיעו 150 מוזמנים.",
+            "הוזמנו כרטיסים ל-32 מורים, שהספיקו בדיוק לכל המורים.",
+            "יישארו 2 כרטיסי תלמידים לא מנוצלים, ולכן 2 המורים הנוספים יקבלו כרטיס תלמיד, שהוא יקר יותר.",
+            "הוזמנו כרטיסים ל-120 תלמידים, אך הגיעו רק 118 - לא יחולקו שתי חולצות."
+          ],
+          "correctAnswers": [
+            "יישארו 2 כרטיסי תלמידים לא מנוצלים, ולכן 2 המורים הנוספים יקבלו כרטיס תלמיד, שהוא יקר יותר.",
+            "הוזמנו כרטיסים ל-120 תלמידים, אך הגיעו רק 118 - לא יחולקו שתי חולצות."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-02/methodica-math-percent-02-02-006/",
+      "title": "השוואת תכולת חלבון בין מעדנים",
+      "informationToBot": "מטרת הפריט: תרגול השוואה בין שני ערכי אחוז מתוך שני שלמים שונים (משקלי גביע שונים), והבנה שאחוז גבוה יותר לא בהכרח מייצג כמות גדולה יותר. מה התלמיד אמור להבין/לתרגל: פרו-מקס - גביע 250 גרם, 10% חלבון = 25 גרם. אקסטרה-פיט - גביע 150 גרם, 16% חלבון = 24 גרם. למרות אחוז חלבון גבוה יותר באקסטרה-פיט, פרו-מקס מכיל יותר חלבון בפועל בזכות המשקל הגדול יותר. כיווני חשיבה ואסטרטגיות: חישוב כמות בפועל (בגרמים) לכל מוצר בנפרד לפני השוואה - לא ניתן להשוות אחוזים משלמים שונים ישירות. טעויות נפוצות: השוואת האחוזים או המשקלים בלבד בלי לחשב את הכמות בפועל. מידע נוסף: הקשר - קניית מעדן חלבון אחרי אימון טניס. צילום מסך: לא צורף.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-02/methodica-math-percent-02-02-006/q1",
+          "questionType": "choice",
+          "questionText": "יאיר סיים אימון טניס ורצה לקנות את המעדן שמכיל את הכמות הגדולה ביותר של חלבון (בגרמים). הוא מתלבט בין שני סוגים: פרו-מקס - גביע במשקל 250 גרם, 10% חלבון. אקסטרה-פיט - גביע במשקל 150 גרם, 16% חלבון. איזה מעדן יאיר צריך לבחור ומדוע? השתמשו בשיטת המרת האחוז לשבר פשוט/עשרוני.",
+          "answers": [
+            "אקסטרה-פיט, כי אחוז החלבון בו גבוה יותר (16%) ולכן הוא בהכרח מכיל יותר חלבון.",
+            "פרו-מקס, כי הגביע שלו שוקל יותר (250 ג') ולכן הוא בהכרח מכיל יותר חלבון.",
+            "שני המעדנים מכילים בדיוק את אותה כמות חלבון.",
+            "פרו-מקס, מכיוון שהוא מכיל 25 גרם חלבון, לעומת 24 גרם באקסטרה-פיט."
+          ],
+          "correctAnswers": ["פרו-מקס, מכיוון שהוא מכיל 25 גרם חלבון, לעומת 24 גרם באקסטרה-פיט."]
+        }
+      ]
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-02/methodica-math-percent-02-02-007/",
+      "title": "סקר טיול שכבתי - נכון/לא נכון",
+      "informationToBot": "מטרת הפריט: תרגול הבחנה בין אחוז לבין כמות בפועל, דרך בדיקת נכונות של 5 היגדים על תוצאות סקר. מה התלמיד אמור להבין/לתרגל: על סקר בקבוצת ווטסאפ השיבו 80 תלמידים: פארק מים 35% (=28 תלמידים), מתחם נינג'ה 30% (=24 תלמידים), שאר האחוז (35%) מתחלק בין כמה אפשרויות נוספות שכל אחת קיבלה מעט קולות. כיווני חשיבה ואסטרטגיות: חישוב הכמות בפועל (אחוז·80) לכל היגד ובדיקה מול הטענה. טעויות נפוצות: בלבול בין ערך האחוז (35%, 30%) לבין הכמות בפועל (28, 24) - היגדים 2 ו-3 מנצלים בלבול זה. שימו לב: התסריט המקורי מציג את תוצאת החישוב של סעיף 4 (30% מתוך 80) כ-'34', אך החישוב המתמטי הנכון נותן 24 (30/100·80=24) - נעשה שימוש בערך המתוקן (24) כי הוא עקבי גם עם הטענה 'פחות מ-25' וגם עם הופעת אותו מספר (24) בהסבר לסעיף 3; ייתכן שמדובר בטעות הקלדה בתסריט המקורי, מומלץ לוודא מול הכותב. מידע נוסף: 5 היגדים נפרדים, כל אחד נכון/לא נכון. צילום מסך: לא צורף.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-02/methodica-math-percent-02-02-007/q1",
+          "questionType": "true-false",
+          "questionText": "לכבוד טיול סוף השנה נפתח סקר בקבוצת הווטסאפ של שכבה ח'. על הסקר השיבו 80 תלמידים ותלמידות. נציג מועצת התלמידים כתב: 'פארק מים - 35% מהמשיבים, מתחם נינג'ה - 30% מהמשיבים'. 1. 28 תלמידים בחרו בפארק מים.",
+          "answers": ["true", "false"],
+          "correctAnswers": ["true"]
+        },
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-02/methodica-math-percent-02-02-007/q2",
+          "questionType": "true-false",
+          "questionText": "2. 35 תלמידים בחרו בפארק המים.",
+          "answers": ["true", "false"],
+          "correctAnswers": ["false"]
+        },
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-02/methodica-math-percent-02-02-007/q3",
+          "questionType": "true-false",
+          "questionText": "3. 30 תלמידים בחרו במתחם נינג'ה.",
+          "answers": ["true", "false"],
+          "correctAnswers": ["false"]
+        },
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-02/methodica-math-percent-02-02-007/q4",
+          "questionType": "true-false",
+          "questionText": "4. פחות מ-25 תלמידים בחרו במתחם הנינג'ה.",
+          "answers": ["true", "false"],
+          "correctAnswers": ["true"]
+        },
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-02/methodica-math-percent-02-02-007/q5",
+          "questionType": "true-false",
+          "questionText": "5. לא ייתכן שפארק המים הוא האפשרות המובילה (35%), כי עוד 35% מהתלמידים בחרו באפשרויות אחרות.",
+          "answers": ["true", "false"],
+          "correctAnswers": ["false"]
+        }
+      ]
+    }
+  ]
+}

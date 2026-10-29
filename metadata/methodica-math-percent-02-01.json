@@ -1,0 +1,156 @@
+{
+  "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-01/",
+  "title": "בואו נלמד משהו חדש",
+  "learningUnitId": "methodica-math-percent-02",
+  "componentPurpose": "instruction",
+  "isAssessment": false,
+  "recommendedAfterFail": [],
+  "isRequired": true,
+  "relativeDifficulty": 3,
+  "masteryLevel": null,
+  "order": 1,
+  "depthLevel": "core-curriculum-basic",
+  "cognitiveLevels": ["process-thinking"],
+  "languages": ["Hebrew"],
+  "skills": [],
+  "estimatedTimeInMinutes": 14,
+  "createdAt": "2026-07-29T00:00:00.000Z",
+  "updatedAt": "2026-09-09T00:00:00.000Z",
+  "subContent": [
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-01/methodica-math-percent-02-01-001/",
+      "title": "הורדת אפליקציה ובר התקדמות",
+      "informationToBot": "מטרת הפריט: יצירת עניין ראשוני וחיבור הלומד למושג אחוז דרך הקשר מוכר - בר התקדמות בהורדת אפליקציה. מה התלמיד אמור להבין: שאחוז מייצג חלק מכמות, וככל שאחוז ההורדה גדל כך גדלה כמות ה-GB שירדה בפועל. כיווני חשיבה ואסטרטגיות: הלומד בוחר דמות מלווה, ואז צופה בתרחיש הורדת משחק (200GB) ובשאלה רטורית (כמה GB ירדו ב-36%?) בלי לענות בפועל - זהו רק פתיח מוטיבציוני. טעויות נפוצות: אין הערכה בפריט. מידע נוסף: מסתיים במעבר לשאלת מוטיבציה נוספת (טיפ במסעדה) לפני הכניסה להקנייה בפועל. צילום מסך: לא צורף.",
+      "contentType": "motivational",
+      "mediaFormat": "interactive-content",
+      "questions": []
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-01/methodica-math-percent-02-01-002/",
+      "title": "בחירת שיטת חישוב (המרה לשבר / פרופורציה)",
+      "informationToBot": "מטרת הפריט: מתן בחירה ללומד בין שתי שיטות שקולות לחישוב ערך אחוז מתוך כמות - המרת האחוז לשבר וכפל בכמות, או בניית טבלת פרופורציה. מה התלמיד אמור להבין: שתי השיטות מובילות לאותה תוצאה, והבחירה היא העדפת לימוד אישית. כיווני חשיבה ואסטרטגיות: זוהי בחירה טכנית (Selected) ולא שאלה מוערכת. טעויות נפוצות: אין - אין תשובה נכונה/שגויה לבחירה עצמה. מידע נוסף: לאחר צפייה בשיטה אחת, הטקסט משתנה ומאפשר בחירה בשיטה השנייה גם כן (שתי ההקנייות נלמדות שתיהן, אין חשיבות לסדר). צילום מסך: לא צורף.",
+      "contentType": "instruction",
+      "mediaFormat": "text",
+      "questions": []
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-01/methodica-math-percent-02-01-003/",
+      "title": "המרת אחוז לשבר וכפל בכמות",
+      "informationToBot": "מטרת הפריט: הקניית שיטת החישוב הראשונה - המרת האחוז לשבר (פשוט/עשרוני) וכפל בכמות השלמה. מה התלמיד אמור להבין: לחישוב ערך אחוז מתוך כמות יש שני שלבים - שלב 1: להמיר את האחוז לשבר בעל מכנה 100 (למשל 20% = 20/100 = 1/5 = 0.2). שלב 2: לכפול את השבר בכמות השלמה (לדוגמה: 1/5 · 60 = 12, כלומר 20% מ-60 הם 12). כיווני חשיבה ואסטרטגיות: הלומד בוחר בין צפייה בסרטון קצר לבין קריאת התוכן הכתוב (ת'אכלס), ואז עובר צעד-צעד (לחיצה על חיצים) על הדוגמה המספרית. טעויות נפוצות: אין הערכה בפריט - זהו תוכן הקנייה בלבד. מידע נוסף: כולל דוגמה מלאה מבוארת (20% מתוך 60 = 12). צילום מסך: לא צורף.",
+      "contentType": "instruction",
+      "mediaFormat": "text",
+      "questions": []
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-01/methodica-math-percent-02-01-004/",
+      "title": "פלייליסט אימונים - המרת אחוז לשבר",
+      "informationToBot": "מטרת הפריט: תרגול ראשון בשיטת המרת האחוז לשבר, בשני שלבים נפרדים ומודרכים. מה התלמיד אמור להבין/לתרגל: פלייליסט אימונים בן 200 שירים, 40% מהם שירים עבריים. סעיף א - המרת 40% לשבר: 40/100 המצומצם ל-2/5. סעיף ב - כפל השבר (2/5 או 0.4) בכמות השלמה (200) ומתקבל 80 שירים עבריים. כיווני חשיבה ואסטרטגיות: שלב אחר שלב - קודם ממירים, אחר כך כופלים. טעויות נפוצות: הצגת השבר הלא-מצומצם בלבד או שכחת שלב הכפל. מידע נוסף: התסריט מציין שיש לקבל גם את התשובה הלא-מצומצמת 40/100 כתשובה נכונה לסעיף א. צילום מסך: לא צורף.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-01/methodica-math-percent-02-01-004/q1",
+          "questionType": "fill-in",
+          "questionText": "יצרתם פלייליסט שינגן לנו באימוני הספורט, שבו 200 שירים. 40% מהשירים הם שירים עבריים. שלב 1 - מה השבר המתאים ל-40%? המירו לשבר.",
+          "answers": [],
+          "correctAnswers": ["2/5", "40/100"]
+        },
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-01/methodica-math-percent-02-01-004/q2",
+          "questionType": "other",
+          "questionText": "שלב 2 - השלימו את התרגיל וחשבו את כמות השירים העבריים בפלייליסט שלנו.",
+          "answers": "200, 80",
+          "correctAnswers": []
+        }
+      ]
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-01/methodica-math-percent-02-01-005/",
+      "title": "טבלת הפרופורציה",
+      "informationToBot": "מטרת הפריט: הקניית שיטת החישוב השנייה - מציאת ערך אחוז מתוך כמות באמצעות טבלת פרופורציה. מה התלמיד אמור להבין: 4 שלבים - 1) זיהוי הנתונים (כמות שלמה, אחוז נתון, השלם באחוזים=100%). 2) הצבה בטבלה: אחוז מעל אחוז, כמות מעל כמות, בהתאמה (למשל 20% מול x, 100% מול 60). 3) בניית משוואת הפרופורציה (20%/100% = x/60) ופתרונה. 4) בקרה - בדיקה שהתוצאה הגיונית. כיווני חשיבה ואסטרטגיות: סדרת סרטונים קצרים לפי שלב, עם אפשרות מעבר לקריאה טקסטואלית חלופית (ת'אכלס). טעויות נפוצות: אין הערכה בפריט - זהו תוכן הקנייה בלבד. מידע נוסף: דוגמה מלאה (20% מ-60 = 12) עם בקרה מסכמת (12/60=1/5=20%). צילום מסך: לא צורף.",
+      "contentType": "instruction",
+      "mediaFormat": "text",
+      "questions": []
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-01/methodica-math-percent-02-01-006/",
+      "title": "פלייליסט אימונים - טבלת פרופורציה",
+      "informationToBot": "מטרת הפריט: תרגול אותה שאלה כמו בפריט 004 (פלייליסט 200 שירים, 40% עבריים), הפעם בשיטת טבלת הפרופורציה, כדי להראות ששתי השיטות מובילות לאותה תוצאה. מה התלמיד אמור להבין/לתרגל: שלבים 1+2 - הצבת הנתונים בטבלה (40% מול x הלא-ידוע, 100% מול 200 הכמות השלמה). שלב 3 - בניית משוואת הפרופורציה 40%/100%=x/200 ופתרונה: x=80. כיווני חשיבה ואסטרטגיות: הצבה נכונה בטבלה (אחוז מעל אחוז, כמות מעל כמות) היא התנאי לפתרון נכון. טעויות נפוצות: הצבה הפוכה של האחוז והכמות בטבלה. מידע נוסף: אותה תשובה סופית כמו בפריט 004 (80 שירים), למטרות השוואה בין השיטות. צילום מסך: לא צורף.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-01/methodica-math-percent-02-01-006/q1",
+          "questionType": "other",
+          "questionText": "יצרתם פלייליסט אימונים שבו 200 שירים. 40% מהשירים הם שירים עבריים. שלבים 1+2 - אתרו את הנתונים והציבו אותם בטבלת הפרופורציה (אחוז מעל אחוז, כמות מעל כמות).",
+          "answers": "אחוז חלקי - 40, אחוז שלום - 100, כמות שלמה - 200",
+          "correctAnswers": []
+        },
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-01/methodica-math-percent-02-01-006/q2",
+          "questionType": "other",
+          "questionText": "שלב 3 - בנו את משוואת הפרופורציה ופתרו אותה. כמה שירים עבריים יש בפלייליסט?",
+          "answers": "40/100=x/200, x=80",
+          "correctAnswers": []
+        }
+      ]
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-01/methodica-math-percent-02-01-007/",
+      "title": "נפתור יחד: יעד צעדים יומי בפרופורציה",
+      "informationToBot": "מטרת הפריט: תרגול מונחה שלב-שלב (יחד עם הדמות) בבניית משוואת פרופורציה נכונה מתוך תרחיש חדש, לפני מעבר לתרגול עצמאי. מה התלמיד אמור להבין/לתרגל: היעד היומי בשעון חכם הוא 8,000 צעדים, והושלמו 45% מהיעד. שלב 1 - זיהוי הנתונים (8,000 = כמות שלמה/100%). שלב 2 - הצבה בטבלה (45% מול x, 100% מול 8,000). שלב 3 - בחירת משוואת הפרופורציה הנכונה מתוך כמה ניסוחים אפשריים. שלב 4 - פתרון: x=3,600 צעדים. כיווני חשיבה ואסטרטגיות: הבחנה בין ניסוח נכון של המשוואה (אחוז מול אחוז=כמות מול כמות) לבין ניסוחים הפוכים/שגויים. טעויות נפוצות: הפיכת מונה ומכנה במשוואה (למשל 45%/100%=8000/x). מידע נוסף: לאחר הפריט הזה הלומד עובר לתרגול עצמאי (חימום), ברכיב הבא. צילום מסך: לא צורף.",
+      "contentType": "solved-exercise",
+      "mediaFormat": "text",
+      "questions": []
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-01/methodica-math-percent-02-01-008/",
+      "title": "שאלת חימום: הורדת משחק (המרת אחוז לשבר)",
+      "informationToBot": "מטרת הפריט: שאלת חימום קלילה ראשונה לפני מעבר לתרגול העצמאי, בשיטת המרת האחוז לשבר. מה התלמיד אמור להבין/לתרגל: משחק במשקל 80GB, ירדו ממנו 45%. סעיף א - זיהוי התרגיל הנכון לחישוב: 45/100·80. סעיף ב - חישוב התוצאה: 36GB. כיווני חשיבה ואסטרטגיות: זיהוי צורת החישוב הנכונה מתוך כמה ניסוחים (כולל ניסוחים הפוכים שגויים), ואז ביצוע החישוב בפועל. טעויות נפוצות: הפיכת מונה/מכנה בתרגיל (45/80·100 או 100/45·80). מידע נוסף: כולל תזכורת מה זה GB (יחידת זיכרון מחשב). צילום מסך: לא צורף.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-01/methodica-math-percent-02-01-008/q1",
+          "questionType": "choice",
+          "questionText": "רועי מוריד את המשחק שנפחו 80 ג'יגה בייט (GB). בינתיים ירדו 45% מהמשחק. א. איזה מהתרגילים הבאים מציג את הדרך הנכונה לחישוב כמות ה-GB שכבר ירדו?",
+          "answers": ["45/80 · 100", "100/45 · 80", "45/100 · 80", "0.45· 80", "0.55· 80"],
+          "correctAnswers": ["45/100 · 80", "0.45· 80"]
+        },
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-01/methodica-math-percent-02-01-008/q2",
+          "questionType": "numeric",
+          "questionText": "ב. כמה ג'יגה בייט ירדו בינתיים לטלפון?",
+          "answers": [],
+          "correctAnswers": [36]
+        }
+      ]
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-01/methodica-math-percent-02-01-009/",
+      "title": "שאלת חימום: סוללת אוזניות (טבלת פרופורציה)",
+      "informationToBot": "מטרת הפריט: שאלת חימום שנייה, בשיטת טבלת הפרופורציה. מה התלמיד אמור להבין/לתרגל: סוללה מלאה מספיקה ל-40 שעות האזנה, נותרו 15% מהסוללה. סעיף א - הצבה נכונה בטבלה (15% מול x, 100% מול 40). סעיף ב - פתרון וקביעה: נותרו 6 שעות סוללה, ולכן יש מספיק לאימון של שעתיים. כיווני חשיבה ואסטרטגיות: הצבה נכונה של הידוע/לא-ידוע בטבלה לפני הפתרון, ואז השוואת התוצאה לדרישה בפועל (2 שעות). טעויות נפוצות: הצבה הפוכה של האחוז/כמות בטבלה. מידע נוסף: התרחיש עוסק בסוללת אוזניות אלחוטיות ואימון נינג'ה. צילום מסך: לא צורף.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-01/methodica-math-percent-02-01-009/q1",
+          "questionType": "choice",
+          "questionText": "סוללה של אוזניות אלחוטיות מספיקה ל-40 שעות האזנה כשהיא טעונה לחלוטין. כרגע נותרו בסוללה 15%. א. עזרו לנעמה ובחרו את ההצבה הנכונה בטבלת הפרופורציה.",
+          "answers": [
+            "אחוז/כמות: 15% מול x (עליון), 100% מול 40 (תחתון)",
+            "אחוז/כמות: 15% מול 40 (עליון), 100% מול x (תחתון)"
+          ],
+          "correctAnswers": ["אחוז/כמות: 15% מול x (עליון), 100% מול 40 (תחתון)"]
+        },
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-01/methodica-math-percent-02-01-009/q2",
+          "questionType": "choice",
+          "questionText": "ב. חשבו את כמות הסוללה שנותרה וקבעו: האם לנעמה יש מספיק סוללה לאימון של שעתיים בנינג'ה?",
+          "answers": ["כן", "לא", "לא ניתן לדעת"],
+          "correctAnswers": ["כן"]
+        }
+      ]
+    }
+  ]
+}

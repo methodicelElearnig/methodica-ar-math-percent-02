@@ -1,0 +1,107 @@
+/* ═══════════════════ unit-css/00-tokens.css ═══════════════════
+   Fonts, reset and the subject theme tokens. THE one copy for this unit;
+   every part loads it as ../unit-css/00-tokens.css BEFORE its own
+   css/style.css.
+
+   Extracted from the seven style.css files, where these rules were
+   BYTE-IDENTICAL and already the first rules in every file. That prefix
+   property is what makes the move cascade-safe: putting them in a
+   stylesheet that loads earlier preserves their relative order exactly,
+   so nothing that used to override them stops doing so. Rules further
+   down the files are NOT safe to hoist this way and were left alone.
+
+   The interleaved COMMENTS did differ per part (six variants); part 01's
+   are the fullest and are the ones kept. ═════════════════════════════ */
+
+/* Open Sans 700 — SELF-HOSTED, so this unit has no runtime dependency on
+   fonts.googleapis.com. Used by exactly one element: part 01's
+   #s2-slider-value, the LTR "100 GB" readout on the download-slider screen,
+   at 24px/700. It matters because that string is measurably wider in Open
+   Sans than in Assistant — 64.73px vs 56.88px, ~12% — and it sits in a grid
+   column, so a fallback would move the layout.
+
+   This replaced the Google Fonts <link> every part carried. That link also
+   re-requested Assistant 400/600/700, which are self-hosted just below, so
+   apart from this one face it was pure redundancy.
+
+   Sourced from a file already in this project rather than downloaded: the
+   Open Sans Bold woff (21,028 bytes) that ships inside the Storyline export
+   under methodica-math-angles-ls01-00155 (byte-identical to the copy in
+   scale-01's XAPI-Demo).
+
+   ⚠️ The FIRST attempt used methodica-science-mass-weight-01's
+   OpenSans-Bold.woff2, and it was wrong — 7,880 bytes, a subset that does
+   not carry the glyphs for "100 GB". It loaded happily (200, and present in
+   document.fonts) yet rendered at 58.02px instead of 64.73px, i.e. almost
+   the Assistant fallback width. A font that loads is not a font that renders
+   the string you need: measure the width, do not trust the request.
+
+   ⚠️ PATH DEPTH. From unit-css/ the shared assets are ONE level up
+   (../unit-assets/), not two. The three Assistant faces below were moved here
+   verbatim from <part>/css/style.css, where ../../ was correct, and carried
+   the wrong depth for two commits. It was invisible in dev because a browser
+   clamps ".." at the server root, so ../../ and ../ resolve identically when
+   the unit is served from /. Under the production subpath they do not:
+     ../../ -> .../metodica/720active/math/percent/unit-assets/...   (404)
+     ../    -> .../metodica/720active/math/percent/02/unit-assets/... (right)
+   Every font would have 404'd on the real host and the unit would have
+   rendered in a system sans-serif. */
+/* ─── Reset ────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+/* ── Subject theme tokens — Figma Variable Collection (720 UI Templates).
+   Canonical architecture per figma-lomda-builder → reference/subject-theming.md:
+   :root carries the DEFAULT (Science) theme; each additional theme is an
+   override block keyed by data-subject-theme on <body>. This lomda ships
+   with data-subject-theme="math" baked into index.html.
+   All 12 token values: 720-design-guidelines → references/colors-and-gradients.md
+   (verified against the live Figma Foundations page, 2026-08-04). ── */
+:root {
+  --subject-100: #d4f3ff;
+  --subject-200: #c7f0ff;
+  --subject-300: #b9ecff;
+  --subject-350: #b0dfff;
+  --subject-400: #00baff;
+  --subject-500: #019de5;
+  --subject-600: #0690d0;
+  --subject-700: #007ac6;
+  --subject-800: #0070c0;
+  --subject-900: #002060;
+  --subject-alpha-100: rgba(0, 186, 255, 0);
+  --subject-alpha-200: rgba(0, 186, 255, 0.3);
+  /* Official Subject/Gradient/Science Paint Style. Role-scoped name
+     because it is applied ONLY to confirmed primary actions (Continue /
+     Submit) — the Subject gradient's wider usage scope is not defined,
+     so this property must not be reused for other components.
+     Stops per colors-and-gradients.md → "Known Subject-related
+     gradients", matching the Type=Science NavButton component. */
+  --primary-action-gradient: linear-gradient(to bottom, #005fbe 9%, #0059b2 23.361%, #003971 100%);
+}
+
+body[data-subject-theme="math"] {
+  --subject-100: #ead9ff;
+  --subject-200: #cec7ff;
+  --subject-300: #e1d9ff;
+  --subject-350: #b3b0ff;
+  --subject-400: #bdb3fc;
+  --subject-500: #3b2fc2;
+  --subject-600: #383896;
+  --subject-700: #5656cc;
+  --subject-800: #4b35a5;
+  --subject-900: #2f2478;
+  --subject-alpha-100: rgba(165, 28, 255, 0);
+  --subject-alpha-200: rgba(165, 28, 255, 0.3);
+  /* Official Subject/Gradient/Math Paint Style values (producer-confirmed
+     as canonical): 9% #6F6AD5 → 38% #4B35A5 → 100% #270075, vertical.
+     These are the Paint Style's own values, NOT pixels sampled from a
+     rendered component. An earlier revision used #676AD5 8.654% /
+     38.462%, read off the Type=Math NavButton render; the Paint Style
+     supersedes it. (colors-and-gradients.md records the same stop colours
+     with finer percentages, 8.654% / 38.462% — the values here are the
+     confirmed canonical ones.)
+     Role-scoped name, same as the Science counterpart: applied ONLY to
+     confirmed primary actions (Continue / Submit), because the Subject
+     gradient's wider usage scope is not defined. Do not reuse this
+     property for other components. */
+  --primary-action-gradient: linear-gradient(to bottom, #6f6ad5 9%, #4b35a5 38%, #270075 100%);
+}

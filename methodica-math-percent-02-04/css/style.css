@@ -1,0 +1,368 @@
+/* ═══════════════════════════════════════════════════════
+   css/style.css  —  methodica-math-percent-02-04
+   Canvas: 1280 × 710 px   (720 reference engine)
+
+   Parts of a lomda are separate pages with their own stylesheet, so the
+   GLOBAL blocks below (fonts, reset, Subject tokens, canvas, screen,
+   bottom bar, Report button, Continue/Back buttons, nav-label hover
+   guard) are carried over from part 03 VERBATIM so all parts look like
+   one product.
+   Screen blocks below those: .s0-* (TransitionScreen bridge out of the
+   practice set) and .s1-* (classroom-task table, no scoring).
+   ═══════════════════════════════════════════════════════ */
+
+/* ─── Local fonts (Assistant) ───────────────────────────
+   ONE shared copy for the whole unit, at ../../unit-assets/fonts/.
+   Previously each part carried its own byte-identical set of seven
+   weights (7 parts x 7 files = 2,436,448 B); the four unused weights
+   are gone and the rest is shared.
+
+   Only 400 / 600 / 700 are declared, because only those are used: a
+   sweep of all seven stylesheets found no font-weight declaration
+   outside these blocks other than 400, 600 and 700, and no
+   bold/bolder/lighter keyword and no inline font-weight anywhere in
+   the HTML or JS. UA-default bold (<b>, <strong>, <h*>) maps to 700,
+   which is declared. Re-run that sweep before adding a weight back.
+
+   The Google Fonts <link> in index.html is still there and still
+   needed - NOT as a fallback for these files, but because it also
+   fetches Open Sans 700, which is used by .s2-slider-value in part 01
+   and is not self-hosted. Do not remove that link without either
+   self-hosting Open Sans or re-speccing that one rule.
+   ───────────────────────────────────────────────────────── */
+/* ─── Shared: Continue Button — gradient pill, bottom-left of bar.
+   Carried over verbatim so size/position stay identical across parts. ── */
+.btn-continue {
+  position: absolute;
+  bottom: 17.5px; left: 24px;
+  z-index: 12;
+  min-width: 140px;
+  height: 39px;
+  padding: 0 40px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--primary-action-gradient);
+  color: #fff;
+  border: none; border-radius: 1000px;
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 20px; font-weight: 400;
+  cursor: pointer; direction: rtl;
+  text-align: center; white-space: nowrap;
+}
+.btn-continue:not(:disabled):hover { font-weight: 600; }
+.btn-continue.hidden { display: none !important; }
+.btn-continue:disabled {
+  background: #AEAEAE;
+  color: #303030;
+  cursor: not-allowed;
+  opacity: 1;
+}
+
+/* ─── Shared: Back Button — outline pill, bottom-right of bar. ── */
+.scq-back {
+  position: absolute;
+  bottom: 17.5px;
+  right: 24px;
+  z-index: 12;
+  width: auto; min-width: 140px; height: 39px; padding: 0 40px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--subject-700); border-radius: 1000px; background: #fff;
+  color: var(--subject-700);
+  font-family: Calibri, Arial, sans-serif; font-size: 20px; font-weight: 400;
+  cursor: pointer; direction: rtl; white-space: nowrap;
+}
+.scq-back:hover { font-weight: 600; border-width: 1.5px; }
+
+/* ── HOVER STABILITY — every 720 button's hover flips font-weight
+   400→600; Bold Assistant is wider/taller, so without this guard a
+   hover silently reflows the button. Guard 1 (width): .nav-label
+   reserves the bold width up front via a hidden ::before ghost stacked
+   in the same grid cell. Guard 2 (height): pin line-height in px.
+   Markup: <span class="nav-label" data-label="TEXT"><span>TEXT</span></span>
+   — data-label must repeat the visible text verbatim. ── */
+.nav-label { display: inline-grid; }
+.nav-label::before {
+  content: attr(data-label);
+  grid-area: 1 / 1;
+  font-weight: 600;
+  block-size: 0;
+  visibility: hidden;
+  pointer-events: none;
+  white-space: nowrap;
+}
+.nav-label > span { grid-area: 1 / 1; }
+.btn-continue { line-height: 26px; }
+.scq-back     { line-height: 26px; }
+
+/* ═══════════════════════════════════════════════════════
+   TEMPLATE — TransitionScreen bridge (Screen 01 · S0).
+   Source: math-target-4.2-script.pptx slide69.xml (deck maps 1:1).
+   Item ref methodica-math-percent-02-04-001. No presenter notes exist
+   for this slide (checked its rels — no notesSlide relationship at
+   all) and no speech-bubble shape is present, unlike part 03's S0
+   (there the bubble existed but was hidden="1" — here there simply is
+   none authored).
+
+   Structurally the same TransitionScreen shape already used across
+   this lomda (part 01 .s1-*, part 03 .kick-*): one centered flex column
+   holding a text block above the companion character. Unlike part 03's
+   kickoff, this slide's character shape has NO video note attached, so
+   it is built as a plain static image (the character's own "-normal"
+   pose), not the video+still-fallback pair S0_CHARACTER used there.
+
+   Type scale, following the source's own explicit run-level sizes/
+   weights (rule: explicit source formatting over generic template
+   defaults) EXCEPT the closing line, where this project's own
+   established convention for "bold instruction line under a headline"
+   (part 01 .s1-subtitle/.select-subtitle, part 03 .kick-note) is 28px/
+   700 rather than the source's literal 20pt — reusing that convention
+   rather than re-deriving an off-token size a third time:
+     .s0-line  → Body/B-1     28px Regular (source: 20pt regular)
+     .s0-title → Heading/H-5  40px Bold    (source: 54pt bold; 40px is
+                 the approved heading token, same mapping every other
+                 TransitionScreen/kickoff headline in this lomda uses)
+     .s0-note  → 28px Bold — off-token, established project convention
+   ═══════════════════════════════════════════════════════ */
+#s0 { background: #fff; }
+
+.s0-content {
+  position: absolute;
+  inset: 0 0 74px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.s0-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.s0-line {
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 28px; font-weight: 400; color: #303030;
+  margin: 0; line-height: 1.25;
+}
+.s0-title {
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 40px; font-weight: 700; color: #303030;
+  margin: 6px 0 0; line-height: 1.2;
+}
+.s0-note {
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 28px; font-weight: 700; color: #303030;
+  margin: 6px 0 0; line-height: 1.25;
+}
+
+/* Character zone — fixed footprint, same shape as part 03's .kick-stage/
+   .kick-char, minus the video slot (this slide has no video note). */
+.s0-stage {
+  position: relative;
+  width: 300px; height: 240px;
+  flex-shrink: 0;
+}
+.s0-char {
+  position: absolute;
+  bottom: 0; left: 50%; transform: translateX(-50%);
+  height: 236px; width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+/* ═══════════════════════════════════════════════════════
+   TEMPLATE — classroom-task table (Screen 02 · S1, slide70.xml).
+   Item ref methodica-math-percent-02-04-001 (continuation — same item,
+   no lettered sub-part). Presenter note (notesSlide63.xml): "תבנית
+   בפיגמה: ValueInputQuestion. הזנת טקסט בלי משוב. אם הם מנסים להתקדם
+   בלי הזנה עולה הדמות, אבל לא מונע מהם להתקדם בלחיצה נוספת." — text
+   entry WITHOUT feedback; a blocked-advance nudge (character + speech
+   bubble) appears once if they try to Continue with the table
+   incomplete, but does not block a second click regardless of fill
+   state. No hint, no correctness model, no feedback popup anywhere on
+   this screen — genuinely novel interaction shape, first use in this
+   lomda (S12's HookOpenQuestion in part 03 is the closest precedent:
+   also no-correctness/no-popup, but gates Continue outright rather than
+   soft-nudging past it).
+
+   This is an offline classroom activity (learner physically counts
+   classmates' leisure activities and self-reports the tallies), so the
+   table has no "right answer" to validate — every value is accepted.
+
+   Column order [type | count | percent], reading right-to-left, is
+   NOT a literal copy of the PPTX's own <a:t> run order (which lists
+   "אחוז התלמידים"/"מספר תלמידים"/"סוג...הפעילות", i.e. percent-count-
+   type) — per this project's own established gotcha (part 03 S11's
+   .eq-table comment: PPTX table gridCol order renders LEFT-TO-RIGHT
+   UNMIRRORED regardless of the table's rtl flag), that XML run order
+   IS the physical left-to-right order, so reading it right-to-left
+   gives type→count→percent — independently confirmed against the raw
+   shape geometry: the two overlaid input rectangles for count/percent
+   sit at x≈4.08M/5.51M EMU (left of the table's own native type-label
+   column, which is both the widest gridCol and rightmost), with the
+   "%" suffix box landing beside the smaller-x (further-left) column,
+   i.e. leftmost=percent, middle=count, rightmost=type. Both methods
+   agree; no rendered mockup image exists for this slide to cross-check
+   further (unlike other ValueInputQuestion screens, this slide has no
+   media/imageNN.png feedback mockup — consistent with there being no
+   feedback popup here at all).
+   ═══════════════════════════════════════════════════════ */
+#s1 { background: #fff; }
+
+.s1-text-col {
+  position: absolute;
+  top: 60px; right: 40px;
+  width: 800px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.s1-text-col p {
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 20px; font-weight: 400; color: #303030;
+  line-height: 1.35; margin: 0;
+}
+.s1-text-col p.s1-strong {
+  font-weight: 700;
+}
+
+/* Bullet list — the source's own explicit `<a:buChar char="•">` runs
+   (not plain paragraphs), same 20px/400 body size/color as the
+   surrounding text. `padding-inline-start` sits the marker at the
+   physical right under this page's RTL, matching the browser's own
+   default RTL list behavior (720-templates' own numbered-list
+   convention on part 01's S10, adapted for a bullet not a number). */
+.s1-list {
+  margin: 0; padding-inline-start: 28px;
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 20px; font-weight: 400; color: #303030;
+  line-height: 1.35;
+}
+.s1-list li { margin: 0 0 8px; }
+.s1-list li:last-child { margin-bottom: 0; }
+
+.s1-table {
+  width: 620px;
+  table-layout: fixed;
+  border-collapse: collapse;
+  margin: 4px 0 0;
+  direction: rtl;
+  font-family: Calibri, Arial, sans-serif; font-size: 18px;
+}
+.s1-table th, .s1-table td {
+  height: 46px;
+  border: 1px solid #c9ced8;
+  padding: 4px 10px;
+  text-align: center;
+  line-height: 1.2;
+}
+.s1-table th {
+  background: #f2f2f2; color: #303030; font-weight: 600;
+}
+.s1-table td {
+  background: #fff; color: #303030; font-weight: 400;
+}
+.s1-table col.s1-col-type    { width: 300px; }
+.s1-table col.s1-col-count   { width: 160px; }
+.s1-table col.s1-col-percent { width: 160px; }
+.s1-table td.s1-type-cell { text-align: right; font-weight: 400; }
+
+/* Number-value input — same Figma "NumberValue" box every ValueInputQuestion
+   in this lomda uses (120×42 in the single-value screens); shrunk to fit
+   two per table row with no color-coded correct/incorrect state, since
+   this screen never validates anything. */
+.s1-field {
+  width: 92px; height: 38px;
+  box-sizing: border-box;
+  margin: 0 auto;
+  padding: 2px 10px;
+  border: 1.5px solid rgba(174, 174, 174, 0.5); border-radius: 10px;
+  background: #fff;
+  display: flex; align-items: center; justify-content: center; gap: 4px;
+  overflow: hidden;
+  direction: ltr;
+}
+.s1-field:focus-within { border-color: var(--subject-500); }
+.s1-input {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  border: none; background: transparent; padding: 0;
+  color: #303030;
+  font-family: Calibri, Arial, sans-serif; font-size: 18px; font-weight: 400;
+  text-align: center; line-height: normal;
+  -moz-appearance: textfield;
+}
+.s1-input:focus { outline: none; }
+.s1-input::-webkit-outer-spin-button,
+.s1-input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.s1-pct-suffix {
+  flex: 0 0 auto;
+  color: #303030;
+  font-family: Calibri, Arial, sans-serif; font-size: 18px; font-weight: 400;
+}
+
+/* Reflection question under the table — plain text, no input: the table
+   itself is the only interactive content on this screen (see the header
+   comment — nothing here has a "correct" answer to check against). */
+/* ── Nudge — character + speech bubble, normally hidden, shown ONCE if
+   Continue is clicked while the table has an empty cell. Positioned in
+   the canvas's physical-left column, which is otherwise empty on this
+   screen. Any further Continue click advances regardless of fill state
+   (notesSlide63.xml: "לא מונע מהם להתקדם בלחיצה נוספת") — see
+   s1AdvanceOrNudge() in main.js. No close button is drawn (none is
+   specified) — it dismisses on the next Continue click or as soon as
+   the learner starts filling in the table.
+
+   Corrected 2026-08-11 (producer flagged the first pass as not matching
+   Figma, and the character as too small): bubble geometry/font now
+   match Figma dpY9DTl41tzW8SKvcPWU0C node 2622:5136 exactly instead of
+   a CSS-triangle approximation, and the character is 150px tall
+   (≥150% of the original 96px, producer's own stated minimum). The
+   container is a bottom-anchored flex column with intrinsic height, so
+   growing the character automatically pushes the bubble upward — no
+   separate "move the bubble up" rule needed, that's just this layout's
+   existing behavior once the character's own height changes. ── */
+.s1-nudge {
+  position: absolute;
+  left: 16px; bottom: 90px;
+  width: 216px;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 8px;
+  z-index: 20;
+  transition: opacity 0.2s ease-in-out;
+}
+/* Box matches the Figma frame's own 216x188 aspect ratio exactly, so
+   the tail SVG (preserveAspectRatio="none") stretches without
+   distortion and the text-area percentages below line up with Figma's
+   own (top 3.79% / bottom 10.57% / width 93.06%, all measured off that
+   node's "topen text" frame). */
+.s1-nudge-bubble {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 216 / 188;
+}
+.s1-nudge-bubble-shape {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  display: block;
+}
+.s1-nudge-bubble-text {
+  position: absolute;
+  left: 50%; transform: translateX(-50%);
+  top: 3.79%; bottom: 10.57%;
+  width: 93.06%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 20px; font-weight: 400; color: #000;
+  text-align: center; line-height: normal; direction: rtl;
+}
+.s1-nudge-bubble-text p { margin: 0; }
+.s1-nudge-char {
+  height: 150px; width: auto;
+  object-fit: contain;
+  display: block;
+}

@@ -1,0 +1,2989 @@
+/* ═══════════════════════════════════════════════════════
+   css/style.css  —  methodica-math-percent-02-01
+   Canvas: 1280 × 710 px   (720 reference engine)
+   ═══════════════════════════════════════════════════════ */
+
+/* ─── Local fonts (Assistant) ───────────────────────────
+   ONE shared copy for the whole unit, at ../../unit-assets/fonts/.
+   Previously each part carried its own byte-identical set of seven
+   weights (7 parts x 7 files = 2,436,448 B); the four unused weights
+   are gone and the rest is shared.
+
+   Only 400 / 600 / 700 are declared, because only those are used: a
+   sweep of all seven stylesheets found no font-weight declaration
+   outside these blocks other than 400, 600 and 700, and no
+   bold/bolder/lighter keyword and no inline font-weight anywhere in
+   the HTML or JS. UA-default bold (<b>, <strong>, <h*>) maps to 700,
+   which is declared. Re-run that sweep before adding a weight back.
+
+   The Google Fonts <link> in index.html is still there and still
+   needed - NOT as a fallback for these files, but because it also
+   fetches Open Sans 700, which is used by .s2-slider-value in part 01
+   and is not self-hosted. Do not remove that link without either
+   self-hosting Open Sans or re-speccing that one rule.
+   ───────────────────────────────────────────────────────── */
+/* ─── Back button — white pill, bottom-right of bar (never shown on the
+   first screen) ── */
+/* Back button — one shared position rule (not per-screen IDs) so every
+   screen's Back sits at the exact same spot, per the same size/position
+   consistency rule as .btn-continue. */
+.scq-back {
+  position: absolute;
+  bottom: 17.5px;
+  right: 24px;
+  z-index: 12;
+  width: auto; min-width: 140px; height: 39px; padding: 0 40px;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--subject-700); border-radius: 1000px; background: #fff;
+  color: var(--subject-700);
+  font-family: Calibri, Arial, sans-serif; font-size: 20px; font-weight: 400;
+  cursor: pointer; direction: rtl; white-space: nowrap;
+}
+.scq-back:hover { font-weight: 600; border-width: 1.5px; }
+
+/* ─── Shared: Continue Button — gradient pill, bottom-left of bar.
+   Also serves the confirmed primary actions that reuse this class:
+   Submit / "צדקתי?" / "שנמשיך?". This is the ONLY consumer of
+   --primary-action-gradient (see the token blocks at the top of this
+   file for why that property is role-named rather than subject-named). ── */
+.btn-continue {
+  position: absolute;
+  bottom: 17.5px; left: 24px;  /* true 39px-pill centering: (74-39)/2 = 17.5px */
+  z-index: 12;                /* above the ::after white bar (z-index 9) */
+  min-width: 140px;
+  height: 39px;
+  padding: 0 40px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--primary-action-gradient);
+  color: #fff;
+  border: none; border-radius: 1000px;
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 20px; font-weight: 400;
+  cursor: pointer; direction: rtl;
+  text-align: center; white-space: nowrap;
+}
+.btn-continue:not(:disabled):hover { font-weight: 600; }
+.btn-continue.hidden { display: none !important; }
+.btn-continue:disabled {
+  background: #AEAEAE;
+  color: #303030;
+  cursor: not-allowed;
+  opacity: 1;
+}
+
+/* ─── Nav-button width consistency (Foundation rule, ported from
+   methodica-science-mass-measure-01-01's style.css — same fix applies
+   here): W(label) = max(box floor, intrinsic width of the SAME label
+   at the HOVER weight). Any button whose hover changes font-weight
+   must never resize/reflow between Default and Hover.
+   Mechanism: .nav-label stacks an invisible copy of the label at the
+   hover weight (a ::before fed by attr(data-label)) into the same grid
+   cell as the visible <span>, so the box always reserves the heavier
+   measurement. Not a DOM node (attr()-driven) and visibility:hidden
+   keeps it out of the accessibility tree — data-label always mirrors
+   the visible text, never authored separately from it (see
+   setNavLabel() in main.js for every place a button's label changes
+   at runtime). */
+.nav-label { display: inline-grid; }
+.nav-label::before {
+  content: attr(data-label);
+  grid-area: 1 / 1;
+  font-weight: 600;
+  block-size: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.nav-label > span { grid-area: 1 / 1; }
+/* .scq-hint-close reserves at its own hover weight (600 — see its rule
+   below), same mechanism, same reason. */
+
+/* ═══════════════════════════════════════════════════════
+   TEMPLATE — TwoOptionSelection (Screen 01 — character selection)
+   Title + two single-select cards. Card states: hover + selected.
+   First screen: no Back button, no subtitle (none in the source script).
+   ═══════════════════════════════════════════════════════ */
+#s0 { background: #fff; }
+
+.select-content {
+  position: absolute;
+  left: 50%; top: calc(50% - 37px);   /* vertically centered above the 74px bar */
+  transform: translate(-50%, -50%);
+  width: 810px;
+  display: flex; flex-direction: column; align-items: center; gap: 40px;
+}
+
+.select-head {
+  display: flex; flex-direction: column; gap: 8px;
+  align-items: center; width: 100%;
+}
+.select-title {
+  width: 100%; text-align: center;
+  font-size: 40px; font-weight: 700; color: #303030;
+  direction: rtl; line-height: 1.2;
+}
+.select-subtitle {
+  width: 100%; text-align: center;
+  font-size: 28px; font-weight: 400; color: #303030;
+  direction: rtl;
+}
+
+/* ── Cards row ── */
+.option-cards {
+  display: flex; justify-content: center; gap: 24px;
+  direction: ltr;   /* keep the two cards in a stable left-to-right order */
+}
+
+.option-card {
+  width: 296px;
+  cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+  outline: none;
+}
+.option-card-labels {
+  display: flex; flex-direction: column; gap: 12px;
+  align-items: center; text-align: center; color: #303030;
+}
+.option-card-name {
+  font-size: 32px; font-weight: 700;
+  color: #303030; white-space: nowrap;
+}
+/* Title→caption spacing (Figma InfoCardsImage, node 2730:43502).
+   Figma declares gap:12px — which this file already matched — but its
+   text nodes also carry `text-box-trim: trim-both; text-box-edge: cap
+   alphabetic`, so that 12px is measured between GLYPH edges (caption's
+   cap height to title's baseline). CSS measures between LINE BOXES,
+   which include the font's leading, so the same declared 12px rendered
+   visibly larger — that's the gap the producer flagged, not a wrong
+   gap value.
+   Measured for Assistant at these two sizes (canvas TextMetrics, not
+   estimated): the 32px/700 title's line box extends 9px below its
+   baseline, and the 24px/400 caption's extends 9px above its cap
+   height — 18px of leading total. Pulling the caption up by that 18px
+   leaves a 12px box gap - 18px = -6px box gap, which renders as
+   exactly Figma's 12px glyph-to-glyph.
+   `text-box-trim` would express this directly, but it's Chromium/
+   Safari-only — a negative margin renders identically everywhere,
+   which matters more for a deliverable than the tidier syntax.
+   Safe on the base class: .option-card-desc only ever appears directly
+   under an .option-card-name, so any future user of the pair wants the
+   same trim. The other screens' .option-card-labels hold a single
+   child, so their 12px gap is inert and unaffected. */
+.option-card-desc {
+  font-size: 24px; font-weight: 400; color: #303030;
+  width: 228px; text-align: center; direction: rtl;
+  margin-top: -18px;
+}
+.option-card-img {
+  position: relative; /* zoom-button anchor on screens that add one (S4)
+                          — no transform/filter/z-index here, so it does
+                          not create a stacking context (720-templates →
+                          _global-components.md → Image zoom stacking rule) */
+  width: 220px;
+  border: 3px solid rgba(201, 206, 216, 0.4);
+  border-radius: 16px;
+  padding: 16px;
+  transition: none; /* instant state changes, per 720 CSS conventions */
+}
+.option-card-img img {
+  width: 100%;
+  aspect-ratio: 296 / 278;
+  object-fit: cover;
+  border-radius: 16px;
+  display: block;
+}
+/* Hairline seam around the option-card VIDEOS (producer-reported on S9,
+   2026-08-16; same cause on every screen that puts one of these clips in
+   a card, so it's fixed once here rather than per screen). Not the clips'
+   own content: sampled every edge ring of the decoded frame from 0 to 8px
+   in and all of it is pure #ffffff. It's the GPU edge-blend seam this
+   project already hit and documented in methodica-science-mass-liquid-
+   01-05 (.s0tr-video → `clip-path: inset(2px)`), here triggered by the
+   card's own box landing off the device-pixel grid: at dpr 1.5 the 3px
+   border snaps to 2.667 CSS px, leaving a 224.67px content box at x.67 —
+   a half-device-pixel edge, which the compositor anti-aliases into a
+   visible line against the white card.
+   `round 14px` (16px radius minus the 2px inset) is the delta from that
+   sibling's plain inset(2px): there the WRAPPER carried the radius with
+   overflow:hidden, here the video itself carries it, so a square inset()
+   would flatten its rounded corners.
+   Safe by measurement, not assumption: 2 CSS px here is ~8.5px of the
+   960px source, and the ring at 8px in is still pure white — the clip
+   removes only blank pixels. */
+.option-card-img video { clip-path: inset(2px round 14px); }
+/* Hover + keyboard-focus — Figma ImageContainer state=hover: Subject/500 border */
+.option-card:hover .option-card-img,
+.option-card:focus-visible .option-card-img { border-color: var(--subject-500); }
+/* Selected — Figma ImageContainer state=selected: 2px Subject/500 border + Subject/100 fill */
+.option-card.selected .option-card-img {
+  border: 2px solid var(--subject-500);
+  background: var(--subject-100);
+}
+
+/* Screen 01: +10% image window — 238px SQUARE box (explicit height, not
+   just width — a bare width left the box at the ~296:278 ratio derived
+   from the media itself, noticeably wider than tall), reduced padding
+   (4px) and object-fit:contain so the whole character clip shows
+   uncropped inside the frame. Matches the reference squarer container
+   size confirmed against methodica-science-mass-measure-01-01's own
+   #s0/#s4 character cards (2026-08-16) — same 238px square + 4px
+   padding + contain treatment for this exact "non-square source asset"
+   case. See also 720-templates → references/TwoOptionSelection.md →
+   "Character asset integration". */
+#s0 .option-card-img {
+  width: 238px;
+  height: 238px;
+  padding: 4px;
+}
+/* Swapped from <img> to <video> 2026-08-13 — the shared
+   `.option-card-img img` rule doesn't match a <video> tag, so its
+   properties are repeated here explicitly (same pattern as #s5/#s9's
+   own video option cards). aspect-ratio:1 (not the media's
+   native ~296:278) + height:100% is what actually makes the frame
+   square — the container's own explicit height above only bounds the
+   box, it doesn't force the video to fill it as a square. */
+#s0 .option-card-img video {
+  width: 100%; height: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  border-radius: 16px;
+  display: block;
+}
+
+/* ═══════════════════════════════════════════════════════
+   TEMPLATE — TwoOptionSelection (Screen 06 / S5 — calculation-method
+   picker). Same 238px/4px-padding sizing as Screen 01's character
+   cards.
+   ═══════════════════════════════════════════════════════ */
+#s5 { background: #fff; }
+/* Wider than the 810px default — this screen's title sentence is
+   longer than the template's short-question default and needs ~881px
+   to stay on one line at the unchanged 40px size (producer instruction:
+   same size, one line, text content unchanged). */
+#s5 .select-content { width: 900px; }
+#s5 .option-card-img {
+  width: 238px;
+  height: 238px;
+  padding: 4px;
+}
+#s5 .option-card.selected .option-card-img { background: var(--subject-100); }
+/* Character-with-whiteboard clips are square (1254×1254) and opaque
+   (white background, not transparent) — contain keeps zero crop.
+   Swapped from <img> to <video> 2026-08-13 — same "repeat the shared
+   img rule's properties explicitly" reasoning as #s0. */
+#s5 .option-card-img video {
+  width: 100%; height: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  border-radius: 16px;
+  display: block;
+}
+
+/* S9 (A/B reconvergence) is a duplicate of S5 — same sizing/override
+   block verbatim, missed in the first pass and added here alongside the
+   disabled-card fix. */
+#s9 { background: #fff; }
+#s9 .select-content { width: 900px; }
+#s9 .option-card-img {
+  width: 238px;
+  height: 238px;
+  padding: 4px;
+}
+#s9 .option-card.selected .option-card-img { background: var(--subject-100); }
+/* Swapped from <img> to <video> 2026-08-13 — see #s5's own identical rule. */
+#s9 .option-card-img video {
+  width: 100%; height: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  border-radius: 16px;
+  display: block;
+}
+/* Already-completed method (per window.lomdaState.selectedCalcMethod,
+   set at S5) — can't be re-picked here. Now the CONFIRMED Figma
+   treatment: node 2134:21114 ("FlipCardStates", property1=img,
+   state=Completed) — 3px Feedback/Correct #609e12 border, the media
+   itself at 50% opacity, and a 32px green circle badge with a white
+   check straddling the frame's top corner. This supersedes the earlier
+   generic dim+grayscale stand-in (whose own comment noted "No Figma
+   frame confirms this exact treatment") — the producer flagged that it
+   read as "unavailable" rather than "you already did this one".
+   Deliberate deltas from that old stand-in:
+   - The 50% opacity moved from the whole card onto the MEDIA only, and
+     grayscale() is gone entirely (not in Figma). Dimming the whole card
+     would have washed out the very green border and badge that carry
+     the "completed" signal.
+   - The label keeps its own 50% dim: Figma's component has no label
+     slot, so it dictates nothing there, and leaving the finished card's
+     text at full strength made it out-shout the still-pickable card. */
+#s9 .option-card.disabled { cursor: not-allowed; }
+#s9 .option-card.disabled .option-card-labels { opacity: 0.5; }
+#s9 .option-card.disabled .option-card-img { border-color: #609e12; }
+#s9 .option-card.disabled .option-card-img video { opacity: 0.5; }
+/* Badge geometry from the same Figma frame, kept literal rather than
+   rescaled (the badge is a fixed 32px there and here): in Figma's 283px
+   box it sits at left:261/top:-16, i.e. centred 6px inside the frame's
+   right edge and exactly ON its top edge. right:-10px reproduces that
+   6px inset for a 32px badge at any frame width, so it holds on this
+   screen's 238px frame too. Physical top-RIGHT, not mirrored for RTL —
+   same standing rule the recall popup's close button follows ("this is
+   where the Figma component places it; do not move it to match RTL").
+   One self-contained baked SVG (circle + check in a single asset) per
+   720-design-guidelines → components-icons-states.md → Type 2, using
+   the data-URI technique that file already prescribes for scaled Type 2
+   badges and that .scq-radio already uses here. */
+#s9 .option-card.disabled .option-card-img::after {
+  content: '';
+  position: absolute;
+  top: -16px; right: -10px;
+  width: 32px; height: 32px;
+  background-repeat: no-repeat; background-position: center; background-size: contain;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23609e12'/%3E%3Cpath transform='translate(8 10.5)' d='M5.16613 11C4.71195 11.0002 4.27638 10.8283 3.9555 10.5222L0.295374 7.03766C-0.0984579 6.66246 -0.0984579 6.05428 0.295374 5.67908C0.689332 5.30401 1.32794 5.30401 1.72189 5.67908L5.16613 8.95926L14.2781 0.281305C14.6721 -0.0937682 15.3107 -0.0937682 15.7046 0.281305C16.0985 0.656497 16.0985 1.26468 15.7046 1.63988L6.37675 10.5222C6.05587 10.8283 5.6203 11.0002 5.16613 11Z' fill='white'/%3E%3C/svg%3E");
+}
+
+/* ═══════════════════════════════════════════════════════
+   TEMPLATE — TransitionScreen (Screen 02 — "app download" hook)
+   Title + subtitle, then the selected companion character's video with
+   a speech-bubble caption. Continue is always enabled (not gated on the
+   video ending) — matches the established TransitionScreen convention
+   (720-Target-01 S7 / 720-Target-06 S13-S15). Back button now visible
+   (this is no longer the first screen).
+   ═══════════════════════════════════════════════════════ */
+#s1 { background: #fff; }
+
+.s1-content {
+  position: absolute;
+  inset: 0 0 74px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+
+.s1-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.s1-title {
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 40px;
+  font-weight: 700;
+  color: #303030;
+  margin: 0;
+}
+
+.s1-subtitle {
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 28px;
+  font-weight: 400;
+  color: #303030;
+  margin: 0;
+}
+
+/* Video wrap is the ONLY layout-participating element here, so it stays
+   exactly centered by .s1-content regardless of the bubble. */
+.s1-video-wrap {
+  position: relative;
+  width: 640px;
+  height: 360px;
+  flex-shrink: 0;
+}
+
+/* Speech bubble (shape ported from methodica-science-mass-measure-01-02,
+   originally Figma node 730:10395): white bubble + Subject/500 outline +
+   tail pointing right, aimed at the character. Absolutely positioned
+   INSIDE the video wrap — a layer above the video, not a layout sibling —
+   so it overlaps the frame instead of pushing/uncentering it.
+
+   Drawn as INLINE SVG (see the #bubble-tail-right symbol in index.html)
+   rather than a background-image, because an externally-referenced SVG
+   cannot read the page's CSS custom properties — so a baked file could
+   only ever hold one theme's colour. The outline is therefore
+   fill: var(--subject-500) and tracks the active Subject theme.
+   Caveat on record: the original asset's blue was exactly Science
+   Subject/500 (#019DE5), which is why it is treated as Subject/500 here,
+   but the source node 730:10395 no longer exists in the Figma file, so
+   the binding could not be re-verified live. */
+.s1-bubble {
+  position: absolute;
+  left: 20px;
+  top: 115px;
+  width: 241px;
+  height: 137px;
+  z-index: 2;
+}
+.s1-bubble-shape {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  display: block;
+}
+.s1-bubble-text {
+  position: absolute;
+  left: 0;
+  right: 6.81%; /* keep the text clear of the right-side tail */
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 12px;
+  box-sizing: border-box;
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 20px; font-weight: 400; color: #000;
+  text-align: center; direction: rtl;
+  line-height: normal;
+}
+.s1-video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+/* Screen 04 (S3) reuses every .s1-* class as-is — same TransitionScreen
+   structure, different text/video/back-button id. */
+#s3 { background: #fff; }
+/* …except the speech bubble, which is re-fitted to its own (longer)
+   line (producer instruction, 2026-08-19: right-align the text, make the
+   line lengths near-equal, and resize the bubble so the result looks
+   symmetric). Scoped to #s3 on purpose — S1's bubble carries a shorter,
+   centred one-sentence text and must keep the shared 241px geometry.
+
+   Sizing is derived, not eyeballed. The symbol's own body rect runs
+   x 3→220.421 of a 241-wide viewBox and is stroked 3px, so its INNER
+   left/right borders sit at 4.5 and 218.921 viewBox units, i.e. at
+   1.867% and 90.84% of whatever width the box is stretched to. Solving
+   "distance from the longest line's left edge to the inner left border"
+   = "distance from the text's right edge to the inner right border"
+   = 12px, for a 135px longest line and a 12px text padding, gives
+   width ≈ 180px and a right inset of 9.16%. Measured live afterwards:
+   12.0px on the right, 13.2px on the left, ~14px above and below the
+   ink — even on all four sides, which is what "symmetric" asked for.
+   `left` moves from 20 to 81 so the tail's TIP stays exactly where it
+   was (viewBox x≈239.5 scaled by the new width), keeping it pointed at
+   the same spot on the character; nothing about the video moves.
+   Trade-off on record: the symbol is `preserveAspectRatio="none"`, so a
+   180×137 box squashes it horizontally to 0.75 — vertical strokes render
+   ~2.2px against the horizontal 3px and the corner radii go slightly
+   elliptical. That is the price of hugging a text block far squarer
+   than the source bubble; the alternative (keeping 241px) leaves ~60px
+   of dead space to the left of right-aligned text. */
+/* S1's bubble gets the identical treatment (producer instruction,
+   2026-08-19: "do the same for this one") — right-aligned, near-equal
+   lines (134/143px), and re-fitted so the padding is even on all four
+   sides. Same derivation as #s3 below: solve for 12px between the ink
+   and the body's inner border, using the symbol's own 1.867% / 90.84%
+   (horizontal) and 3.285% / 96.715% (vertical) inner-border fractions.
+   For a 143×53.4 two-line block that gives 188×83, and the right inset
+   works out to the same 9.16% #s3 uses (that figure depends only on the
+   12px padding, not on the box width).
+   Measured live afterwards: 12.0 / 12.3 / 12.1 / 12.1px on the four
+   sides. left/top move from 20/115 to 73/142 purely so the tail's TIP
+   stays on the exact pixel it pointed at before (259.5, 182.7 in the
+   video wrap) — the character does not move.
+   Distortion note, same as #s3: `preserveAspectRatio="none"` means an
+   188×83 box squashes the 241×137 symbol to 0.78 × 0.61, so the outline
+   renders ~2.3px on the vertical strokes and ~1.8px on the horizontal
+   ones instead of a uniform 3px, and the tail shrinks to about half its
+   drawn size. A two-line block is simply much wider-than-tall than the
+   source bubble. The zero-distortion alternative for THIS text is
+   250×142 (a uniform 1.037x scale) — also perfectly symmetric, but with
+   ~40px of padding instead of 12px, i.e. visibly airier than #s3's. */
+#s1 .s1-bubble { left: 73px; top: 142px; width: 188px; height: 83px; }
+#s1 .s1-bubble-text {
+  right: 9.16%;
+  text-align: right;
+  white-space: nowrap;
+}
+#s3 .s1-bubble { left: 81px; width: 180px; }
+#s3 .s1-bubble-text {
+  right: 9.16%;
+  text-align: right;
+  /* Every break is an explicit <br> in the markup, so re-wrapping is
+     never wanted here — nowrap makes an under-wide box overflow (loud
+     and obvious) instead of silently re-flowing the carefully chosen
+     135/124/104/118 line split. */
+  white-space: nowrap;
+}
+/* ═══════════════════════════════════════════════════════
+   SHARED — SingleChoiceQuestion (question block, options, feedback
+   popup). Ported from methodica-science-mass-measure-01-01's
+   Figma-sourced #s1 (dpY9DTl41tzW8SKvcPWU0C, node 2085:4465) —
+   these classes are the shared/global SCQ component, reused as-is
+   across question screens.
+   ═══════════════════════════════════════════════════════ */
+
+/* Question block — Figma: top 139px, right 40px, width 1188px */
+.scq-question {
+  position: absolute; top: 139px; right: 40px;
+  width: 1188px; height: auto;
+}
+
+/* Image/widget placeholder (left) — 380×380 square. Stays a plain gray
+   box until a real image/widget is supplied; never invent a photo. */
+.scq-img {
+  position: absolute; left: 0; top: 0;
+  width: 380px; height: 380px; padding: 8px;
+}
+.scq-img-inner {
+  width: 100%; height: 100%;
+  position: relative;
+  background: #f2f2f2; border: 0.5px solid rgba(174, 174, 174, 0.5);
+  border-radius: 16px; overflow: hidden;
+}
+.scq-img-inner img {
+  width: 100%; height: 100%;
+  object-fit: contain;
+  object-position: center;
+  display: block;
+}
+
+/* Question text (right) — default: short single-run bold question,
+   Subject/500. For multi-part question text, a screen-scoped wrapper
+   overrides position to stack in normal flow (see #s2 below). */
+.scq-qtext {
+  position: absolute; right: 0; top: 0;
+  width: 792px; height: auto;
+  display: flex; flex-direction: column; justify-content: flex-start; gap: 0;
+  padding-top: 16px;
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 24px; font-weight: 700; color: var(--subject-500);
+  text-align: right; direction: rtl; line-height: normal;
+}
+
+/* Answers (right, below the question text).
+
+   WIDTH IS CONTENT-DRIVEN (producer instruction, 2026-08-19, applied
+   project-wide): every capsule on a screen is as wide as that screen's
+   LONGEST option needs, plus Figma's 20px side padding — not a fixed
+   604px slab with dead space after short answers like "20" or "36 GB".
+   Two CSS facts do the whole job, so no screen needs a hand-measured
+   number any more (and the earlier hand-set 302px overrides are gone):
+   - `width: fit-content` on this column sizes it to its WIDEST child's
+     max-content width — i.e. exactly the longest option's own text plus
+     that option's padding, radio and gap.
+   - the column's default `align-items: stretch` then gives every other
+     capsule that same width, so a screen's pills stay equal to each
+     other (only `.scq-opt`'s own fixed width had to go for stretch to
+     take effect — see below).
+   `max-width: 604px` keeps the template's original width as a CEILING,
+   which is what preserves the long-sentence screens (part 02's S5/S6,
+   part 06's S4/S5, part 07's S2 — options of 50-107 characters): there
+   fit-content would resolve far past the layout, so the cap holds them
+   at 604 and their text keeps wrapping exactly as before. Only screens
+   whose longest option actually fits under 604 shrink. */
+.scq-answers {
+  position: absolute; right: 0; top: 100px;
+  width: fit-content; max-width: 604px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.scq-opt {
+  /* auto, NOT a fixed width — the column above is what decides the
+     shared width, and a fixed width here would block its `stretch`. */
+  width: auto; min-height: 46px;
+  border: 2px solid var(--subject-500); border-radius: 1000px;
+  background: #fff; padding: 7px 20px;
+  display: flex; align-items: center; gap: 10px;
+  direction: rtl; cursor: pointer;
+  font-family: Calibri, Arial, sans-serif;
+  overflow: visible;
+}
+.scq-opt-text {
+  flex: 1; text-align: right;
+  font-size: 22px; font-weight: 400; color: #222; line-height: 1.1;
+}
+.scq-opt:focus-visible { outline: 2px solid var(--subject-700); outline-offset: 2px; }
+.scq-opt:disabled { cursor: default; }
+.scq-opt.correct { background: #edf8ed; border: 2px solid #609e12; }
+.scq-opt.wrong   { background: #fff0f4; border: 2px solid #b20010; }
+
+/* Radio indicator (22px) — RTL: sits on the RIGHT (reading start) of the pill */
+.scq-radio {
+  width: 22px; height: 22px; flex-shrink: 0;
+  border: 2px solid var(--subject-500); border-radius: 1000px;
+  position: relative; box-sizing: border-box;
+  order: -1;
+}
+.scq-opt.selected .scq-radio { background: var(--subject-500); }
+.scq-opt.correct  .scq-radio { background: #609e12; border-color: #609e12; }
+.scq-opt.wrong    .scq-radio { background: #b20010; border-color: #b20010; }
+.scq-opt.correct .scq-radio::after,
+.scq-opt.wrong .scq-radio::after {
+  content: ''; position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  background-repeat: no-repeat; background-position: center; background-size: contain;
+}
+.scq-opt.correct .scq-radio::after {
+  width: 13px; height: 11px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 12' fill='none'%3E%3Cpath d='M4.52036 12C4.12296 12.0002 3.74183 11.8126 3.46106 11.4787L0.258452 7.67744C-0.0861507 7.26814 -0.0861507 6.60467 0.258452 6.19536C0.603165 5.78619 1.16194 5.78619 1.50666 6.19536L4.52036 9.77374L12.4933 0.306878C12.8381 -0.102293 13.3968 -0.102293 13.7415 0.306878C14.0862 0.716179 14.0862 1.37966 13.7415 1.78896L5.57966 11.4787C5.29889 11.8126 4.91776 12.0002 4.52036 12Z' fill='white'/%3E%3C/svg%3E");
+}
+.scq-opt.wrong .scq-radio::after {
+  width: 11px; height: 11px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14' fill='none'%3E%3Cpath d='M13.6743 0.325691C13.4657 0.117151 13.1828 0 12.8879 0C12.5929 0 12.31 0.117151 12.1014 0.325691L7 5.42709L1.8986 0.325691C1.69 0.117151 1.40711 0 1.11215 0C0.817183 0 0.534294 0.117151 0.325691 0.325691C0.117151 0.534294 0 0.817183 0 1.11215C0 1.40711 0.117151 1.69 0.325691 1.8986L5.42709 7L0.325691 12.1014C0.117151 12.31 0 12.5929 0 12.8879C0 13.1828 0.117151 13.4657 0.325691 13.6743C0.534294 13.8829 0.817183 14 1.11215 14C1.40711 14 1.69 13.8829 1.8986 13.6743L7 8.57291L12.1014 13.6743C12.31 13.8829 12.5929 14 12.8879 14C13.1828 14 13.4657 13.8829 13.6743 13.6743C13.8829 13.4657 14 13.1828 14 12.8879C14 12.5929 13.8829 12.31 13.6743 12.1014L8.57291 7L13.6743 1.8986C13.8829 1.69 14 1.40711 14 1.11215C14 0.817183 13.8829 0.534294 13.6743 0.325691Z' fill='white'/%3E%3C/svg%3E");
+}
+
+/* Multi-select checkbox (MultipleChoiceQuestion) — SQUARE, distinct from
+   the circular `.scq-radio` above (SingleChoiceQuestion). Figma: node
+   196:6222 (default) / 462:6740 (selected) / 462:6758 (correct) / 462:6768
+   (incorrect), confirmed via get_design_context — not invented. Sits at
+   the pill's physical RIGHT, same side as `.scq-radio` (producer
+   correction: the exported Tailwind/React reference code carries no
+   `dir=rtl` marker, which misread as "icon renders left" on first pass —
+   but Figma's own rendered screenshot, and the producer's own side-by-side
+   check, both show it on the right, so `order:-1` is needed here too, same
+   trick `.scq-radio` already uses). All three "checked" states (selected/
+   correct/wrong) render the SAME checkmark glyph — Figma's own icon set
+   (node 196:6225) confirms multi-select never shows an X for a wrong pick,
+   only a red-filled check (the glyph means "you checked this," the color
+   means "right/wrong"), unlike single-choice's distinct X-for-wrong icon
+   above. */
+.mcq-check {
+  width: 20px; height: 20px; flex-shrink: 0;
+  border: 2px solid var(--subject-500); border-radius: 2px;
+  position: relative; box-sizing: border-box;
+  background: transparent;
+  order: -1;
+}
+.scq-opt.selected .mcq-check { background: var(--subject-500); border-color: var(--subject-500); }
+.scq-opt.correct  .mcq-check { background: #609e12; border-color: #609e12; }
+.scq-opt.wrong    .mcq-check { background: #b20010; border-color: #b20010; }
+.scq-opt.selected .mcq-check::after,
+.scq-opt.correct .mcq-check::after,
+.scq-opt.wrong .mcq-check::after {
+  content: ''; position: absolute; left: 50%; top: 50%;
+  transform: translate(-50%, -50%);
+  width: 13px; height: 9px;
+  background-repeat: no-repeat; background-position: center; background-size: contain;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12.7274 9.18767' fill='none'%3E%3Cpath d='M4.10955 9.18763C3.74828 9.18778 3.4018 9.04418 3.14655 8.78851L0.23509 5.87812C-0.0781857 5.56475 -0.0781857 5.05677 0.23509 4.74339C0.548465 4.43012 1.05645 4.43012 1.36982 4.74339L4.10955 7.48312L11.3577 0.234956C11.6711 -0.0783188 12.1791 -0.0783188 12.4925 0.234956C12.8057 0.548332 12.8057 1.05631 12.4925 1.36969L5.07255 8.78851C4.81731 9.04418 4.47083 9.18778 4.10955 9.18763Z' fill='white'/%3E%3C/svg%3E");
+}
+
+/* Word wrapper for an inline tooltip inside plain body text (not inside
+   a question title/option) — ported from methodica-science-mass-liquid-01-01. */
+.tooltip-word { position: relative; display: inline-block; }
+.term-underline {
+  font-weight: 700; color: var(--subject-700);
+  text-decoration: underline; text-decoration-skip-ink: none;
+  cursor: help;
+}
+.term-info {
+  position: absolute; top: -8px; left: 0; transform: translateX(-50%);
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 15px; height: 15px; cursor: help;
+}
+/* Self-contained 15×15 SVG (Figma eSbp4bKHgBky0rakDb8l9N node 1580:17042).
+   The circle IS subject-themed: get_variable_defs on that node returns
+   {"Subject/500"}, so its fill is driven by var(--subject-500) on the
+   <rect> in index.html — NOT a baked hex. (A previous version of this
+   comment asserted the #019DE5 was a fixed, non-subject colour; that was
+   wrong — #019DE5 is simply Subject/500 as resolved in the Figma file's
+   Science mode.) Still keep the circle and the "i" inside this ONE
+   self-contained asset — the rule against a second CSS-drawn circle
+   behind the SVG stands; only the fill source changed. */
+.term-info-i { display: block; flex: 0 0 15px; width: 15px; height: 15px; }
+.term-tooltip {
+  position: absolute; bottom: calc(100% + 10px);
+  left: 50%; transform: translateX(-50%);
+  width: 260px;
+  background: #fff; border: 1px solid #aeaeae; border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+  padding: 12px 9px;
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 18px; font-weight: 400; color: #222;
+  text-align: right; direction: rtl; line-height: normal;
+  display: none; z-index: 40;
+}
+.tooltip-word:hover .term-tooltip,
+.term-info:hover .term-tooltip,
+.term-info:focus .term-tooltip,
+.term-info:focus-within .term-tooltip { display: block; }
+
+/* ── Feedback popup — draggable, no close button
+   (_global-components.md → Feedback popup system) ── */
+.scq-popup {
+  position: absolute;
+  left: 2px; bottom: 76px;
+  width: 426px;
+  height: auto;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.18);
+  display: flex; flex-direction: column; gap: 4px;
+  direction: rtl; z-index: 50;
+  cursor: move;
+}
+.scq-popup.hidden { display: none !important; }
+.scq-popup-header {
+  display: flex; align-items: flex-start; gap: 8px;
+  direction: ltr;
+  width: 100%;
+}
+.scq-popup-title {
+  flex: 1;
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 20px; font-weight: 700;
+  text-align: right; direction: rtl;
+  line-height: normal; margin: 0;
+  padding-top: 4px;
+}
+.scq-popup-body { direction: rtl; }
+.scq-popup-body p {
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 20px; font-weight: 400; color: #222;
+  text-align: right; direction: rtl;
+  line-height: normal; margin: 0 0 4px;
+}
+.scq-popup-body p:last-child { margin-bottom: 0; }
+/* Feedback popups (correct AND wrong) render at 20px throughout —
+   prose, equations, fractions and tables alike (producer instruction,
+   2026-08-20). The shared maths classes carry their own smaller sizes
+   for on-screen use (.frac at 18px in parts 03/05/06, .s15-eq-sign at
+   16px in part 01), so this is scoped to .scq-popup-body rather than
+   changing those base rules — an on-screen fraction or equation sign
+   keeps the size its own layout was built around. */
+.scq-popup-body .frac,
+.scq-popup-body .eq-row,
+.scq-popup-body .s15-eq-sign,
+.scq-popup-body .eq-table th,
+.scq-popup-body .eq-table td { font-size: 20px; }
+
+/* No separate .scq-bar/.scq-check here: the check/confirm button reuses
+   the shared .btn-continue (same size, same bottom-left position as
+   every other screen's Continue) per the global-components.md rule
+   that .btn-continue is "reused for gated continue/confirm actions" —
+   see 720-templates → _global-components.md → "Continue button". */
+/* ═══════════════════════════════════════════════════════
+   TEMPLATE — SingleChoiceQuestion (Screen 03 — GB download question)
+   No hint button: the inline tooltip on "ג'יגה בייט" fills that role
+   for this question. Multi-part question text (intro + question line),
+   so the right column stacks in normal flow instead of the shared
+   template's default absolute qtext/answers offsets.
+   ═══════════════════════════════════════════════════════ */
+#s2 { background: #fff; }
+
+.s2-right-col {
+  position: absolute; right: 0; top: 0;
+  width: 792px;
+  display: flex; flex-direction: column; gap: 16px;
+}
+/* Question-instruction / lead-up prose (producer instruction,
+   2026-08-19, applied project-wide): every instruction or context line
+   that precedes a question, and the question itself, is 24px — not
+   22px — regardless of bold/color weight. Bold/color variants (e.g.
+   .s2-intro--bold) are unaffected; only the base size moves. */
+.s2-intro {
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 24px; font-weight: 400; color: #222;
+  text-align: right; direction: rtl; line-height: 1.4;
+  margin: 0;
+}
+.s2-intro--bold { font-weight: 700; }
+
+#s2 .scq-qtext { position: static; width: auto; padding-top: 0; }
+/* ═══════════════════════════════════════════════════════
+   TEMPLATE — InfoCardsImage, used as a pure knowledge/illustration
+   screen (Screen 05 / S4 — "shopping vs. restaurant" percent-of-an-
+   amount examples). Figma: eSbp4bKHgBky0rakDb8l9N, node 2730:43245.
+   Not interactive (producer instruction): the cards are plain,
+   non-clickable illustrations — "המשך" is the only way to proceed.
+   Card size (283×283 image, title+caption below) comes from
+   InfoCardsImage instead of the 720-templates TwoOptionSelection
+   defaults; gap is doubled (44px, producer instruction) from
+   InfoCardsImage's own 22px default.
+   ═══════════════════════════════════════════════════════ */
+#s4 { background: #fff; }
+#s4 .option-cards { gap: 44px; }
+#s4 .option-card { width: 283px; cursor: default; }
+/* padding:0 (2026-08-16, producer feedback + Figma node 2730:43516):
+   the shared .option-card-img rule carries a 16px padding meant for the
+   TwoOptionSelection template's own character illustrations, which need
+   breathing room inside their frame. InfoCardsImage's own Figma frame
+   has none — the photo fills the 283×283 box edge-to-edge, border only
+   — so that inherited padding was leaving a 19px white margin around
+   both content photos here that the design doesn't call for. */
+#s4 .option-card-img { width: 283px; height: 283px; padding: 0; }
+/* Both images are natively square (1254×1254) — override the shared
+   296/278 aspect-ratio so a square source fills the square 283×283
+   box with zero crop, instead of leaving a gap at the bottom. */
+#s4 .option-card-img img {
+  height: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+}
+/* :hover still fires on mouse-over regardless of click/focus wiring
+   — neutralize the shared .option-card hover border so a non-
+   interactive card never looks clickable. */
+#s4 .option-card:hover .option-card-img {
+  border-color: rgba(201, 206, 216, 0.4);
+}
+
+/* align-self: flex-start (not flex-end) — under direction:rtl, flex-end
+   on a column's cross axis resolves to the physical LEFT, not right
+   (see 720-templates → _global-components.md → "RTL flex layout —
+   check before use"). flex-start is what actually pins this to the
+   right, flush with the intro/question text above it.
+   No width here any more — the shared `.scq-answers` rule's own
+   `fit-content` sizes this screen's pills to its longest option
+   ("164 GB"); see that rule for the full reasoning. */
+#s2 .scq-answers { position: static; top: auto; align-self: flex-start; }
+
+/* ═══════════════════════════════════════════════════════
+   TEMPLATE — "Carousel" 3-step slider (Screen 09 / S6, percent→fraction
+   method). Figma: eSbp4bKHgBky0rakDb8l9N, node 1118:13364 + siblings.
+   Content box position/width match the Figma "content" frame exactly
+   (235/64/810 — centered: (1280-810)/2 = 235).
+   ═══════════════════════════════════════════════════════ */
+#s6 { background: #fff; }
+
+/* Header (title+subtitle) and body are two independently-positioned
+   blocks, not one normal-flow column — the body must land at a fixed
+   Figma-matched offset (217px, the reference frame's second
+   Text-Content-Layout instance) regardless of how tall the header
+   renders, per producer correction. */
+.s6-header {
+  position: absolute;
+  left: 235px; top: 64px; width: 810px;
+  text-align: center;
+}
+.s6-title {
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 40px; font-weight: 700; color: #303030;
+  text-align: center; line-height: 1.2; margin: 0;
+  direction: rtl;
+}
+/* Secondary-heading typography — same established pattern as
+   .select-subtitle (S4/S5): 28px/400/#303030, centered. Reused here
+   rather than a small muted "hint" style. Weight corrected 700→400
+   2026-08-16 (producer feedback: a subtitle directly under a main title
+   should not be bold — applies project-wide, see every other
+   *-subtitle rule touched the same day). */
+.s6-subtitle {
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 28px; font-weight: 400; color: #303030;
+  text-align: center; line-height: 1.2; margin: 8px 0 0;
+  direction: rtl;
+}
+
+.s6-body {
+  position: absolute;
+  left: 235px; top: 217px; width: 810px;
+  direction: rtl;
+}
+.s6-body p {
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 24px; font-weight: 400; color: #303030;
+  text-align: right; line-height: 1.4; margin: 0 0 10px;
+}
+.s6-body p:last-child { margin-bottom: 0; }
+/* Bold lead-in / result line — Figma's "item 4" slot in Text Content
+   Layout is Subject/900, bold (853:10563 in the reference frame). */
+.s6-body p.s6-lead { font-weight: 700; color: var(--subject-900); }
+.s6-body p.s6-question { font-weight: 700; }
+/* "שלב N:" emphasis — the agreed purple (Subject/900), same token as
+   .s6-lead above. Kept bold via the <strong> tag it wraps, not here. */
+.s6-step-label { color: var(--subject-900); }
+/* Keep a specific line from wrapping (producer correction) — used only
+   on the "נמיר את האחוז..." line, not the whole column. */
+.s6-nowrap { white-space: nowrap; }
+
+/* Step 2's two-column split: right = running explanation text (DOM-
+   first renders physically right under plain direction:rtl, same rule
+   as every other RTL row in this lomda); left = the equation group.
+   Asymmetric widths (not an even flex:1/1 split) — measured so the
+   bold "שלב 1: נמיר..." line fits on one line at 24px (458px natural
+   width; 490px column leaves margin) while the left column still has
+   room for the equation (247px) and both caption lines (max 215px). */
+.s6-two-col {
+  display: flex; flex-direction: row; direction: rtl;
+  align-items: flex-start; gap: 40px;
+}
+.s6-col-right { flex: 0 0 490px; min-width: 0; }
+.s6-col-left {
+  flex: 0 0 280px; min-width: 0;
+  display: flex; flex-direction: column; align-items: center;
+  text-align: center; direction: rtl;
+}
+
+/* Equation display — proper stacked fractions instead of slash text.
+   dir:ltr so the "=" / "·" chain reads in standard math left-to-right
+   order (same convention already used for numeric answers, e.g. S2's
+   dir="ltr" GB options), nested inside the RTL page. Standard body-text
+   color (producer correction — was Subject/900 purple).
+   24px, not 28 (producer instruction, 2026-08-19): on-screen formulas —
+   fractions, percents, plain numbers alike — are all 24px. This had
+   drifted to 28 while the .frac fractions inline in the SAME equation
+   stayed at 20 (see .s6-body .frac below), a 8px mismatch between the
+   plain digits/operators here and the stacked fractions next to them. */
+.s6-equation {
+  display: flex; flex-direction: row; align-items: center;
+  flex-wrap: wrap; justify-content: center;
+  gap: 10px; direction: ltr;
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 24px; font-weight: 700; color: #303030;
+}
+.s6-col-left .s6-equation { margin-top: 12px; }
+/* Step 3's single-column equation aligns to the right, matching the
+   text lines above it, instead of centering on the full content width. */
+.s6-equation--right { justify-content: flex-end; }
+/* `align-items: stretch`, NOT center (producer QA, 2026-08-26): the
+   fraction bar is the numerator's own `border-bottom`, so under `center` it
+   was only as wide as the numerator TEXT — "x" over "8,000" drew a 15.6px
+   bar under a 54.6px fraction, 39px short of the denominator it is
+   supposed to divide. 10 of the 16 on-screen fractions in this part were
+   drawing a short bar. Stretch makes both rows fill the column, so the
+   bar always spans the full fraction, with `text-align: center` keeping
+   the digits centred as before. Zero layout impact: the column's width
+   was already max(numerator, denominator) either way — only the border's
+   extent changes. */
+.frac {
+  display: inline-flex; flex-direction: column; align-items: stretch;
+  vertical-align: middle; font-size: 20px; line-height: 1.15;
+}
+.frac-num, .frac-den { display: block; padding: 0 3px; text-align: center; }
+.frac-num { border-bottom: 2px solid currentColor; }
+/* .frac's base 20px above is this class's OTHER job: the feedback-popup
+   fraction size (S7/S8/S12/S21/S22/S24's own *_CORRECT_BODY /
+   *_EXPLANATION_BODY all reuse this same bare class, and popup formulas
+   stay 20px per the producer's own rule). Inside S6/S10's on-screen
+   carousel body, though, it needs to match .s6-equation's 24px above —
+   scoped here rather than raising the shared default, which would
+   incorrectly grow every popup fraction too. */
+.s6-body .frac { font-size: 24px; }
+
+/* Up-arrow beneath the equation (Figma node 2880:44088 — a sideways
+   line-arrow, rotated 90deg to point up). Subject-colored, inline SVG
+   on currentColor so it stays theme-aware like every other icon here. */
+/* Groups the arrow + its caption so they shift together (via JS, see
+   s6AlignUpArrow) to stay centered under the 20/100 fraction as one
+   unit, instead of each independently centering on the wider column. */
+.s6-arrow-callout { display: flex; flex-direction: column; align-items: center; }
+.s6-up-arrow-wrap { margin-top: 24px; }
+.s6-up-arrow {
+  width: 34px; height: 26px; display: block;
+  color: var(--subject-500);
+  transform: rotate(90deg);
+}
+/* Compound with ".s6-body p" (same pattern as .s6-lead/.s6-question
+   above) — a bare ".s6-caption" (0,1,0) loses the cascade to the
+   generic ".s6-body p" (0,1,1), which was silently overriding this
+   rule's text-align/color/font-size (a real bug: the caption was never
+   actually centered under the arrow because of it). */
+.s6-body p.s6-caption {
+  margin-top: 10px; margin-bottom: 0;
+  font-family: Calibri, Arial, sans-serif;
+  /* 20px -> 24px (producer instruction, 2026-08-20), matching the
+     surrounding body copy. */
+  font-size: 24px; font-weight: 700; color: var(--subject-900);
+  text-align: center; direction: rtl; line-height: 1.3;
+}
+
+/* Side carousel arrows — a LOCAL nav mechanism distinct from the
+   bottom Continue/Back bar. Corrected physical mapping: physical LEFT
+   = forward (disables on the last step), physical RIGHT =
+   back-within-carousel (disabled on the first step). Geometry/box from
+   Figma's "Navigation Icons" (60x60 at x=40 / x=1180, y centered
+   +15px); path is the exact exported chevron (state2's left icon,
+   "Layer 1"), recolored via currentColor instead of baked fill — same
+   technique as every other icon in this lomda. */
+.s6-arrow {
+  position: absolute;
+  /* Fixed px, not a 50%-based centering trick: this canvas EXTENDS to
+     fill the viewport rather than letterboxing (scaleApp() in main.js),
+     so a .screen can be taller than the 710 design height and "50%"
+     would drift from Figma's actual y=340. A plain top:340px anchors
+     correctly regardless, same as every other top-anchored element in
+     this lomda (e.g. .s6-header's top:64px). */
+  top: 340px;
+  width: 60px; height: 60px;
+  display: flex; align-items: center; justify-content: center;
+  background: none; border: none; padding: 0; cursor: pointer;
+  color: var(--subject-500);
+  z-index: 5;
+}
+.s6-arrow:disabled { color: #aeaeae; cursor: default; }
+.s6-arrow-left  { left: 40px; }
+.s6-arrow-right { left: 1180px; }
+.s6-arrow-icon { width: 22px; height: 40px; display: block; }
+/* scaleX(-1) to flip, not rotate(180deg) — rotating shifts position
+   (720-templates → figma-lomda-builder conventions). The exported path
+   points left; the right-side arrow mirrors it to point right. */
+.s6-arrow-icon-flip { transform: scaleX(-1); }
+
+/* Pagination dots — 3 (not the reference's 8-dot demo), plain RTL flex
+   row with no direction override: the first DOM child (step 1) renders
+   physically RIGHTMOST, and the active dot sweeps right-to-left as
+   steps 1→3 advance, matching the confirmed behavior.
+   Horizontal centering is a FIXED px (640 = half of the 1280 design
+   width), not `left:50%` (producer correction, 2026-08-06) — `#app`/
+   `.screen` can be WIDER than 1280px at runtime (scaleApp() extends the
+   canvas to fill the viewport in whichever dimension the actual aspect
+   ratio has slack in, same mechanism already documented for the
+   vertical case elsewhere in this file), so `left:50%` centers on
+   whatever the extended width happens to be at that moment rather than
+   on the fixed 1280-wide design column where the header/body/arrows
+   are anchored via literal px offsets — visibly drifting the dots off
+   the header/body's own horizontal center on any wider-than-1280:710
+   viewport. `left:640px` always matches the design column's center
+   regardless of how far the canvas extends. */
+.s6-dots {
+  position: absolute;
+  left: 640px; top: 599px; transform: translateX(-50%);
+  display: flex; gap: 12px; align-items: center;
+}
+.s6-dot {
+  width: 16px; height: 16px; border-radius: 1000px;
+  background: #d4d4d4;
+  transition: width 0.25s ease-in-out, background-color 0.25s ease-in-out;
+}
+.s6-dot.active {
+  width: 24px;
+  background: var(--subject-500);
+}
+
+/* ═══════════════════════════════════════════════════════
+   TEMPLATE — "Carousel" 5-step slider (Screen 15 / S10, proportion-
+   table method, slides 25-29). Same "Carousel"
+   template as S6 — reuses S6's own generic classes (.s6-header/
+   .s6-title/.s6-subtitle/.s6-body/.s6-arrow* / .s6-dots/.s6-dot/
+   .s6-step-label/.frac/.s6-equation*) verbatim via new #s10-prefixed
+   ids, since none of those rules are #s6-scoped. Only the pieces S6
+   never needed get new classes below: an ordered list (step 1's
+   "given data" list) and a live proportion table (steps 3-4).
+   ═══════════════════════════════════════════════════════ */
+#s10 { background: #fff; }
+
+/* Ordered list — Figma doesn't show one for this screen (no template
+   node cited), so this borrows this project's own numbered-list
+   convention (Assistant, same body size/color as the surrounding
+   paragraphs) rather than the browser default numeral style/spacing.
+   RTL: marker sits on the right, matching a browser's own default RTL
+   list behavior — no explicit list-style-position needed. */
+.s10-list {
+  margin: 0 0 10px; padding-inline-start: 28px;
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 24px; font-weight: 400; color: #303030;
+  line-height: 1.4;
+}
+.s10-list li { margin: 0 0 4px; }
+.s10-list li:last-child { margin-bottom: 0; }
+
+/* Feedback-popup table — ported VERBATIM from part 02's own `.eq-table`
+   (producer correction, 2026-08-06: S11's popup table must match this
+   exactly, not `.s14-table` below). Part 02's own history already
+   corrected this spec once (24px/700/no-fixed-height → the values
+   below); `.s10-table`'s comment citing "24px" predates that
+   correction and was never carried forward — the two classes are
+   NOT interchangeable despite the visual similarity. `.eq-table` is
+   for FEEDBACK POPUP tables specifically; `.s10-table` remains for
+   on-screen carousel content (S10), out of scope for this fix. */
+.eq-table {
+  width: 322px;
+  table-layout: fixed;
+  border-collapse: collapse;
+  margin: 8px 0;
+  direction: rtl;
+  font-family: Calibri, Arial, sans-serif; font-size: 20px;
+}
+.eq-table th, .eq-table td {
+  height: 38px;
+  border: 1px solid #c9ced8;
+  padding: 6px 12px;
+  text-align: center;
+  line-height: 1.2;
+}
+.eq-table th { background: #f2f2f2; color: #303030; font-weight: 600; }
+.eq-table td { background: #fff; color: #303030; font-weight: 400; }
+
+/* Proportion table — same spec as part 02's `.eq-table` (confirmed via
+   Figma eSbp4bKHgBky0rakDb8l9N, node 2986:44849, "TableLayout"): light
+   header (#f2f2f2 bg / #303030 bold text), #c9ced8 borders, Body/B-3
+   24px. Ported here since this is this project's own confirmed spec for
+   ANY table in a 720 lomda, not part-02-specific. */
+.s10-table {
+  width: 260px;
+  /* `table-layout: fixed` (producer QA, 2026-08-26) — WITHOUT it the auto
+     table algorithm sizes the two columns from their CONTENT, so the
+     internal divider between כמות and אחוז sat at a different x in every
+     reveal stage of step 2: empty cells split the 260px by header text
+     alone (133.3 / 125.7), and the moment "100%" appeared in the אחוז
+     column that column grew and the divider slid 8.5px sideways. The
+     table box itself never moved (width 260px, right edge fixed by the
+     `#s10 .s6-col-left` rule above) — only the line inside it did, which
+     is what read as the table "jumping" while paging the carousel.
+     Fixed layout pins both columns at 130px for every stage and every
+     step, regardless of what is (or is not) written in the cells.
+     `.eq-table` above, the same Figma spec for popups, already had it. */
+  table-layout: fixed;
+  border-collapse: collapse;
+  margin: 12px 0;
+  direction: rtl;
+  font-family: Calibri, Arial, sans-serif; font-size: 24px;
+}
+.s10-table th, .s10-table td {
+  border: 1px solid #c9ced8;
+  padding: 6px 12px;
+  text-align: center;
+  height: 44px;
+}
+.s10-table th { background: #f2f2f2; color: #303030; font-weight: 700; }
+.s10-table td { color: #303030; font-weight: 400; }
+
+/* Step 3 (station 4) — the "equation transforms into equation" row
+   (producer correction, 2026-08-06, Figma node 2880:44088): two
+   equations side by side with a left-pointing arrow between them,
+   instead of the second equation getting its own line below. Plain
+   flex row under the inherited `direction:rtl`, so DOM order puts the
+   first equation physically RIGHT and the second physically LEFT,
+   matching the reading direction of the transformation. The arrow SVG
+   is the exact same asset S6 uses (rotated 90deg there to point up) —
+   here it needs no rotation at all, since its native orientation
+   already points left. `.s10-reveal` on the row itself reveals/hides
+   both equations and the arrow together as one unit. */
+.s10-eq-row {
+  display: flex; flex-direction: row; align-items: center;
+  gap: 20px; margin: 0 0 6px;
+}
+.s10-eq-arrow { display: flex; align-items: center; }
+.s10-eq-arrow svg { width: 28px; height: 21px; color: var(--subject-500); }
+/* Red cancel-line over a "%" glyph (Figma node 3879:2338, "type=erase")
+   — the icon overlays the character rather than replacing it, so the
+   "%" stays legible underneath the mark, same as a paper strike-through. */
+.s10-pct-strike { position: relative; display: inline-block; }
+.s10-pct-line {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px; height: 20px;
+  pointer-events: none;
+}
+.s10-pct-line svg { width: 100%; height: 100%; display: block; }
+/* This step's own text column carries more content than any other step
+   in the carousel (intro + restored equation-repeat + solve steps, all
+   kept per the producer's own explicit requests) — a slightly tighter
+   line-height/margin (prose only, equations untouched, so this doesn't
+   touch the separate "formulas must not be cramped" note) is what
+   keeps it inside the fixed 382px band above the dots without dropping
+   or rewording any of that content. */
+#s10-s3-col-right p { line-height: 1.25; margin: 0 0 6px; }
+/* Borrow the table column's own centering slack (table is 260px inside
+   the shared `.s6-col-left` default of 280px) and give it to the text
+   column instead.
+   Screen-scoped to `#s10` as a whole (producer correction, 2026-08-19:
+   the table visibly jumped ~10px sideways between step 2 and step 3),
+   NOT id-scoped to step 3's own columns any more — that was the bug.
+   Step 2's table sits centred in the default 280px column (10px slack
+   each side, since the table itself is exactly 260px), while step 3's
+   identically-classed column was narrowed to 260px to hand its slack to
+   the text side. Two different widths for what is visually the same
+   table column is what produced the jump; applying this rule to EVERY
+   `.s6-col-left`/`.s6-col-right` pair inside `#s10` (not just step 3's
+   id'd ones) makes step 2 adopt the exact same 260/510 split, so the
+   table's rendered position is identical across every step of the
+   carousel. S6's own two-column screen is a different `#s6`-scoped
+   section entirely and keeps the shared 280/490 default, unaffected. */
+#s10 .s6-col-right { flex-basis: 510px; }
+#s10 .s6-col-left { flex-basis: 260px; }
+
+/* Step 2 (station 3) — FIXED two-column skeleton (producer correction,
+   2026-08-06): table pinned in the left column, text pinned in the
+   right column, built ONCE per entry into this step; the 3 internal
+   reveal stages only toggle paragraph/cell visibility inside that
+   already-built skeleton, they never rebuild or reposition it. Reuses
+   S6's own `.s6-two-col`/`.s6-col-right`/`.s6-col-left` verbatim —
+   DOM-first `.s6-col-right` (text) renders physically RIGHT under the
+   inherited `direction:rtl`, `.s6-col-left` (table) renders LEFT, and
+   `align-items:flex-start` on `.s6-two-col` is what keeps the table's
+   position independent of how tall the text column grows. */
+.s10-reveal { display: none; }
+.s10-reveal.s10-reveal--visible {
+  display: block;
+  animation: s10Reveal 0.3s ease;
+}
+@keyframes s10Reveal {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.s10-table td.s10-cell-filled { animation: s10CellReveal 0.3s ease; }
+@keyframes s10CellReveal {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+/* Step 3 (station 4) reuses the same skeleton/reveal mechanism for its
+   left-column equations — `.s6-equation`'s own `display:flex` (needed
+   for the frac/equals row layout) must win over the generic
+   `.s10-reveal--visible{display:block}`, hence the higher-specificity
+   3-class override below rather than reordering the rules. */
+.s6-equation.s10-reveal.s10-reveal--visible { display: flex; }
+.s10-eq-row.s10-reveal.s10-reveal--visible { display: flex; }
+
+/* ═══════════════════════════════════════════════════════
+   S2 — Loading-bar widget (learning simulation, independent of the
+   SCQ question/answer logic above). Overlays a live, interactive
+   range-slider on top of the static hook1.png phone screenshot.
+   Figma reference (styling only — track/thumb colors, pill shape,
+   thumb ring+dot): 720 - UI Templates, node 2894:44174
+   ("VerticalSliderElementsBar", Property=Property2). Confirmed via
+   get_variable_defs: fill = Subject/500, thumb ring+dot = Subject/800,
+   thumb base = Natural/100 (white). Figma only showed the fully-filled
+   state, so the UNFILLED portion of the track is not a Figma-confirmed
+   value — it's white, chosen so it stays legible against the tinted
+   --subject-100 container the group now sits in (it was --subject-100
+   itself before that container existed, which would now make the empty
+   track invisible). Revisit if a Figma partial-fill state ever lands.
+   ═══════════════════════════════════════════════════════ */
+
+/* The shared .scq-img frame (380×380 square, grey fill + hairline
+   border, right for a square/landscape content photo) is REMOVED
+   outright on this screen — producer instruction: the frame "doesn't
+   look good," the phone screenshot stands on its own. So: no grey
+   background, no border, no 8px padding, and overflow:visible (kept so
+   the zoom button can overhang the box edge if a later spec wants it
+   there again — see the .img-zoom-btn override below). The image's own
+   border-radius does the corner rounding that the frame's
+   overflow:hidden used to.
+
+   Enlarged again 2026-08-19 (producer request against a marked-up
+   screenshot: "blow the image up to the green rectangle, flush against
+   the grey line of the nav bar"). Two things changed together:
+   - The box is now the CURRENT hook1.png's real aspect, 860:1075 (0.8),
+     re-read from the file itself. The asset was replaced since the last
+     pass and the old 941:1672 (0.56) box was letterboxing it hard: at
+     315×560 the phone actually rendered 315×394 with 83px of dead space
+     above and below. Matching the real ratio is most of the "enlarge"
+     the producer asked for — 394 → 575 rendered height — and it also
+     makes the box and the picture the same rectangle again, which is
+     what every percentage in .s2-slider-wrap below is measured against.
+   - "Flush with the grey line" has to hold at ANY canvas height, since
+     scaleApp() lets the canvas grow past 710 on tall viewports and
+     .screen::after's 74px bar is bottom:0 on it. So .scq-question now
+     carries `bottom:74px` (top+bottom, height:auto ⇒ definite height
+     that ends exactly at the bar's top edge) and the image column is
+     BOTTOM-anchored inside it rather than top-anchored. `.s2-right-col`
+     is absolutely positioned at top:0 and is unaffected by that.
+   Height 575 is the largest that still clears the top-left Report/Issue
+   button (16,16 to 104,54; the column starts at x:52 and would sit
+   under it): at the tightest 710-tall canvas the bar's top is 636, so
+   the image runs 61→636 with 7px of clearance. Width follows from the
+   aspect ratio (575 × 0.8 = 460), NOT chosen independently. */
+#s2 .scq-question { top: 70px; bottom: 74px; height: auto; }
+#s2 .scq-img {
+  top: auto; bottom: 0;
+  width: 460px; height: 575px; padding: 0;
+}
+#s2 .scq-img-inner {
+  background: none; border: 0; border-radius: 0;
+  overflow: visible;
+}
+/* The 460px-wide image column would run into .s2-right-col's own box
+   (the shared 792px width starts at x:448 on a 1280 canvas), and a
+   text column's transparent box still swallows pointer events — it
+   would have covered the live slider. Narrowed to 640px, which is
+   still wider than anything the column actually renders (the widest
+   line is ~510px, the answer list is 604px), so nothing re-wraps and
+   nothing moves: the column is right-anchored, so only its invisible
+   left edge shifts, from x:448 to x:600. */
+#s2 .s2-right-col { width: 640px; }
+
+/* .s2-widget matches the hook1.png image's own aspect ratio so it has
+   zero internal letterboxing — every overlay position below is a plain
+   percentage of this box, which means the same numbers are correct at
+   both the small in-frame size and the enlarged zoom size (see "Image
+   zoom" below); only the two CSS variable profiles (--s2-track-h etc.)
+   change between them.
+   Corrected again 2026-08-19: 941:1672 no longer matched the file
+   either — hook1.png has since been replaced and is now 860×1075
+   (0.8), confirmed from the asset itself, not assumed. Getting this
+   wrong is quiet rather than obvious: object-fit:contain just
+   letterboxes, and the overlay percentages below then measure against
+   the BOX instead of the picture, drifting the slider off its target
+   band by however much the letterbox is. Re-read the file's real
+   dimensions whenever this asset is replaced. */
+.s2-widget {
+  position: relative;
+  height: 100%;
+  aspect-ratio: 860 / 1075;
+  margin: 0 auto;
+  /* Normal (in-image) size profile. Re-verified 2026-08-19 by pixel-
+     sampling the CURRENT hook1.png (canvas getImageData, scanning for
+     rows with no non-white pixel across the phone's screen width): the
+     blank band under the screenshot carousel and above the גיל/דירוג/
+     סטודיו/גודל stats row runs 40.19%→61.95% of the image's own height
+     (rows 432-666 of 1075) — this is the band the producer marked in
+     red. At the 575px widget height above that renders as ~125px, and
+     .s2-slider-wrap claims 19.3% (~111px) of it. All four labels (the
+     0%/100% end markers, the live percentage, and the GB readout) are
+     the SAME 24px (producer instruction, 2026-08-19, against a marked-
+     up screenshot — they had drifted to three different sizes across
+     earlier passes). Chrome sum here: 6+6 padding + (28 pct-space + 28
+     thumb) + 10 gap + 24 GB line = 102px, inside that 111px box.
+     Re-check this sum against the CURRENT widget height's own band
+     before growing any size below. */
+  --s2-track-h: 20px;
+  --s2-thumb-d: 28px;
+  --s2-pct-font: 24px;
+  --s2-pct-space: 28px;
+  --s2-value-font: 24px;
+  --s2-end-font: 24px;
+  --s2-end-gap: 10px;
+  --s2-row-gap: 10px;
+
+  /* Bottom crop (producer instruction, 2026-09-01, against a marked-up
+     screenshot): the "על המשחק הזה" block and the phone body below it are
+     hidden. The cut is the hairline separator UNDER the גיל/דירוג/סטודיו/
+     גודל stats row — pixel-sampled out of hook1.png itself, not eyeballed:
+     the two hairlines in the lower half sit at rows 666-668 (above the
+     stats row) and 819-820 (below it). Cutting at row 819 of 1075 keeps
+     the stats row whole — its "גודל 200GB" is the figure the question
+     depends on — and drops 256/1075 = 23.814% from the bottom.
+
+     Done with clip-path rather than by cropping the asset or shrinking
+     this box, because BOTH of those move the picture, and the producer
+     asked for it to stay exactly where it is. clip-path paints less
+     without touching layout: .s2-widget still measures 860:1075, so the
+     image renders at the identical size and position, and every
+     percentage in .s2-slider-wrap below — which is measured against THIS
+     box — stays valid untouched. If you ever replace hook1.png, re-sample
+     the separator row and redo this percentage; do not carry it over. */
+  --s2-crop-bottom: 23.814%;
+  clip-path: inset(0 0 var(--s2-crop-bottom) 0);
+}
+/* Zoomed size profile — swapped in via JS when #s2-widget is reparented
+   into the zoom modal's stage (s2OpenZoom()/s2CloseZoom()). Position
+   percentages are untouched; only the chrome's absolute sizes grow. */
+.s2-widget.s2-zoomed {
+  /* Scaled ~1.09x from the normal profile, matching the zoom panel's own
+     624px content height against the in-page 575px — so the chrome stays
+     the same FRACTION of the image and cannot outgrow the blank band
+     (the failure mode a previous pass hit by picking bigger sizes
+     independently of the widget's own growth). All four labels stay
+     equal here too, one step up from the normal profile's 24px. Sum:
+     12 padding + (30 + 30) + 11 gap + 26 GB line = 109px, inside the
+     container's 19.3% × 624 ≈ 120px here. */
+  --s2-track-h: 22px;
+  --s2-thumb-d: 30px;
+  --s2-pct-font: 26px;
+  --s2-pct-space: 30px;
+  --s2-value-font: 26px;
+  --s2-end-font: 26px;
+  --s2-end-gap: 11px;
+  --s2-row-gap: 11px;
+
+  /* The crop travels with the widget into the zoom modal — it is the same
+     picture, so hiding that block in page and revealing it on zoom would
+     defeat the instruction. The clipped-away strip still occupies layout
+     height, and .s2-zoom-stage centres the widget's BOX, so the visible
+     picture would hang half a strip above the panel's middle. Pushing it
+     back down by half the crop re-centres what is actually painted.
+     translateY resolves against the element's own height, so this one
+     value is correct at any widget height — do not turn it into px. */
+  transform: translateY(calc(var(--s2-crop-bottom) / 2));
+}
+.s2-phone-img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: contain;
+  display: block;
+  /* Rounded on the IMAGE itself, not just clipped by the frame's
+     border-radius + overflow:hidden — in the zoom view the widget is
+     reparented out of that frame, so a frame-only radius left square
+     corners there next to the panel's own rounded ones. Matches
+     .scq-img-inner's 16px so the frame edge and image edge round
+     identically in the normal view. */
+  border-radius: 16px;
+}
+
+/* Placement of the overlay group on the phone screenshot. Moved
+   2026-08-19 (producer marked the target in red on a screenshot): it
+   now sits in the phone's LARGE empty band — under the screenshot
+   carousel, above the גיל/דירוג/סטודיו/גודל stats row — instead of the
+   narrow strip it used to occupy up near the install button. That band
+   is the only genuinely empty area on the page, and it is ~3x taller
+   than the old spot, which is what lets the container itself grow to
+   fill it as asked.
+   The group sits in a tinted CONTAINER (producer instruction: give it a
+   fill so it stands out slightly from the screenshot underneath), and
+   the container is centred on the IMAGE's X axis — equal left/right
+   insets do exactly that.
+   All four bounds come from pixel-sampling the CURRENT hook1.png
+   (860×1075 — see .s2-widget's aspect-ratio comment for why the source
+   size matters), scanning for rows/columns with no non-white pixel:
+   - Vertical: the band runs 40.19%→61.95% of the image's own height
+     (rows 432-666), i.e. 21.76% of it. It's a FRACTION, not a px
+     count, so it tracks whatever height .s2-widget renders at — 575px
+     in page (≈125px of band) and 624px zoomed (≈136px). The container
+     claims top:41.5% / bottom:39.2% = 19.3% of that. The ~1.2% of
+     clear image left above and below is deliberately more than a
+     hairline: .s2-slider-wrap breathes at scale(1.05) until the learner
+     touches it, which grows it ~3px in each direction, and at a
+     tighter margin the peak of that pulse touched the separator line
+     above the stats row. The fill is opaque and must never creep onto
+     that row — its "גודל 200GB" is the very figure the question
+     depends on.
+   - Horizontal: the phone's white screen starts ≈10.9% in from each
+     edge, and the blank band survives a column-by-column scan intact
+     at an 11% inset but not at 10% (that cuts into the screen's own
+     edge shading). 12% is one point inside the confirmed-safe
+     minimum, and matches how wide the producer drew the target. (At
+     the peak of the scale(1.05) pulse the container's rounded corners
+     reach ≈10.1%, just inside that shading — accepted: those pixels
+     are ~99% white and it is a momentary frame of an animation, unlike
+     the vertical case where the neighbour is real content.)
+   Because top AND bottom are both set, the container's height is
+   definite and its content is centred in it (justify-content) rather
+   than stacking from the top — so a size tweak to any variable above
+   re-centres instead of drifting toward one edge of the band. */
+.s2-slider-wrap {
+  position: absolute;
+  left: 12%; right: 12%; top: 41.5%; bottom: 39.2%;
+  direction: ltr;
+  padding: 6px 8px;
+  box-sizing: border-box;
+  /* 3-column grid, not the flex column it used to be (2026-08-19,
+     producer: equal spacing on both sides of the track, everything as
+     one centred group, and a longer track). Columns are
+     [0GB] [track] [200GB] with the track on 1fr, so it eats every pixel
+     the two labels and the two equal column-gaps don't need — that is
+     what "lengthen it" resolves to here, and it stays automatic when the
+     zoom profile scales the fonts up. The GB readout is the 4th child
+     and is pinned to grid-column 2, i.e. the TRACK's own column, so it
+     centres under the track rather than under the container.
+     `align-content:center` centres the two rows vertically in the box's
+     definite height, so the leftover ~9px of slack sits half above and
+     half below instead of all at the bottom. */
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-content: center; justify-items: center;
+  column-gap: var(--s2-end-gap); row-gap: var(--s2-row-gap);
+  background: var(--subject-100);
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  transform-origin: center;
+  animation: s2SliderPulse 1.6s ease-in-out infinite;
+}
+/* Discovery pulse (2026-08-16, producer request): a plain photo overlay
+   with no other affordance easily reads as part of the screenshot
+   rather than a live control, so the container itself gently grows and
+   shrinks in place until the learner actually touches the slider — the
+   same "notice this is interactive" job a gesture-hint animation would
+   do, done here with a plain scale breathe since there's no click/drag
+   gesture to demonstrate, just a container to notice. Revised
+   2026-08-16 — a first pass animated a separate expanding/fading
+   border ring instead (producer feedback: didn't want the extra frame,
+   wanted the component's own body visibly growing/shrinking). Stopped
+   via .s2-pulse-done (added by s2SliderInput() on the learner's first
+   interaction — see js/main.js) rather than a fixed iteration-count, so
+   it keeps looping for as long as the learner hasn't actually found the
+   control, however long that takes. Reset on every screen entry
+   (resetScreenState()), same as any other "haven't discovered this yet"
+   affordance. */
+.s2-slider-wrap.s2-pulse-done { animation: none; }
+@keyframes s2SliderPulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.05); }
+}
+/* Static scale markers "0GB" / "200GB" flanking the track (producer
+   instruction, 2026-08-19; they were "0%"/"100%" for one round before
+   that). .s2-slider-wrap is direction:ltr, so DOM order == physical
+   order and 0GB lands on the track's 0 end, 200GB on its 200 end — no
+   RTL flip to reason about here.
+
+   Sized to their own text (auto grid columns), NOT to a shared
+   min-width. The shared min-width is what made the spacing look wrong
+   in the first place: the two strings differ by ~25px, so padding both
+   out to the wider one's width and centring the text inside left the
+   short label sitting ~12px further from the track than the long one.
+   With auto columns and a single column-gap, the distance from each
+   label's ink to the track is exactly --s2-end-gap on both sides.
+   The trade-off, on record because it is deliberate: the labels are now
+   different widths, so the TRACK's own midpoint sits ~12px left of the
+   container's midpoint. That is invisible (there is no reference line
+   to compare it against, and the GB readout is pinned to the track's
+   column so it still centres under the track) — whereas the unequal
+   ink-to-track gaps were immediately visible. */
+.s2-slider-end {
+  /* Exactly the thumb's own height, bottom-aligned in the row, so the
+     label's text centre lands on the track's centre — .s2-slider-row
+     reserves the percentage label's space ABOVE the track, so aligning
+     to the row's top or its full height would both sit the labels wrong. */
+  align-self: end;
+  height: var(--s2-thumb-d);
+  display: flex; align-items: center;
+  font-family: Calibri, Arial, sans-serif;
+  font-size: var(--s2-end-font); font-weight: 700; color: var(--subject-800);
+  white-space: nowrap; direction: ltr; line-height: 1;
+  pointer-events: none;
+}
+.s2-slider-row {
+  position: relative;
+  /* Fills its 1fr column. min-width:0 stops the grid item from refusing
+     to shrink below a min-content floor — the absolutely positioned
+     children here have no intrinsic width, but the rule costs nothing
+     and documents the intent. */
+  width: 100%; min-width: 0;
+  /* Reserves exactly the percentage label's space above the track, so
+     this row's own height is known/fixed (pctSpace + thumbD) — the GB
+     readout is a separate flex sibling below it now (see .s2-slider-wrap
+     above), not part of this row's own height sum. */
+  height: calc(var(--s2-pct-space) + var(--s2-thumb-d));
+}
+
+/* Percentage label — floats above the thumb; JS sets `left` in px and
+   clamps it so it never runs past the track's own left/right edge
+   (s2SliderReflow() in js/main.js). */
+.s2-slider-pct {
+  position: absolute;
+  top: 0;
+  left: 50%; /* JS overrides this per-value */
+  transform: translateX(-50%);
+  font-family: Calibri, Arial, sans-serif;
+  font-size: var(--s2-pct-font); font-weight: 700; color: var(--subject-800);
+  white-space: nowrap; direction: ltr; line-height: 1;
+  pointer-events: none;
+}
+
+/* Native <input type="range"> restyled to match the Figma slider —
+   this keeps drag / click-anywhere-on-track / keyboard step-by-1 as
+   free native behavior instead of hand-rolled pointer-event code.
+   Anchored right under the reserved percentage-label space, at the
+   bottom of its own row (see .s2-slider-row above — the GB readout is
+   a separate element below this row now, not sharing it). */
+.s2-slider {
+  position: absolute; left: 0; right: 0;
+  bottom: 0;
+  -webkit-appearance: none; appearance: none;
+  display: block; width: 100%;
+  height: var(--s2-thumb-d);
+  background: transparent; margin: 0; padding: 0;
+  direction: ltr; cursor: pointer;
+}
+
+/* ── Track + fill as REAL elements, painted behind the range input
+   (2026-08-16). Figma (node 2894:44174) draws the filled bar as a single
+   `border-radius:100px` pill — rounded on BOTH ends, with the thumb
+   centred on its leading end. The previous implementation painted the
+   fill as a hard-stop `linear-gradient` on ::-webkit-slider-runnable-
+   track, and a gradient colour stop is always a straight vertical edge,
+   so the fill's right end was square: visible as blue corners poking out
+   above and below the round thumb (producer screenshot). No amount of
+   radius on the TRACK fixes that — the track's own corners were already
+   round; it was the fill's leading edge that wasn't.
+   So the native track/progress pseudo-elements are made transparent and
+   these two divs do the drawing instead. They sit BEFORE the input in
+   DOM order, so the input — and critically its thumb — still paints on
+   top; the fill can therefore end at the thumb's centre without ever
+   covering it. This also makes WebKit and Firefox render identically
+   (Firefox's ::-moz-range-progress is no longer used), instead of the
+   two engines taking different paths to the same look. ── */
+.s2-slider-track {
+  position: absolute; left: 0; right: 0;
+  /* The native runnable track is centred in the input's thumb-tall box,
+     and the input is bottom-anchored in the row — so this offset puts
+     our stand-in exactly where the native track would have been. */
+  bottom: calc((var(--s2-thumb-d) - var(--s2-track-h)) / 2);
+  height: var(--s2-track-h);
+  border-radius: 999px;
+  background: #fff;
+  pointer-events: none;
+}
+.s2-slider-fill {
+  position: absolute; left: 0; top: 0; bottom: 0;
+  width: 0;                       /* px width set by s2SliderReflow() */
+  border-radius: 999px;           /* both ends rounded — the whole point */
+  background: var(--subject-500);
+  pointer-events: none;
+}
+
+/* ── Gesture hint — looping hand demonstrating the slider drag
+   (720-templates → references/_gesture-hints.md). Hand asset is the
+   Figma "Cursor Click" node 3287:22205 from this project's own UI-
+   Templates file, exported at its native 28×33 and committed to
+   assets/img/ (the Figma CDN URL expires in ~7 days).
+
+   **Documented deviation from that file's drag rules:** it says the
+   hand must never be seen travelling back toward its start, because on
+   a drag-onto-a-target gesture the return leg teaches the opposite of
+   the intended action. That rationale does not hold for a slider —
+   here BOTH directions are the gesture (producer instruction: "ימינה
+   ושמאלה"), so the return leg is itself teaching and the fade-out-
+   then-silently-reposition dance the reference implementation needs is
+   neither required nor desirable. The loop is a fully-visible
+   home→right→home→left→home sweep instead. All four legs are the same
+   travel distance on purpose, so one fixed transition duration gives a
+   constant apparent speed. Everything else follows the reference:
+   pointer-events:none + aria-hidden, JS-phase-driven loop with a token
+   guard, anchors computed from the real thumb geometry, and a
+   prefers-reduced-motion opt-out.
+
+   Anchors arrive as custom properties set by s2GhReanchor() rather
+   than as inline left values, so a re-anchor (resize / zoom open /
+   close) just updates the numbers and lets the current phase class keep
+   deciding which end the hand is at — no loop restart needed. */
+/* Paints ABOVE everything in the widget — the tinted container, the
+   track/thumb, the percentage label and the "X GB" readout (producer
+   decision, 2026-08-16). The hand is 33px tall with its fingertip ON the
+   thumb, so its body necessarily hangs down over the readout; an earlier
+   pass layered the hint UNDER the readout to keep the number fully
+   legible, but that left the hand itself half-hidden behind the digits,
+   which read worse. The readout is a static default (100 GB) for as long
+   as the hint runs — the hint stops permanently the moment the learner
+   touches the slider, and the hand fades out between sweeps — so the
+   number being briefly overlapped costs little, whereas a chopped-up
+   hand undermines the affordance the hint exists to communicate. */
+.s2-gh {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+/* Two classes deep on purpose: the shared `.scq-img-inner img` rule
+   (width:100%; height:100%; object-fit:contain) outranks a single class
+   selector, and this <img> IS inside .scq-img-inner. Left at one class
+   the hand silently stretched to its container's 205×37 and the real
+   glyph rendered letterboxed in the middle of that box — i.e. nowhere
+   near its anchor — while still measuring "correct" if you only checked
+   the element's own left edge. Caught by comparing offsetWidth against
+   the asset's native 28×33. */
+.s2-gh .s2-gh-hand {
+  position: absolute;
+  width: 28px; height: 33px;
+  object-fit: fill;
+  left: var(--s2-gh-home, 50%);
+  top: var(--s2-gh-top, 0px);
+  opacity: 0;
+  transition: left 0.62s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.28s linear;
+  pointer-events: none;
+}
+.s2-gh.s2-gh-show .s2-gh-hand { opacity: 1; }
+.s2-gh.s2-gh-r .s2-gh-hand { left: var(--s2-gh-right); }
+.s2-gh.s2-gh-l .s2-gh-hand { left: var(--s2-gh-left); }
+/* The zoomed widget scales its own chrome up, so scale the hand to match
+   rather than leaving a now-undersized 28px hand next to a bigger thumb. */
+.s2-widget.s2-zoomed .s2-gh .s2-gh-hand { width: 32px; height: 38px; }
+@media (prefers-reduced-motion: reduce) {
+  .s2-gh { display: none !important; }
+}
+/* Live "X GB" readout. A normal in-flow sibling of .s2-slider-row (not
+   absolutely bottom-anchored inside it), so .s2-slider-wrap's row-gap
+   gives it real breathing room below the track instead of sitting flush
+   against it. Text is set by s2SliderInput() in js/main.js as
+   (percent × 2) — the same 200GB-total arithmetic already used for this
+   widget's aria-valuetext, just made visible: at the slider's own 36%
+   this must read "72 GB" to match the question's own correct answer.
+   `grid-column: 2` pins it to the TRACK's column rather than letting it
+   centre across the whole container — the two end labels are different
+   widths (see .s2-slider-end), so those two centres are ~12px apart and
+   the readout has to follow the track, which is what it reads out. */
+.s2-slider-value {
+  grid-column: 2;
+  font-family: Calibri, Arial, sans-serif;
+  font-size: var(--s2-value-font); font-weight: 700; color: #303030;
+  white-space: nowrap; direction: ltr; line-height: 1;
+  pointer-events: none;
+}
+.s2-slider:focus { outline: none; }
+.s2-slider:focus-visible {
+  outline: 2px solid var(--subject-700); outline-offset: 3px; border-radius: 999px;
+}
+/* Both engines' native track/progress are transparent — .s2-slider-track
+   and .s2-slider-fill above do the drawing, so the fill can be a pill
+   rounded at both ends (see that block). Height is still declared here
+   because it's what positions the thumb vertically. */
+.s2-slider::-webkit-slider-runnable-track {
+  height: var(--s2-track-h); border-radius: 999px;
+  background: transparent;
+}
+.s2-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: var(--s2-thumb-d); height: var(--s2-thumb-d); border-radius: 50%;
+  background: radial-gradient(circle, var(--subject-800) 0 33%, #fff 33% 100%);
+  border: 1px solid var(--subject-800);
+  margin-top: calc((var(--s2-track-h) - var(--s2-thumb-d)) / 2);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+/* Firefox does have a real fill pseudo-element (::-moz-range-progress),
+   but it's deliberately left transparent too: its leading edge is square
+   the same way the old WebKit gradient's was, and using it here would
+   make the two engines diverge again. */
+.s2-slider::-moz-range-track {
+  height: var(--s2-track-h); border-radius: 999px; background: transparent;
+}
+.s2-slider::-moz-range-progress {
+  height: var(--s2-track-h); background: transparent;
+}
+.s2-slider::-moz-range-thumb {
+  width: var(--s2-thumb-d); height: var(--s2-thumb-d); border-radius: 50%;
+  background: radial-gradient(circle, var(--subject-800) 0 33%, #fff 33% 100%);
+  border: 1px solid var(--subject-800);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+/* ── Image zoom — global component spec (720-templates →
+   _global-components.md → "Image zoom"): 44px circle, white fill, 2px
+   Subject/500 border, magnifying-glass inline SVG on currentColor,
+   solid Subject/500 hover fill. First use in this project. ── */
+.img-zoom-btn {
+  position: absolute; top: 10px; right: 10px; z-index: 5;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: #fff; border: 2px solid var(--subject-500);
+  display: flex; align-items: center; justify-content: center;
+  padding: 0; cursor: pointer; color: var(--subject-500);
+}
+.img-zoom-btn:hover { background: var(--subject-500); color: #fff; }
+.img-zoom-btn:focus-visible { outline: 2px solid var(--subject-700); outline-offset: 2px; }
+.img-zoom-btn__icon { width: 20px; height: 20px; display: block; }
+
+/* Generic zoom-clone inner wrapper — sibling to .img-zoom-btn inside the
+   image frame, holding just the <img> (see index.html's markup contract
+   comment). Cloned into #img-zoom-stage on open, same mechanism as
+   ValueInputQuestion's own .scq-img-inner (S7/S8/S11/S12), but kept as
+   a SEPARATE class rather than reused: .scq-img-inner carries its own
+   380×380 frame sizing plus a haknaya1.jpg-specific #img-zoom-stage
+   aspect-ratio override (see that rule's own comment) that would
+   distort any other image cloned through it. .zoom-img-inner is a bare
+   passthrough with no sizing opinion of its own — the shared
+   `#img-zoom-stage img { object-fit:contain; ... }` rule (not scoped to
+   any particular inner-wrapper class) already un-crops/contain-fits
+   whatever image lands inside it, so no per-consumer override is
+   needed here the way haknaya1.jpg required one. */
+.zoom-img-inner { display: block; width: 100%; height: 100%; }
+
+/* S2 override — the button sits INSIDE the image's top-right corner
+   (producer instruction 2026-08-19, arrow drawn from its old spot to
+   that corner). It used to hang outside the frame's right edge, which
+   was the right call while the image was only 315px wide and its own
+   content was cramped; at 460×575 there is room on the picture itself,
+   and the corner keeps the control unambiguously attached to the image
+   it zooms.
+   Offsets are px from .scq-img-inner's own corner, and hook1.png
+   carries ~5.7% transparent margin on the right and ~0.8% on top
+   (content is 760×1066 inside an 860×1075 canvas), so at this size the
+   button straddles the phone's top-right bezel corner rather than
+   burying the screen content underneath it. Size stays 54px, matching
+   the enlarged size the producer signed off on in the previous round.
+   Still depends on #s2 .scq-img-inner's overflow:visible above only
+   insofar as nothing clips it — with the button now fully inside the
+   box, the inherited overflow no longer matters either way. */
+#s2 .img-zoom-btn {
+  top: 8px; right: 8px;
+  width: 54px; height: 54px;
+}
+#s2 .img-zoom-btn__icon { width: 24px; height: 24px; }
+
+/* Zoom modal — positioned absolute within #app (not position:fixed to
+   the viewport) so it scales together with the rest of the canvas via
+   scaleApp(), matching this project's existing overlay convention
+   (e.g. .scq-popup) rather than the generic fixed-to-viewport pattern.
+   Deliberately NOT the standard clone-based stage (see index.html
+   comment on #s2-zoom-modal): the live #s2-widget is reparented in so
+   the slider stays draggable/clickable while enlarged. */
+.img-zoom-modal {
+  position: absolute; inset: 0;
+  z-index: 60;
+  display: flex; align-items: center; justify-content: center;
+}
+.img-zoom-modal.hidden { display: none !important; }
+.img-zoom-backdrop {
+  position: absolute; inset: 0;
+  background: rgba(255, 255, 255, 0.78);
+}
+/* Enlarged 2026-08-16 (producer feedback: the "zoomed" widget rendered
+   SMALLER than the plain in-page one, which defeats the point of a zoom
+   button). 700px height + a trimmed 16px bottom padding (top stays
+   60px, exactly matched to the close button's own 44px footprint + 16px
+   inset, so that one isn't reclaimable) gives a 624px content box,
+   bigger than the in-page widget's 575px. Canvas is at least 710px
+   tall, so 700 fits when centered.
+   Widened 480 → 560 on 2026-08-19: the widget's aspect ratio changed
+   from 0.56 to 0.8 with the new hook1.png, so a 624px-tall widget is
+   now 499px wide instead of 351px and the old 432px content box would
+   have squeezed it (height:100% + aspect-ratio overflows rather than
+   shrinks). 560 − 48 padding = 512px content width, which clears 499. */
+.img-zoom-panel {
+  position: relative; z-index: 1;
+  width: 560px; height: 700px;
+  background: #fff; border-radius: 24px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  box-sizing: border-box;
+  padding: 60px 24px 16px;
+  display: flex; align-items: center; justify-content: center;
+}
+.img-zoom-close-btn {
+  position: absolute; top: 16px; left: 16px; /* top-left per spec, regardless of RTL */
+  width: 44px; height: 44px; border-radius: 50%;
+  background: #fff; border: 2px solid var(--subject-500);
+  display: flex; align-items: center; justify-content: center;
+  padding: 0; cursor: pointer; color: var(--subject-500);
+}
+.img-zoom-close-btn:hover { background: var(--subject-500); color: #fff; }
+.img-zoom-close-btn:focus-visible { outline: 2px solid var(--subject-700); outline-offset: 2px; }
+.img-zoom-close-btn svg { width: 15px; height: 15px; display: block; }
+.s2-zoom-stage {
+  position: relative;
+  height: 100%;
+  display: flex; align-items: center; justify-content: center;
+}
+/* While the widget is reparented into the zoom modal, hide the now-
+   empty small frame (including its zoom button, which shouldn't be
+   clickable while its own modal is already open) instead of showing
+   an empty duplicate slot under the translucent backdrop. */
+#s2-img-frame.s2-source-hidden { visibility: hidden; }
+
+/* Standard clone-based zoom modal (#img-zoom-modal) — the generic 660×660
+   spec from _global-components.md. S2's shared-named .img-zoom-panel rule
+   above is actually a screen-specific override (480×640, sized for its
+   widget); this reinstates the documented generic size for every OTHER
+   consumer of the shared classes via ID-scoped override. */
+#img-zoom-modal .img-zoom-panel { width: 660px; height: 660px; padding: 24px; }
+/* `.img-zoom-panel`'s own `align-items:center` (for centering content of
+   varying sizes) means a flex ITEM's height never auto-stretches to the
+   panel's content box — #img-zoom-stage previously had only max-height,
+   never an actual DEFINITE height, so the child's `height:100%` below
+   had nothing concrete to resolve against (a percentage against an
+   indefinite/auto parent height computes as if unset). Giving the stage
+   itself an explicit height:100% (of the panel's own definite content
+   box) breaks that chain. */
+#img-zoom-stage {
+  width: 100%; height: 100%;
+  max-width: 100%; max-height: 100%;
+  display: flex; align-items: center; justify-content: center;
+}
+/* Same reasoning one level down: the cloned .scq-img-inner's `height:100%`
+   now resolves against the stage's own newly-definite height, and the
+   explicit `aspect-ratio` (haknaya1.jpg's real 941×1672) lets its width
+   compute from that height instead of falling back to the underlying
+   <img>'s natural pixel size — which is what was ballooning the image
+   out of the modal entirely. The only 3 consumers of this shared zoom
+   modal are all haknaya1.jpg (S7/S8/S11), so hardcoding this ratio
+   here is safe rather than needing a per-screen variable. */
+/* The clone carries only its class, not its original #s7/#s8/#s11
+   ancestry, so those screens' own "no frame" override (background:none;
+   border:0) never reaches it here — it was falling back to the base
+   .scq-img-inner's grey fill + hairline border, an unwanted frame
+   around the zoomed photo that the small in-page version doesn't have. */
+#img-zoom-stage .scq-img-inner { width: auto; height: 100%; aspect-ratio: 941 / 1672; background: none; border: 0; }
+#img-zoom-stage img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; display: block; }
+/* The cloned `.zoom-img-inner` (S4/S14/S21's consumers, as opposed to
+   `.scq-img-inner` above) keeps its base `width:100%; height:100%;` in the
+   stage, but the `<img>` inside sizes to its own auto/intrinsic dimensions
+   (per the generic `#img-zoom-stage img` rule just above) — a plain block
+   box with auto width doesn't center itself inside a wider parent, and
+   under this project's inherited `direction:rtl` it defaults to the
+   RTL start edge (physical RIGHT), not the middle, producing a lopsided
+   zoom with empty space on the left (producer-caught on S21). Centering
+   belongs on the WRAPPER, not the image, since `.zoom-img-inner` itself
+   is the one stretched to the stage's full box. Scoped to `#img-zoom-stage`
+   only — the small in-page frame's own layout (e.g. `#s21 .zoom-img-inner
+   img` at a fixed 100%/100%) is untouched. */
+#img-zoom-stage .zoom-img-inner { display: flex; align-items: center; justify-content: center; }
+
+/* ═══════════════════════════════════════════════════════
+   TEMPLATE — ValueInputQuestion (Screens 10/11 — S7 fraction, S8
+   single-value). Shared markup: .scq-question / .scq-img / .scq-popup
+   already exist (SingleChoiceQuestion, S2) and are reused verbatim.
+   New shared pieces introduced here for the first time in this project:
+   .scq-hint (nav-bar hint button), .scq-hint-overlay, .viq-input-box/
+   -frac/-line (fraction input, Variant B), .scq-popup-actions (View My
+   Answer Toggle button slot), .popup-action (its neutral button style).
+   ═══════════════════════════════════════════════════════ */
+#s7, #s8 { background: #fff; }
+#s11 { background: #fff; }
+#s12 { background: #fff; }
+
+/* Hook image — phone screenshot stands on its own, same treatment S2
+   established for its own phone screenshot (frame removed: no grey fill,
+   no border, no padding). Sized to the image's real portrait aspect
+   (404:718) within the same vertical room S2 uses (486px tall).
+   S11/S12 reuse the SAME haknaya1.jpg image and must render identically
+   — included in this scope rather than falling back to the generic
+   .scq-img 380×380 square default (which would letterbox this portrait
+   image, looking visibly different from S7/S8's own treatment). */
+#s7 .scq-img, #s8 .scq-img, #s11 .scq-img, #s12 .scq-img { width: 273px; height: 486px; padding: 0; }
+#s7 .scq-img-inner, #s8 .scq-img-inner, #s11 .scq-img-inner, #s12 .scq-img-inner {
+  background: none; border: 0; border-radius: 0; overflow: visible;
+}
+#s7 .scq-img-inner img, #s8 .scq-img-inner img, #s11 .scq-img-inner img, #s12 .scq-img-inner img {
+  border-radius: 16px;
+}
+
+.s7-text-col {
+  position: absolute; right: 0; top: 0;
+  width: 792px;
+  display: flex; flex-direction: column; gap: 16px;
+  direction: rtl;
+}
+/* .scq-qtext defaults to position:absolute (its own default context);
+   inside this flex column it must join normal flow instead, same
+   override S2 already applies for the identical reason. */
+.s7-text-col .scq-qtext { position: static; width: auto; padding-top: 0; }
+/* Same 24px rule as .s2-intro above — this is S7/S8/S11/S12/S22/S23/S24's
+   own copy of the shared "question instruction" text role. */
+.s7-intro {
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 24px; font-weight: 400; color: #222;
+  text-align: right; direction: rtl; line-height: 1.4;
+  margin: 0;
+}
+/* "שלב N" emphasis — same Subject/900 purple role as S6's step labels. */
+.s7-step-label { color: var(--subject-900); }
+/* Wrapper for ONE line inside a multi-line <p> that needs its own
+   entrance reveal while the lines above it stay static (S8's third
+   line — see index.html's own note there). `display:inline-block` is
+   required, not cosmetic: the reveal animation drives `transform`, and
+   transform has NO effect on a non-replaced inline element, so a bare
+   <span data-reveal> would fade but never float. inline-block keeps the
+   line in the paragraph's normal flow, so nothing moves — unlike
+   splitting it into a sibling <p>, which would pick up the column's
+   16px flex gap. */
+.s7-reveal-line { display: inline-block; }
+/* Fractions inline in this column's prose (S7/S8's own worked example,
+   S22's formula line) are formulas presented as screen text, not inside
+   a feedback popup — 24px, matching the digits/percent signs around
+   them via .s7-intro above (producer instruction, 2026-08-19: on-screen
+   formulas — fractions, percents, plain numbers alike — are all 24px,
+   never 20 or 28). The base `.frac` stays 20px for its OTHER job as the
+   feedback-popup fraction size (S7/S8/S12/S21/S22/S24's own
+   *_CORRECT_BODY / *_EXPLANATION_BODY all reuse the same bare class,
+   rendered outside this column entirely) — so this is a scoped
+   override, not a change to the shared default. */
+.s7-text-col .frac { font-size: 24px; }
+
+/* S12 — 3-column layout (producer instruction: image LEFT / table
+   MIDDLE / text RIGHT), the first screen in this project with a middle
+   column between the standard image+text pair. `.scq-img`/`.s7-text-col`
+   stay absolutely positioned exactly as everywhere else (left:0/right:0
+   within `.scq-question`'s 1188px box) — only the text column's WIDTH
+   is scoped down here to make room for the inserted table column
+   between them, using the same 40px gap this project already uses for
+   two-column splits (S6's `.s6-two-col`). Budget: image 273 + gap 40 +
+   table 320 (S11's own confirmed compact table width, reused verbatim)
+   + gap 40 + text 515 = 1188, exactly filling `.scq-question`'s width. */
+#s12 .s7-text-col { width: 515px; }
+#s12-table-col { position: absolute; left: 313px; top: 0; width: 320px; }
+
+/* Equation-building row (producer correction, 2026-08-06): the raw
+   pptx's own shapes for all 4 proportion values (40%, 100%, x, 200)
+   are rounded-rect "input-style" boxes, not a static display — the
+   learner re-enters them from the table, then an arrow (Figma node
+   2880:44087, the same asset already used in S10, just a different
+   node id for the same vector/color) leads to the final "x = ___"
+   slot. Plain RTL flex row (no dir override) so DOM order alone drives
+   the physical order — see index.html for the reversed order the
+   producer asked for on 2026-08-20 (equation left, arrow + answer
+   right). */
+.s12-eq-row {
+  display: flex; flex-direction: row; align-items: center; gap: 14px;
+  align-self: flex-start;
+  margin-top: 8px;
+}
+.s12-eq-frac { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.s12-eq-slot { display: inline-flex; align-items: center; gap: 2px; }
+.s12-eq-suffix { font-family: Calibri, Arial, sans-serif; font-size: 18px; font-weight: 400; color: #303030; }
+.s12-eq-line { width: 84px; height: 2px; background: #222; }
+.s12-eq-sign {
+  font-family: Calibri, Arial, sans-serif; font-size: 24px; font-weight: 400; color: #303030;
+}
+.s12-eq-arrow { display: flex; align-items: center; }
+/* Mirrored to point RIGHT (producer instruction, 2026-08-20): the shared
+   asset is natively west/left-pointing, which suited the old answer-on-
+   the-left order; now that the answer sits to the arrow's right the arrow
+   has to follow the eye that way too. scaleX(-1) rather than a second
+   path, so S10's own use of the same vector keeps its native left
+   direction untouched. */
+.s12-eq-arrow svg {
+  width: 28px; height: 21px; color: var(--subject-500);
+  transform: scaleX(-1);
+}
+/* 84×40, not 56×34 (producer instruction, 2026-08-19): at the old size
+   the input itself rendered at 18px/2ch — genuinely too narrow to show
+   a 3-digit value ("200") without the text scrolling/clipping inside
+   its own box, exactly the "can't tell if I typed 100 or 1000" failure
+   the producer flagged. Font-size/width are no longer overridden here
+   at all — removing that override lets the field fall back to the
+   shared `.viq-input-box` default (24px, 4ch), matching Figma's
+   DragOrValueInput spec (node 1027:13668 and its correct/incorrect
+   states: 24px Body/B-3, a 60px value slot that fits 3-4 digits with
+   room for the icon). Height 40px clears the field's own content at
+   24px with the icon present, and still fits inside this row's own
+   40px height. */
+.viq-field.s12-compact-input { width: 84px; height: 40px; }
+.s12-input-row {
+  display: flex; flex-direction: row; align-items: center; gap: 12px;
+  font-family: Calibri, Arial, sans-serif; font-size: 24px; font-weight: 400; color: #303030;
+}
+
+/* ═══════════════════════════════════════════════════════
+   TEMPLATE — TransitionScreen (Screen 33 / S13, Path A+B convergence
+   bridge). Reuses S1/S3's .s1-content/.s1-text/.s1-title/.s1-subtitle
+   and .s1-video-wrap/.s1-video verbatim (no new rules needed) — see
+   index.html's section comment for the full reuse rationale.
+   ═══════════════════════════════════════════════════════ */
+#s13 { background: #fff; }
+
+/* Fraction input — ValueInputQuestion Variant B (720-templates →
+   references/ValueInputQuestion.md). align-self:flex-start pins it to
+   the physical RIGHT under this column's direction:rtl (flex-end would
+   put it on the physical left — the RTL flex trap documented project-
+   wide). */
+.viq-input-frac {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  align-self: flex-start;
+  margin-top: 8px;
+}
+/* Bordered field wrapper — holds the raw input plus its correct/incorrect
+   icon (720-templates → _question-template-defaults.md → "Correct/
+   incorrect icon system": ValueInputQuestion uses the Type 1 bare 16px
+   icon, INSIDE the input's own colored border, ~6px gap after the value).
+   The border/background that used to live directly on .viq-input-box now
+   lives here so the icon can share the same box; the input itself becomes
+   borderless/transparent and just fills whatever room is left. */
+.viq-field {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: 6px;
+  width: 96px; height: 52px;
+  box-sizing: border-box;
+  border: 1.5px solid rgba(174, 174, 174, 0.5); border-radius: 10px;
+  background: #fff;
+  /* Value-then-icon must hold regardless of the ambient direction of
+     whatever row/table embeds this field (S11's table and S12's eq-row
+     are intentionally RTL, no dir override — see their own comments) —
+     otherwise RTL flex reverses the child order and the icon renders on
+     the wrong side of the value. */
+  direction: ltr;
+}
+.viq-field:focus-within { border-color: var(--subject-500); }
+.viq-field.correct { border-color: #609e12; }
+.viq-field.error { border-color: #b20010; }
+.viq-input-box {
+  /* Not flex-grow: the value and its icon must sit as one tight, centered
+     group (Figma's "Slot" — text + icon, gap 6px, centered as a unit),
+     not stretched apart with the icon shoved to the box's far edge. */
+  flex: 0 0 auto; width: 4ch; min-width: 0; height: 100%;
+  border: none; background: transparent;
+  font-family: Calibri, Arial, sans-serif; font-weight: 700; font-size: 24px;
+  text-align: center; color: #303030;
+}
+.viq-input-box::-webkit-inner-spin-button,
+.viq-input-box::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.viq-input-box { -moz-appearance: textfield; }
+.viq-input-box:focus { outline: none; }
+.viq-input-box:disabled { color: #303030; }
+.viq-input-ico {
+  flex: 0 0 16px; width: 16px; height: 16px;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+}
+.viq-input-ico:empty { display: none; }
+.viq-input-ico svg { display: block; }
+.viq-input-line { width: 72px; height: 2px; background: #222; }
+
+/* S7 only — the fraction's single whole-answer verdict icon (producer
+   decision 2026-08-26; reasoning in s7Mark() in main.js and in the
+   markup comment).
+
+   Layout (producer instruction 2026-08-26): the icon sits to the
+   physical RIGHT of the fraction, and the GROUP — fraction + icon
+   together — is what aligns to the text column's right margin, not the
+   fraction alone. So the fraction sits 24px in from that margin and the
+   icon occupies the last 16px, landing flush with the prose above it.
+
+   The icon's slot is reserved even while empty (no :empty { display:
+   none } here, deliberately): otherwise the fraction would sit flush to
+   the margin before answering and jump 24px left the moment the verdict
+   appears — a layout jolt at exactly the moment the learner is reading
+   feedback. 16px to match the Type 1 icon size every other field in
+   this project uses — the mark differs in SCOPE (a whole fraction), not
+   in weight. */
+.viq-frac-group {
+  display: flex; flex-direction: row; align-items: center; gap: 8px;
+  align-self: flex-start;
+  margin-top: 8px;
+  direction: ltr;
+}
+.viq-frac-group .viq-input-frac { align-self: auto; margin-top: 0; }
+.viq-frac-ico {
+  flex: 0 0 16px; width: 16px; height: 16px;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none;
+}
+.viq-frac-ico svg { display: block; }
+
+/* S8 — Variant A: two values inline in a math sentence (producer
+   correction, 2026-08-19: the playlist total — "200" — is itself an
+   input the learner must fill in correctly, not a given constant, same
+   as every other number in this equation; the "×" was also swapped for
+   "·" here, matching the middle-dot this project uses for multiplication
+   everywhere else — e.g. S6/S7/S15/S22's own equations). dir:ltr so the
+   "·"/"="/fraction chain reads in standard math order, same convention
+   as S6's equations. Both `.viq-field` boxes use the shared DEFAULT size
+   (96×52, 24px input text) — no compact variant needed, since that's
+   already the same size as this row's own ambient 24px font, unlike
+   S11/S12's boxes-in-a-table which needed shrinking to fit. Tighter gap
+   than a plain flex `gap` between the two real input boxes and their
+   neighbors, matching a normal math sentence's spacing rather than
+   evenly-boxed slots. */
+.s8-input-row {
+  display: flex; flex-direction: row; align-items: center; gap: 8px;
+  direction: ltr;
+  align-self: flex-start;
+  margin-top: 8px;
+  font-family: Calibri, Arial, sans-serif; font-size: 24px; font-weight: 400; color: #303030;
+}
+.s8-eq-frac { font-size: 24px; }
+
+/* S11 — ValueInputQuestion IN A TABLE (slide 30). Reuses the same
+   haknaya1.jpg hook image as S7/S8 (producer confirmed it belongs
+   here too, same treatment), so `.s7-text-col` keeps its normal
+   image-flanked width — no override needed. Table sized down
+   (producer correction) — smaller footprint than the generic
+   `.s10-table` spec, since this one has to share room with the image
+   and 3 input fields rather than standing alone. */
+/* 24px, not 18 (producer instruction, 2026-08-19): matches Figma's own
+   proportion-table spec (720 UI Templates, node 2986:44849,
+   "Type=Screen24px" — the "24px" in the variant name is the table's own
+   body text size, not a coincidence). */
+.s11-table {
+  width: 320px;
+  border-collapse: collapse;
+  margin: 16px 0 0;
+  direction: rtl;
+  font-family: Calibri, Arial, sans-serif; font-size: 24px;
+}
+.s11-table th, .s11-table td {
+  border: 1px solid #c9ced8;
+  padding: 6px 10px;
+  text-align: center;
+  height: 56px;
+}
+.s11-table th { background: #f2f2f2; color: #303030; font-weight: 700; }
+.s11-table td { color: #303030; font-weight: 400; }
+.s11-cell-input { display: inline-flex; align-items: center; gap: 4px; }
+/* 84×40, not 56×34 (producer instruction, 2026-08-19) — same fix and
+   same reasoning as `.s12-compact-input` above: at 2ch/18px a 3-digit
+   value ("200") scrolled inside its own box instead of fitting, so the
+   learner couldn't tell 100 from 200 from 1,000. Font-size/width are no
+   longer overridden, falling back to the shared `.viq-input-box`
+   default (24px, 4ch) — matches Figma's DragOrValueInput spec (node
+   1027:13668 + its correct/incorrect states) and this table's own now-
+   24px text. Both table columns have comfortable room for this (148px/
+   131px inner width against an 84px field), and the row's 44px inner
+   height clears a 40px-tall field with margin either side. */
+.viq-field.s11-table-input { width: 84px; height: 40px; }
+
+/* Hint button (.scq-hint) — nav-bar pill, first use in this project.
+   Starts visibility:hidden (not disabled) per _question-template-
+   defaults.md's "hidden until first wrong attempt" policy — revealed
+   via JS once the first wrong attempt is made. Sits immediately left of
+   Continue: 24 (continue's own left) + 140 (its min-width) + 16 (the
+   documented same-side button gap) = 180px.
+   Figma node 1977:41087 ("NavButton", button=hint, type=Math): border is
+   Purple/700 (#5656CC = var(--subject-700)) but the LABEL TEXT and ICON
+   are Purple/500 (#3B2FC2 = var(--subject-500)) — two different tokens,
+   not one shared color like .scq-back. */
+.scq-hint {
+  position: absolute;
+  bottom: 17.5px; left: 264px;   /* ar: Continue/check button is 221px wide (24 + 221 + 16 gap + 3 safety), was 180px for the Hebrew label */
+  z-index: 12;
+  height: 39px; min-width: 140px;
+  padding: 0 20px;
+  background: #fff; border: 1px solid var(--subject-700); border-radius: 1000px;
+  color: var(--subject-500);
+  font-family: Calibri, Arial, sans-serif; font-size: 20px; font-weight: 400;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+  cursor: pointer; direction: rtl;
+  flex-direction: row-reverse;   /* DOM is label→icon; icon must sit to the RIGHT of the label (matches 02-03) */
+}
+.scq-hint:hover { font-weight: 600; }
+/* Disabled after one use (hint is a one-time reveal, not re-openable —
+   _question-template-defaults.md's hint policy note). */
+.scq-hint:disabled {
+  border-color: #aeaeae; color: #aeaeae; cursor: default; font-weight: 400;
+}
+.scq-hint:disabled .scq-hint-icon { color: #aeaeae; }
+.scq-hint-icon { width: 26px; height: 22.288px; flex-shrink: 0; color: var(--subject-500); }
+
+/* Hint overlay — the ESTABLISHED shared component (verified against
+   methodica-science-mass-measure-01-01, reused across 8 screens there;
+   my first pass here was a small ad-hoc popover, which was wrong — this
+   replaces it). Full-canvas centered modal, translucent white scrim,
+   Subject/500 card (this project's Math token, not that reference's
+   hardcoded Science blue), closes via backdrop click / Esc / the
+   "חזרה לשאלה" button. Closes/hides via the same global navigation-
+   cleanup rule as feedback popups (id ends in "-hint-overlay" — see
+   _global-components.md → Feedback popup system). Lives outside all
+   .screen divs, directly in #app, same as the feedback popups. */
+.scq-hint-overlay {
+  position: absolute; inset: 0;
+  z-index: 60;
+  background: rgba(255, 255, 255, 0.78);
+  display: flex; align-items: center; justify-content: center;
+}
+.scq-hint-overlay.hidden { display: none !important; }
+.scq-hint-popup {
+  background: var(--subject-500); border-radius: 48px;
+  padding: 40px;
+  display: flex; flex-direction: column; align-items: center; gap: 24px;
+  width: 546px; max-width: 92%;
+}
+.scq-hint-text {
+  width: 462px; max-width: 100%; direction: rtl;
+  display: flex; flex-direction: column; gap: 24px;
+  color: #fff;
+}
+.scq-hint-title {
+  width: 100%; text-align: right; position: relative;
+  padding-right: 56px;
+  font-family: Calibri, Arial, sans-serif; font-weight: 700; font-size: 32px;
+  color: #fff; line-height: normal; margin: 0;
+}
+/* Bulb icon inline before the title — inline SVG on currentColor (white,
+   inherited from .scq-hint-title), not a baked/filtered background image
+   like the reference's icon-idea-blue.svg + brightness/invert hack. */
+.scq-hint-title-icon {
+  position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+  width: 32px; height: 27.4px; display: block;
+}
+.scq-hint-body {
+  width: 100%; text-align: right;
+  font-family: Calibri, Arial, sans-serif; font-weight: 400; font-size: 24px;
+  color: #fff; line-height: normal;
+}
+.scq-hint-body p { margin: 0 0 12px; }
+.scq-hint-body p:last-child { margin-bottom: 0; }
+.scq-hint-close {
+  min-width: 196px; width: auto; padding: 16px 40px;
+  border: none; border-radius: 1000px; background: #fff;
+  color: #303030;
+  font-family: Calibri, Arial, sans-serif; font-size: 24px; font-weight: 400;
+  cursor: pointer; white-space: nowrap;
+}
+/* Figma (eSbp4bKHgBky0rakDb8l9N, node 714:10894, "nav Buttons" set):
+   hover is SemiBold 600 (Body/B-7 token), not Bold 700 — confirmed by
+   pixel-measuring both states' rendered pills, which are the SAME
+   fixed width (~190px design px), so 600 is what actually fits without
+   wrapping. This project's own :hover{700} was heavier than the design
+   and didn't fit the fixed 196px box on one line — the bug this whole
+   fix addresses. */
+.scq-hint-close:hover { font-weight: 600; }
+
+/* View My Answer Toggle action button slot — _global-components.md →
+   Feedback popup system → "View My Answer Toggle". margin-top:20px on
+   the actions row (not popup gap:24px) nets 24px from the body per the
+   validated spacing contract; the popup's own base gap (4px, title→body)
+   stays untouched. */
+.scq-popup-actions:empty { margin-top: 0; }
+.scq-popup-actions { margin-top: 20px; }
+.popup-action {
+  height: 39px; padding: 0 20px;
+  background: #fff; border: 1px solid #484848; border-radius: 1000px;
+  color: #222; font-family: Calibri, Arial, sans-serif; font-size: 20px; font-weight: 400;
+  cursor: pointer; direction: rtl;
+}
+.popup-action:hover { font-weight: 600; }
+
+/* ═══════════════════════════════════════════════════════
+   Screen 34 (S14) — guided-practice preview, NOT a question template.
+   Ported from Figma node 3206:23928 ("Guided Instruction Flow-
+   State-01-Text", file eSbp4bKHgBky0rakDb8l9N) — the producer's own
+   reference for this screen type. Every number below is that node's
+   own value, cross-checked against a pixel measurement of its render
+   (card border box x584→1240 / y150→635, image frame x30→430 /
+   y150→550, title glyphs ending at x1237, 31px line advance at 24px).
+   Figma's Subject/500 in this node resolves to #3b2fc2, i.e. exactly
+   this project's own math-theme `--subject-500` — so the tokens map
+   across directly rather than needing a translation table.
+   ═══════════════════════════════════════════════════════ */
+#s14 { background: #fff; }
+
+/* Outer column — Figma 3206:23929: top 64, 40px side padding, 56px
+   gap, right-aligned.
+   RTL TRAP: Figma's `items-end` means physical RIGHT in its own LTR
+   frame; under this project's inherited direction:rtl the equivalent
+   is `align-items: flex-start` — `flex-end` here would push the whole
+   composition to the physical LEFT. Same trap already documented for
+   .viq-input-frac. */
+/* 24px gap, was 56 (producer QA, 2026-08-26, reading the Figma frame:
+   title -> bold lead is 40 there, and 56 rendered visibly larger than
+   anything else on the screen). Set to 24 rather than 40 so it matches
+   the lead -> card gap below and the whole right-hand column runs on one
+   24px rhythm. Measured cap-to-cap: the band is exactly the title's
+   cap-height box (30px for a 40px Assistant cap), so this gap is the one
+   the eye reads between the title glyphs and the lead glyphs. */
+.s14-question {
+  position: absolute;
+  top: 64px; left: 0; right: 0;
+  padding: 0 40px;
+  display: flex; flex-direction: column; align-items: flex-start;
+  gap: 24px;
+  direction: rtl;
+}
+
+/* Title band — Figma 3206:23930: a fixed 30px-tall band (max-width
+   1050) with the title vertically centred inside it, so the 56px gap
+   below is measured from the BAND, not from the 40px glyphs. Title is
+   Headings/H-5 (40/700) in Subject/500 — the reference's titles are
+   subject-coloured and right-aligned, unlike this project's older
+   black centred `.s6-title`. */
+.s14-title-band {
+  width: 100%; max-width: 1050px; height: 30px;
+  display: flex; align-items: center;
+}
+.s14-title {
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 40px; font-weight: 700; line-height: 1;
+  color: var(--subject-500);
+  margin: 0; white-space: nowrap;
+}
+
+/* Content card — Figma 3206:23931. The reference's own card width is
+   shrink-to-fit (its longest nowrap line drives it to 656px); pinned
+   here to that same 656 instead, so this screen's shorter copy still
+   reproduces the reference's image/gap/card composition rather than
+   collapsing to a narrow card with a 330px hole beside it. */
+.s14-card {
+  width: 656px;
+  border: 3px solid var(--subject-500);
+  border-radius: 24px;
+  padding: 15px;
+  display: flex; flex-direction: column; align-items: flex-start;
+  gap: 25px;
+}
+/* Lead instruction + card, grouped (producer instruction, 2026-08-20:
+   the lead moved OUT of the card and above it — see index.html). The
+   group is pinned to the card's own 656px so the lead's right edge
+   lines up with the card's right border and with `.s14-title` above,
+   rather than stretching the full 1050px band. The 16px gap is the one
+   the lead already had against the scenario back when both sat inside
+   the card (Figma 3206:23932 "Text Content Layout"), kept so the
+   instruction still reads as attached to the exercise it introduces.
+   Replaces the old `.s14-text-group`, which became a single-child
+   wrapper once the lead was lifted out.
+   The 16px is now 24 (producer QA, 2026-08-26): 16 was the gap the lead
+   had against the SCENARIO back when both sat inside the card, and it
+   was carried over unchanged when the producer lifted the lead out — but
+   the new relationship is lead -> card BORDER, which the Figma frame
+   puts at 24. Same value as the title gap above, so the column reads on
+   a single 24px rhythm. */
+.s14-card-group {
+  width: 656px;
+  display: flex; flex-direction: column; align-items: flex-start;
+  gap: 24px;
+}
+/* Body/B-3..B-5 are all 24px; line-height 1.3 reproduces the 31px line
+   advance measured on the reference render (Figma's own type tokens say
+   lineHeight:100, but its renderer lays these out at ~1.3).
+   text-box-trim reproduces the OTHER half of Figma's text metrics: every
+   text node in that node ships `text-box-trim: trim-both` +
+   `text-box-edge: cap alphabetic`, i.e. its boxes are trimmed to
+   cap-height/baseline, so the 15px padding and 16/25px gaps above are
+   measured cap-to-cap rather than line-box-to-line-box. Without this the
+   font's natural half-leading + ascent/descent padding adds ~10-13px at
+   every seam (measured against the reference render), which reads
+   visibly airier than the design. Trimming here lets the spec numbers
+   stay literal instead of being pre-compensated with magic offsets.
+   Progressive enhancement: browsers without text-box-trim simply fall
+   back to that slightly looser spacing — nothing breaks. */
+.s14-lead, .s14-scenario, .s14-ask {
+  width: 100%; margin: 0;
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 24px; line-height: 1.3;
+  text-align: right; direction: rtl;
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
+}
+.s14-lead     { font-weight: 700; color: #303030; }  /* Body/B-5 */
+.s14-scenario { font-weight: 600; color: #303030; }  /* Body/B-4 */
+/* The question line is Subject/500 in the reference (its own
+   structurally-identical line is), NOT the plain bold black the pptx
+   run carries — a deliberate design-over-source call, see index.html. */
+.s14-ask      { font-weight: 600; color: var(--subject-500); }
+
+/* Image frame — Figma "Component 9" (3206:23984): 400×400 at
+   left:30/top:54 (= y118 on screen, level with the lead's cap top), 3px
+   Natural/Alpha/200 @40%, radius 16, 16px padding, white; inner slot
+   #d9d9d9 with the same radius. The border/radius/padding trio is the
+   same treatment `.option-card-img` already uses in this project.
+   top is 54px, was 86 (producer QA, 2026-08-26): the frame is meant to
+   sit level with the bold lead on the right, and tightening the title gap
+   from 56 to 24 lifted the lead 32px, so this lifts by the same 32. */
+.s14-img-frame {
+  position: absolute; left: 30px; top: 54px;
+  width: 400px; height: 400px;
+  background: #fff;
+  border: 3px solid rgba(201, 206, 216, 0.4);
+  border-radius: 16px;
+  padding: 16px;
+}
+#s14 .zoom-img-inner {
+  width: 100%; height: 100%;
+  background: #d9d9d9;
+  border-radius: 16px;
+  overflow: hidden;
+}
+/* guided1.jpg is a 376×673 PORTRAIT close-up going into a 362×362
+   square slot (400 − 2×3 border − 2×16 padding). object-cover alone
+   would centre the crop; the Y value is instead derived from the
+   SLIDE's own srcRect so the same region stays in frame: the slide
+   keeps 31.382%→71.676% of the height, centre 51.53% ⇒ source y 346.8.
+   At cover's width-driven scale (362/376 = 0.963) the visible window is
+   376 source px tall, so its top sits at 346.8 − 188 = 158.8 out of a
+   maximum 297 ⇒ 53%. Scoped to #s14 on purpose: the zoom clone drops
+   this scope and falls back to the shared
+   `#img-zoom-stage img { object-fit:contain }`, correctly showing the
+   FULL uncropped photo when enlarged. */
+#s14 .zoom-img-inner img {
+  width: 100%; height: 100%; display: block;
+  object-fit: cover; object-position: 50% 53%;
+  border-radius: 16px;
+}
+
+/* ═══════════════════════════════════════════════════════
+   Screen 35 (S15) — guided-practice STEP 1, single-choice question
+   rendered as a purple "Guided Step" card. Ported from Figma node
+   2384:20806 (card/text) + the two states-audit links the producer
+   supplied for the answer-option button (2379:20435, 2384:19588) —
+   see index.html's section comment for the full state inventory and
+   the reasoning for stacking the options full-width instead of
+   Figma's demo 85/187px row. Reuses S14's `.s14-question`/`.s14-title-
+   band`/`.s14-title`/`.s14-card`/etc. verbatim for the title+recap;
+   only this new block is new CSS.
+   Purple/900 (#5749c4) and Purple/300 (#e1d9ff) are this component's
+   OWN fixed palette in Figma (named "Purple/*", not "Subject/*") — kept
+   as literal hex rather than mapped to var(--subject-*), since nothing
+   in the source ties them to the subject-theme system despite
+   Purple/300 numerically matching this project's own Math
+   --subject-300 today.
+   ═══════════════════════════════════════════════════════ */
+#s15 { background: #fff; }
+/* Same anchor as S14's own .s14-img-frame (left:30/top:54, lifted from
+   86 in the same 2026-08-26 pass — see there) — this card's own natural
+   width (461px, Figma's fixed value) is wider than S14's 400px image
+   frame, narrowing the gap to the recap card at x584 from 154px to 93px;
+   still comfortable, no overlap. */
+.s15-guided-card {
+  position: absolute; left: 30px; top: 54px;
+  width: 461px;
+  box-sizing: border-box;
+  background: #5749c4;
+  border-radius: 24px;
+  padding: 26px;
+  /* RTL TRAP (this project's own standing note): flex-end under
+     direction:rtl means physical LEFT, not right — that mistake is
+     exactly what put the bulb icon on the wrong side first. flex-start
+     is the physical-right value here. */
+  display: flex; flex-direction: column; align-items: flex-start;
+  gap: 20px;
+  direction: rtl;
+}
+/* 21px, not 28 — the viewBox is 21x28, so a 28x28 box was letterboxing
+   the glyph with 3.5px of dead space on each side. Same rendered icon,
+   but now the box is the icon, which is what lets the gap below be the
+   real optical gap. */
+.s15-bulb { width: 21px; height: 28px; flex-shrink: 0; }
+/* Header row (producer instruction, 2026-08-26): the bold step-label
+   sits on the SAME line as the bulb, matching the hint popup's own
+   `.scq-hint-title` / `.scq-hint-title-icon` pairing. That popup runs a
+   32px icon + 32px title with a 24px gap; this card is smaller on both
+   counts (21px icon, 24px label), so the gap scales down with the type
+   to 18px — 24 x 24/32 — which is what the producer asked for.
+   Centred vertically: all five labels fit on one line (the longest, S18's,
+   measures 360px of the 370px the row leaves), and the label's own
+   `text-box-trim` means its box IS its cap height, so centring the two
+   boxes centres the two glyphs. The label also carries `width: 100%` from
+   the shared rule, which as a flex item would resolve against the full
+   row and push the bulb out of the card — hence the width reset here. */
+.s15-head {
+  width: 100%;
+  display: flex; flex-direction: row; align-items: center;
+  gap: 18px; direction: rtl;
+}
+.s15-head .s15-step-label { width: auto; flex: 1 1 auto; min-width: 0; }
+.s15-twxt {
+  width: 100%;
+  display: flex; flex-direction: column; align-items: flex-start;
+  gap: 24px;
+}
+.s15-per1, .s15-per3 {
+  width: 100%;
+  display: flex; flex-direction: column; align-items: flex-start;
+}
+.s15-per1 { gap: 16px; }
+.s15-per3 { gap: 20px; }
+/* 24px (producer instruction, 2026-08-26 — SUPERSEDES the 2026-08-19
+   "the card is its own smaller-text zone" clarification that held these
+   at 20px): question / instruction / explanation prose is 24px
+   everywhere in this lomda, and the guided-practice card (S15-S19) is
+   no longer an exception to that. Same role as .s2-intro/.s7-intro
+   outside the card, now the same size too. The card's answer pills keep
+   their own distinct 22px — see .s15-opt-text below. */
+.s15-step-label, .s15-elaboration, .s15-question-line {
+  width: 100%; margin: 0;
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 24px; line-height: 1.3;
+  color: #fff;
+  text-align: right; direction: rtl;
+  text-box-trim: trim-both;
+  text-box-edge: cap alphabetic;
+}
+.s15-step-label, .s15-question-line { font-weight: 700; }  /* per1's bold sub-line / per3's own established weight */
+.s15-elaboration { font-weight: 400; }
+
+.s15-options {
+  width: 100%;
+  display: flex; flex-direction: column; align-items: stretch;
+  gap: 12px;
+}
+/* Base pill — Default state (bg white, Purple/900 text, Regular 18).
+   RTL TRAP: justify-content:flex-start = physical RIGHT here (this
+   project's standing RTL-flex note) — deliberately NOT Figma's own
+   justify-center, since centering a full sentence in a full-width bar
+   would read wrong; Figma's demo only ever centered short 2-6 char
+   placeholder text in a shrink-to-fit pill.
+   Badge-then-text DOM order (producer correction): Figma's own demo
+   puts the badge AFTER the text, which renders it to the text's
+   physical LEFT under RTL — producer asked for the opposite (badge on
+   the text's physical RIGHT), so the badge spans come FIRST in the
+   HTML here, making them the rightmost flex child under RTL's
+   first-child-renders-right rule. Padding is symmetric (matches
+   Default exactly) rather than reusing Figma's own asymmetric pl-24/
+   pr-8 — that asymmetry was calibrated to hug the badge on ITS left
+   placement and would look wrong mirrored. */
+.s15-opt {
+  width: 100%; box-sizing: border-box;
+  display: flex; align-items: center; justify-content: flex-start;
+  gap: 8px;
+  padding: 12px 20px;
+  background: #fff;
+  border: none; border-radius: 1000px;
+  cursor: pointer;
+  transition: none;
+}
+/* 22px (producer instruction, 2026-08-26 — SUPERSEDES both Figma's own
+   18px default and the 2026-08-19 "keep it smaller than `.scq-opt-text`"
+   clarification): distractor text is 22px everywhere in this lomda, so a
+   guided-card option pill now matches `.scq-opt-text` exactly instead of
+   being its own smaller variant. Equation-bearing pills follow the same
+   22px — see `.s15-opt-eq .frac` / `.s15-opt-eq .s15-eq-sign` below. */
+/* Natural/800 (#303030), approved 2026-09-02 — was Purple/900 (#5749c4).
+   The literal is this project's own established spelling for Natural/800
+   (every other body/label rule in this file uses it); there is no
+   --natural-* custom property to reuse, and inventing one for a single
+   declaration would create a second, competing colour vocabulary.
+
+   This is the ONLY colour declaration the capsule text ever gets: the
+   state rules below (.picked, .correct, .incorrect, :hover) change
+   background and font-weight only, so all five capsule states — initial,
+   picked, correct reveal, incorrect reveal and completed — inherit this
+   value, and the `-eq` capsules' .frac / .s15-eq-sign inherit it too
+   rather than setting their own. Do not add a per-state colour override;
+   the capsule's subject treatment lives in its background/border, not in
+   its text. */
+.s15-opt-text {
+  font-family: Calibri, Arial, sans-serif;
+  font-size: 22px; font-weight: 400;
+  color: #303030;
+  text-align: right; direction: rtl;
+}
+.s15-opt-badge {
+  display: none;
+  align-items: center; justify-content: center;
+  width: 18px; height: 18px; flex-shrink: 0;
+  border-radius: 50%;
+}
+.s15-opt-badge svg { display: block; }
+.s15-badge-correct svg { width: 10.4px; height: 7.5px; }
+
+/* Hover — Figma's Hover/Pressed visual (bg Purple/300 + SemiBold, no
+   badge). Pre-click affordance only: a real click now answers
+   immediately (see main.js s15Select), so there is no persistent
+   "picked but unconfirmed" state to hold in CSS. */
+.s15-opt:hover:not(:disabled) {
+  background: #e1d9ff;
+}
+.s15-opt:hover:not(:disabled) .s15-opt-text {
+  font-weight: 600;
+}
+
+/* Correct / Incorrect — the wrong pick gets no badge at all
+   (instructional-design correction, not in the source script: a
+   guided-practice recap should reassure with the right answer, not mark
+   the wrong pick with a red X); the correct option carries the green
+   check instead.
+
+   The Purple/300 background follows the LEARNER'S OWN PICK (`.picked`),
+   NOT correctness (producer correction, 2026-09-01). It used to sit on
+   `.correct, .incorrect` together, so after a wrong answer TWO pills went
+   purple — the one the learner clicked and the correct one they did not —
+   which read as if both had been selected. Now purple means "this is what
+   you chose" and the green check means "this is the right one": a wrong
+   answer leaves the correct pill white with its check, and a right answer
+   is the one pill carrying both. Bold text stays on both, so the correct
+   pill is still emphasised when it was not the pick. */
+.s15-opt.picked {
+  background: #e1d9ff;
+}
+.s15-opt.correct .s15-opt-text, .s15-opt.incorrect .s15-opt-text { font-weight: 600; }
+.s15-opt.correct .s15-badge-correct {
+  display: flex;
+  background: #609e12; border: 2px solid #609e12;
+}
+/* The check badge only exists once answered, and it costs 26px of text
+   width (18px badge + 8px gap). At the 22px option size (2026-08-26) S15's
+   longest option — which is also the correct one — needs 345.5px against
+   the 369px a symmetrically-padded pill leaves, so the badge appearing was
+   enough to wrap it onto a second line and shove the option below it down
+   28px at the moment of the click. Trimming the padding on the badge side
+   only (physical RIGHT under RTL, where the badge sits) restores 12px and
+   keeps every pill exactly one line before and after answering. Same
+   asymmetry the `-eq` pills already use for the same reason; the
+   incorrect pill draws no badge, so it stays symmetric. */
+.s15-opt.correct:not(.s15-opt-eq) { padding-right: 8px; }
+.s15-opt:disabled { cursor: default; }
+
+/* ═══════════════════════════════════════════════════════
+   Screen 36 (S16) — guided-practice STEP 2 (slide 35). Reuses S15's
+   `.s15-guided-card`/`.s15-bulb`/`.s15-twxt`/`.s15-per1`/`.s15-per3`
+   shell verbatim (see index.html's section comment) — only new rule
+   needed is sizing `.eq-table` for this card's own 409px content
+   column, since its own default 322px is otherwise unscoped/generic.
+   `.eq-table`'s light bg (#fff cells / #f2f2f2 header) sits as a
+   contrast card against the purple background, same "light chip on
+   purple" language the Figma component's own Calculation-type variant
+   already uses for its equation chips. */
+/* 24px (producer instruction, 2026-08-26): table text on-screen follows
+   the same 24px as every other on-screen line, so the guided card's own
+   proportion table matches S10's `.s10-table`, which is already 24px.
+   Set on `.s16-table` — the class carried ONLY by the three guided-card
+   tables (S16/S17/S18) — rather than on the shared `.eq-table` base, so
+   the feedback-popup tables stay at the 20px the 2026-08-20 "popups are
+   20px throughout" instruction fixed them at. */
+.s16-table { width: 250px; margin: 0; font-size: 24px; }
+
+/* ═══════════════════════════════════════════════════════
+   Screen 38 (S18) — guided-practice STEP 3 (slide 37). Reuses S15's
+   card/option shell verbatim, but this card packs a table AND 3
+   equation options into the same 409px column — at the base `.s15-opt`
+   spec (px-20/py-12, 20px .frac fractions) that stacked to 575px
+   total card height, well past the bottom-bar ceiling (measured
+   overflow: card bottom at y725 against a 636px ceiling). These
+   `-eq` modifiers compact the equation-bearing pills specifically
+   (plain-sentence options on S15/S17 are untouched, since they don't
+   carry these classes) — smaller fraction size, tighter pill padding/
+   gap, and a shorter table row height scoped to `.s16-table` only
+   (leaving the shared `.eq-table` row height untouched for S11/S12's
+   own feedback-popup tables). Brought the card back to ~463px, a
+   healthy margin under the ceiling. */
+/* Cell padding trimmed 6px -> 4px vertically to pay for the 20px -> 24px
+   text (which added ~4.8px per row, and S18 had only 19.6px of clearance
+   left below its card). 4px lands the row at ~37.5px, within a pixel of
+   the `.eq-table` Figma spec's own 38px row, so the table keeps its
+   designed proportions at the larger type instead of looking squeezed.
+   Applied to all three guided-card tables, not just S18's — the same
+   table is shown on S16, S17 and S18 in sequence and has to stay
+   pixel-identical across them. Horizontal padding is untouched, and
+   `.eq-table`'s own 6px is untouched for the feedback popups. */
+.s16-table th, .s16-table td { height: 24px; padding-top: 4px; padding-bottom: 4px; }
+/* The 2026-08-26 type-scale bump (16px fractions -> 22px) briefly pushed
+   this card past the Continue button, and the pill padding / fraction
+   leading / stack gaps here were all trimmed to claw the height back.
+   Moving the step-label up onto the bulb's own row later the same day
+   (see .s15-head) freed ~33px per card, enough to give the PILLS their
+   designed proportions back — 6px padding, 1.05 fraction leading. It is
+   not enough to also undo the gap trims: S18 is the tallest card in the
+   sequence and the Continue button sits at y653.5 in canvas space, so
+   these two gaps stay tightened, buying the card a 20px cushion. Pill
+   geometry is the part a learner actually reads; a few px of stack gap
+   on one screen is not.
+   The answered-state padding is 6px top/bottom too (was 5px): at 3px it
+   was invisible, but against the restored 6px base it made every pill
+   shrink 2px the instant the card was answered. */
+/* Pill-to-pill gap is the shared 12px, same as S17's two text pills
+   (producer QA, 2026-08-26: side by side, S18's equation pills read
+   noticeably more crowded than S17's) — so `.s15-options-eq` no longer
+   overrides it at all. Paid for out of this card's own two per3 gaps
+   (8px, was 10) and the prose leading below, which is the only slack
+   left on the tallest card in the sequence; the table, the card padding
+   and the pills themselves are all shared with sibling screens and stay
+   untouched.
+   The `#s18 .s15-twxt` override that used to sit here is gone: moving
+   the step-label up into `.s15-head` left `.s15-twxt` with a single
+   child on this screen, so its gap had no effect on anything. */
+#s18 .s15-per3 { gap: 8px; }
+/* 1.2, not the shared 1.3 — ~5px off a two-line paragraph, spent on the
+   pill gap above. Same trick, same reason as `#s10-s3-col-right p`. */
+#s18 .s15-per3 .s15-elaboration { line-height: 1.2; }
+/* Narrowed pills (producer instruction, 2026-08-26), built the same way
+   the SCQ/MCQ screens elsewhere in this lomda build theirs: the COLUMN
+   carries the width and the pills are `width: auto`, so
+   `.s15-options`'s own `align-items: stretch` gives all three the same
+   width — see `.scq-answers` / `.scq-opt`. Horizontal padding is 20px,
+   matching `.scq-opt` exactly. Only the equation pills are narrowed;
+   S15/S17 carry full sentences that already fill the column and stay
+   full-width.
+   An explicit width rather than `fit-content`: answering also switches
+   the pill text to SemiBold, which widens the fractions ~3px, and with
+   the column sized to its own content that showed up as the left edge
+   twitching on click (the right edge is pinned to the card's text
+   column).
+   SYMMETRIC 20px padding, and the column width is what balances the two
+   sides. The reading-start (physical right) side also carries the check
+   badge and its gap — 18 + 8 = 26px, reserved even while invisible — so
+   the visible whitespace to the equation's right is a fixed 20 + 26 =
+   46px. Everything left of the equation is padding plus the column's
+   own slack, which means the LEFT gap is simply width - (20 + 26 +
+   equation), independent of the left padding: 225px is the width that
+   makes it 46px too. Verified balanced in the pristine state — the one
+   all three pills are in before the card is answered.
+   This replaces an earlier 50px left padding (width 234). That value was
+   an OPTICAL compensation, not a geometric one: before the fraction bar
+   was fixed to span the whole fraction, a lone "x" over a wide "8,000"
+   left the equation's top row ending ~20px short on the right, so the ink
+   mass read left-of-centre even at balanced box gaps, and half that void
+   was added on the left to correct it. Fixing `.frac` (align-items:
+   stretch) removed the void — both rows now reach the box edge — which
+   left the compensation over-correcting by 9px (measured 55 left / 46
+   right). Re-derived from current geometry rather than adjusted.
+   An explicit width rather than `fit-content` for the reason above it:
+   answering switches the pill text to SemiBold, widening the fractions
+   ~3px, which under `fit-content` twitched the left edge on click. 225
+   holds the SemiBold chain (182.2 + 20 = 202.2) with room to spare, so no
+   pill re-wraps or changes width in any state. */
+.s15-options.s15-options-eq { width: 225px; }
+.s15-options-eq .s15-opt { width: auto; }
+.s15-opt.s15-opt-eq { padding: 6px 20px; }
+/* The check badge has to occupy its 18px + 8px gap even before it is
+   earned: now that the pills are sized to their content, letting it
+   appear out of `display: none` would widen the whole column by 26px the
+   moment the card is answered. Reserved with `visibility` instead, so the
+   width is identical in every state — the SCQ pills get this for free,
+   their radio is always drawn.
+   The 2px border has to be reserved along with it: the badge is not
+   `border-box`, so the border the correct state adds grows it from 18px
+   to 22px, and that 4px would still reach the shared pill width.
+   Transparent here, coloured by the `.correct` rule above. */
+.s15-options-eq .s15-opt-badge {
+  display: flex; visibility: hidden;
+  border: 2px solid transparent;
+}
+.s15-options-eq .s15-opt.correct .s15-badge-correct { visibility: visible; }
+/* 22px (producer instruction, 2026-08-26): a distractor carrying a
+   fraction is still a distractor, so it takes the same 22px as a
+   plain-sentence one. Both rules are scoped to the "-eq" pill modifier,
+   NOT to the shared `.s15-eq-sign` base rule, which S21's own option
+   pills and S22's inline formula also use at 16px. */
+.s15-opt-eq .frac { font-size: 22px; line-height: 1.05; }
+.s15-opt-eq .s15-eq-sign { font-size: 22px; }
+/* Explicit gap around "=" (producer instruction: "side A, space, =, space,
+   side B") — a flex row with `gap`, same pattern S12's own `.s12-eq-row`
+   already uses, rather than a literal " = " text character sitting next
+   to inline-flex `.frac` boxes, whose actual rendered gap is less
+   predictable/adjustable than an explicit flex gap. */
+.s15-eq-row { display: inline-flex; align-items: center; gap: 6px; }
+.s15-eq-sign { font-size: 16px; }
+
+/* ═══════════════════════════════════════════════════════
+   Screen 39 (S19) — guided-practice STEP 4 / final solution (slide
+   38). Reuses S15's card shell + `.s15-eq-row` (standalone this time,
+   not inside an option pill) verbatim. */
+/* Tracks `.s15-elaboration`'s own size above — 24px since
+   2026-08-26, was 20px. This fraction is standalone prose inside the
+   guided-practice card, not an answer-option pill (contrast S18's own
+   `.s15-opt-eq .frac`, held at the 22px distractor size because IT
+   sits inside an answer pill), so it follows the card's prose size,
+   whatever that is. */
+#s19 .frac { font-size: 24px; line-height: 1.05; }
+#s19 .s15-eq-sign { font-size: 24px; }
+/* Producer correction: these are STANDALONE equations sitting directly
+   on the purple card (unlike S18's, which sit inside white option
+   pills and must stay Purple/900) — .frac has no color of its own
+   (the num/den text and the border-bottom:currentColor both inherit),
+   so without this they fell back to the ambient dark default instead
+   of matching the white text around them. Scoped to #s19 specifically
+   — do not lift this to a bare `.s15-eq-row{color:#fff}` rule, since
+   that would wrongly whiten S18's own purple-on-white equations too. */
+#s19 .s15-eq-row { color: #fff; }
+#s19 .s15-per3 { gap: 10px; }
+.s15-closing { font-weight: 700; }
+
+/* ═══════════════════════════════════════════════════════
+   Screen 40 (S20) — TransitionScreen kickoff (slide 39). Reuses S1/S3's
+   `.s1-content`/`.s1-video-wrap`/`.s1-video` verbatim — real per-character
+   video (`character-{1,2}-remembering.mp4`) swapped at runtime in
+   `resetScreenState()`, same shape as S1/S3's own `S1_CHARACTER_VIDEOS`.
+   No screen-specific video styling needed; `.s1-video` already covers it.
+   ═══════════════════════════════════════════════════════ */
+#s20 { background: #fff; }
+
+/* ═══════════════════════════════════════════════════════
+   Screen 41 (S21) — MultipleChoiceQuestion, "שאלת חימום 1" (slide 40,
+   item -008). Reuses S2's own `.scq-question`/`.s2-right-col`/
+   `.s2-intro`/`.scq-qtext`/`.scq-answers`/`.scq-opt`/`.scq-radio`
+   verbatim (those classes are bare, not #s2-scoped, so they already
+   apply here); only the pieces below are new/scoped. Image frame sized
+   like S7/S8/S11/S12's own portrait treatment (273×486, no grey
+   frame) since warmup1.png's native ratio (317:568) is close enough
+   to their haknaya1.jpg's (404:718) for the same box to look right —
+   but via the GENERIC `.zoom-img-inner` wrapper, not `.scq-img-inner`,
+   since the shared `#img-zoom-stage .scq-img-inner` rule hardcodes
+   haknaya1.jpg's own 941:1672 aspect ratio and would visibly distort
+   this differently-shaped photo (the S4/S14 zoom landmine, avoided).
+   Compacted proactively (frac 16px, tightened gaps): this screen has
+   MORE stacked content than S2's own instance of the same shell (6
+   intro paragraphs + a question stem + 5 answer options, 3 of them
+   full equations, vs. S2's 4 short intros + 4 plain-text options) —
+   the same "same template, more content" overflow risk already hit
+   reactively at S18/S19, compacted here up front instead.
+   ═══════════════════════════════════════════════════════ */
+#s21 { background: #fff; }
+#s21 .scq-img { width: 273px; height: 486px; padding: 0; }
+#s21 .zoom-img-inner img {
+  width: 100%; height: 100%;
+  object-fit: contain; object-position: center;
+  display: block; border-radius: 16px;
+}
+#s21 .scq-qtext { position: static; width: auto; padding-top: 0; }
+/* No width — the shared `.scq-answers` fit-content rule sizes these to
+   their own longest option (the stacked-fraction "45/100 · 80" and
+   friends). Only the tighter gap/height/padding are screen-specific. */
+#s21 .scq-answers { position: static; top: auto; align-self: flex-start; gap: 6px; }
+#s21 .s2-right-col { gap: 6px; }
+#s21 .s2-intro { line-height: 1.25; }
+#s21 .scq-opt { min-height: 40px; padding: 4px 20px; }
+#s21 .frac { font-size: 16px; line-height: 1.05; }
+
+/* ═══════════════════════════════════════════════════════
+   Screen 42 (S22) — ValueInputQuestion, part ב of "שאלת חימום 1" (slide
+   41). Same image treatment as S21 (`.zoom-img-inner`, 273×486, no
+   frame) since it's the SAME warmup1.png. No hint button exists on this
+   screen at all (presenter note: "שימו לב שאין רמז") — nothing to style.
+   ═══════════════════════════════════════════════════════ */
+#s22 { background: #fff; }
+#s22 .scq-img { width: 273px; height: 486px; padding: 0; }
+#s22 .zoom-img-inner img {
+  width: 100%; height: 100%;
+  object-fit: contain; object-position: center;
+  display: block; border-radius: 16px;
+}
+/* Equations line — a flex row, NOT plain inline text (producer
+   correction, 2026-08-11: the plain-text version let the tall
+   inline-flex `.frac` box wrap/misalign against the surrounding text's
+   own baseline, splitting the line and knocking "או" out of place —
+   same category of bug as `.s15-eq-row`'s own original motivation).
+   `align-items:center` vertically centers the taller fraction against
+   the plain-text spans on one shared line, fixing the misalignment.
+   Second producer correction (still 2026-08-11): DOM order is
+   [fraction, "או", decimal] so under `direction:rtl` the fraction (first
+   child) lands at the physical RIGHT and the decimal (last child) at
+   the physical LEFT — the reverse of this file's first attempt, which
+   had misread the fresh PowerPoint render's own reading order. And
+   `justify-content:flex-start` (not `center`) right-aligns the whole
+   line flush with the paragraph text above it — under `direction:rtl`
+   on a ROW-direction flex container, `flex-start` means the physical
+   RIGHT (this is the main-axis case, distinct from the documented
+   align-items/cross-axis RTL trap on a COLUMN container — see
+   `.s2-right-col`'s own comment for that one). */
+.s22-eq-line {
+  display: flex; direction: rtl; align-items: center; justify-content: flex-start;
+  gap: 12px; flex-wrap: wrap;
+}
+/* 24px, matching the formula digits (via .s7-intro/.frac above) and
+   percent signs on either side of it now — was 22px, which would have
+   sat oddly small once its neighbours moved to 24 (producer instruction,
+   2026-08-19). */
+.s22-eq-or { font-family: Calibri, Arial, sans-serif; font-size: 24px; font-weight: 400; color: #222; }
+/* The "·" in this same on-screen formula line — .s15-eq-sign's shared
+   16px default (tuned for S18's compact answer-option pills) would
+   otherwise sit undersized next to this line's now-24px digits/fraction. */
+.s22-eq-line .s15-eq-sign { font-size: 24px; }
+/* Input+label pair — NOT inline in a math sentence like S8's own
+   `.s8-input-row` (dir:ltr, chain of ·/=), just a value box next to its
+   unit label. DOM order [input, label] renders the label at the
+   physical LEFT under RTL (first child = right), matching the number-
+   then-unit reading order confirmed on the fresh PowerPoint render —
+   same lesson already recorded from part04 S2's own DOM-order fix. */
+.s22-input-row {
+  display: flex; flex-direction: row; align-items: center; gap: 12px;
+  direction: rtl; margin-top: 8px;
+}
+.s22-input-label {
+  font-family: Calibri, Arial, sans-serif; font-size: 22px; font-weight: 400; color: #222;
+}
+
+/* ═══════════════════════════════════════════════════════
+   Screen 43 (S23) — SingleChoiceQuestion, "שאלת חימום 2" (slide 42).
+   Same image treatment as S21/S22 (`.zoom-img-inner`, 273×486) since
+   warmup2.png shares the same ~0.56 aspect ratio.
+   ═══════════════════════════════════════════════════════ */
+#s23 { background: #fff; }
+#s23 .scq-img { width: 273px; height: 486px; padding: 0; }
+#s23 .zoom-img-inner img {
+  width: 100%; height: 100%;
+  object-fit: contain; object-position: center;
+  display: block; border-radius: 16px;
+}
+
+/* Table-shaped answer options — reuses `.scq-opt`'s own correct/wrong
+   border-color + `.scq-radio` check/X system (add both classes to the
+   button: `scq-opt s23-table-opt`), but overrides its pill shape (604px
+   pill → auto-width rounded rect) and cancels its light correct/wrong
+   BACKGROUND tint (this card stays white regardless of state — only the
+   border and radio change color, confirmed via the fresh PowerPoint
+   render, unlike `.scq-opt`'s own text-pill siblings which tint their
+   fill). DOM order [radio, table] — radio as the FIRST child lands at
+   the physical RIGHT under `.scq-opt`'s inherited `direction:rtl` with
+   no `order` override needed (there's no text node competing for that
+   position the way `.scq-opt-text` normally would). */
+.s23-table-options {
+  display: flex; flex-direction: row; gap: 16px;
+  margin-top: 4px;
+}
+.s23-table-opt {
+  width: auto; min-height: auto;
+  border-radius: 16px;
+  padding: 16px 20px;
+  gap: 14px;
+}
+.s23-table-opt.correct, .s23-table-opt.wrong { background: #fff; }
+
+/* Producer correction, 2026-08-11: the answer-option tables must look
+   IDENTICAL to the feedback popup's own restated table, not a separate
+   dark-header spec (a pixel-sampled fresh PowerPoint render had shown a
+   #156082 header there, which turned out not to be the intended
+   design — the producer's own explicit instruction wins over an
+   inferred-from-pixels reading). `.s23-table` is now just a WIDTH
+   override on the shared `.eq-table` (used verbatim, same class, same
+   light #f2f2f2 header/#fff body/#c9ced8 borders as the feedback
+   popup's table) — the markup carries both classes (`class="eq-table
+   s23-table"`) so the two tables are guaranteed to stay visually
+   identical by construction, not by copying matching numbers into two
+   places. */
+.s23-table { width: 220px; margin: 0; }
+.s23-table th, .s23-table td { width: 50%; }
+
+/* ═══════════════════════════════════════════════════════
+   Screen 44 (S24) — SingleChoiceQuestion, part ב of "שאלת חימום 2"
+   (slide 43). Same image as S23 (warmup2.png, same box). The restated
+   table uses `.eq-table` directly too (light header) — applying the
+   S23 correction proactively rather than trusting this slide's own
+   fresh-render pixels a second time (see index.html's section comment).
+   `.s7-text-col` doesn't have its own `.scq-answers` static-flow
+   override (S7/S8 never put `.scq-answers` inside it), so this screen
+   needs its own, same pattern as `#s2 .scq-answers`.
+   ═══════════════════════════════════════════════════════ */
+#s24 { background: #fff; }
+#s24 .scq-img { width: 273px; height: 486px; padding: 0; }
+#s24 .zoom-img-inner img {
+  width: 100%; height: 100%;
+  object-fit: contain; object-position: center;
+  display: block; border-radius: 16px;
+}
+.s24-table { width: 220px; margin: 4px 0; }
+.s24-table th, .s24-table td { width: 50%; }
+/* `.scq-qtext`'s own static-flow override already applies here via the
+   bare `.s7-text-col .scq-qtext` rule above — only `.scq-answers` needs
+   its own override, since no S7/S8-lineage screen has used it before. */
+#s24 .scq-answers { position: static; top: auto; align-self: flex-start; }
+/* Tighter vertical rhythm so the last answer pill clears the bottom bar's
+   top line (it was touching it): block starts higher and the column's
+   gaps shrink from 16px to 10px. */
+#s24 .scq-question { top: 120px; }
+#s24 .s7-text-col { gap: 10px; }
+#s24 .scq-answers { gap: 10px; }

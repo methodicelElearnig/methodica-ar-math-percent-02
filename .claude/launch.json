@@ -1,0 +1,26 @@
+{
+  "_comment": [
+    "ONE server, rooted at the repo, on 8090. Open a part at",
+    "http://localhost:8090/methodica-math-percent-02-0N/index.html",
+    "",
+    "The seven former per-part configs (8091-8097) each served a single part",
+    "folder as the web root. That stopped working when the shared fonts and the",
+    "character stills moved to unit-assets/ at the repo root: css/style.css now",
+    "resolves ../../unit-assets/fonts/*.ttf, which escapes a part-rooted server",
+    "and 404s. A part-rooted server is fundamentally incompatible with shared",
+    "assets, so the per-part entries are gone rather than left to fail quietly.",
+    "",
+    "Note this is also the deployment contract: unit-assets/ ships at the unit",
+    "root alongside the part folders, and a part folder is no longer",
+    "independently servable."
+  ],
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "all-parts",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["--yes", "http-server", ".", "-p", "8090", "-c-1"],
+      "port": 8090
+    }
+  ]
+}

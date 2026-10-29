@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>النسب المئوية 02 — الجزء 07</title>
+  <link rel="stylesheet" href="../unit-css/00-tokens.css?v=2">
+  <link rel="stylesheet" href="../unit-css/10-base.css?v=2">
+  <link rel="stylesheet" href="css/style.css?v=2">
+  <link rel="stylesheet" href="../unit-css/20-motion.css?v=2">
+  <link rel="stylesheet" href="../unit-css/25-report.css?v=2">
+</head>
+<!-- data-subject-theme activates the Math token override block in
+     css/style.css. Must stay identical to parts 01-06's <body> so all
+     parts render in the same subject theme. -->
+<body data-subject-theme="math">
+  <!-- ═══ כיסוי האתחול ═══
+       מסתיר את החלון שבו מסך 0 כבר גלוי (class="screen active" מקובע ב-markup
+       כאן למטה) אבל מסמך ה-state עוד לא נקרא. בלעדיו לומד שממשיך ממחשב אחר
+       רואה אווטאר בצבע הלא-נכון ואז החלפה — בדיוק ההבהוב שכלל 1 ב-CLAUDE.md
+       אוסר, כי הדמות נקראת מהמסמך ולא מ-localStorage מ-v4 והלאה.
+
+       אח של #app ולא בן שלו: scaleApp() מזיז ומקטין את #app, ובן היה יורש
+       את ה-transform. הסגנון inline ולא ב-styles.css במכוון — הכיסוי חייב
+       להיצבע בפריים הראשון, ו-inline הוא היחיד שלא תלוי בקאש של CSS.
+
+       ⚠️ הסקריפט שאחריו הוא רשת הביטחון, ואין לו שום תלות בקובץ JS: גם אם
+       40-resume.js או 50-loader.js נכשלים בטעינה, הכיסוי נופל אחרי 800ms.
+       ההסרה בנתיב הרגיל היא dropBootCover() מ-50-loader.js, שרצה מוקדם יותר
+       מזה ברוב הטעינות.
+       אם bootXAPI הספיק להדליק את window.__resumeInFlight (כלומר resume פעיל
+       והשחזור בדרך), הרשת ממתינה לו במקום לחשוף את מסך 0 באמצע — עד תקרה
+       קשיחה של 6 שניות, שאחריה היא חושפת בכל מקרה. הדגל נקרא הגנתית, ולכן
+       50-loader.js שנכשל בטעינה מחזיר בדיוק את התנהגות ה-800ms. -->
+  <div id="boot-cover" style="position:fixed;inset:0;z-index:9999;background:#fff"></div>
+  <script>
+  (function () {
+    var t0 = Date.now();
+    function tick() {
+      var c = document.getElementById('boot-cover');
+      if (!c || !c.parentNode) return;
+      if (window.__resumeInFlight && Date.now() - t0 < 6000) { setTimeout(tick, 100); return; }
+      c.parentNode.removeChild(c);
+    }
+    setTimeout(tick, 800);
+  })();
+  </script>
+
+  <!-- Inline SVG sprite — the hint bulb+gear glyph, defined ONCE and
+       instanced with <use>. Same pattern every other part uses for it.
+       Needed here by S2's (visible-from-start) and S3's (hidden-until-
+       wrong) hint buttons. Paths are the Figma export (node 196:6024). -->
+  <svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
+    <symbol id="hint-bulb-glyph" viewBox="0 0 25.9999 22.2883">
+      <path d="M17.7925 2.76345C16.3676 1.37911 14.5057 0.68776 12.5488 0.815545C9.07995 1.04163 6.27286 3.9168 6.01796 7.50134C5.85646 9.77363 6.7035 11.9443 8.34374 13.4548C9.23036 14.2723 9.74016 15.465 9.74016 16.7265H11.2284H14.7733H16.2615C16.2615 15.4847 16.7919 14.2707 17.7181 13.3959C19.17 12.0263 20.0012 10.0751 20.0012 8.04361C20.0012 6.01215 19.1953 4.12486 17.7909 2.76018L17.7925 2.76345ZM13.0001 5.54524C11.6701 5.54524 10.5856 6.66582 10.5856 8.04525C10.5856 8.46956 10.2515 8.81524 9.84149 8.81524C9.43143 8.81524 9.09736 8.46956 9.09736 8.04525C9.09736 5.8172 10.8484 4.00527 13.0001 4.00527C13.4133 4.00527 13.7473 4.35094 13.7473 4.77525C13.7473 5.19957 13.4133 5.54524 13.0001 5.54524Z" fill="currentColor"/>
+      <path d="M9.73858 19.6245C9.73858 20.3289 9.99823 20.9908 10.478 21.4904L10.4938 21.5068C10.9783 22.0098 11.6242 22.2883 12.3114 22.2883H13.6888C14.3775 22.2883 15.025 22.0114 15.5111 21.5052C15.9956 21.0039 16.2631 20.3355 16.2631 19.6277V17.9895H9.73858V19.6245ZM11.2268 19.5294H14.7717V19.6277C14.7717 19.9243 14.6609 20.2077 14.4566 20.419C14.254 20.6254 13.9753 20.6336 13.6888 20.7483H12.3114C12.028 20.7483 11.7588 20.6336 11.5561 20.4305L11.5451 20.4174C11.3424 20.211 11.2268 19.9226 11.2268 19.6261V19.5311V19.5294Z" fill="currentColor"/>
+      <path d="M25.2558 7.27531H22.607C22.1954 7.27531 21.8629 7.62099 21.8629 8.0453C21.8629 8.46961 22.197 8.81529 22.607 8.81529H25.2558C25.6674 8.81529 25.9999 8.46961 25.9999 8.0453C25.9999 7.62099 25.6658 7.27531 25.2558 7.27531Z" fill="currentColor"/>
+      <path d="M4.1386 8.0453C4.1386 7.61935 3.80453 7.27531 3.39447 7.27531H0.744124C0.332481 7.27531 0 7.62099 0 8.0453C0 8.46961 0.334064 8.81529 0.744124 8.81529H3.39289C3.80453 8.81529 4.13701 8.46961 4.13701 8.0453H4.1386Z" fill="currentColor"/>
+      <path d="M20.8702 3.11398C21.0175 3.11398 21.1663 3.06811 21.2961 2.97472L23.4667 1.40198C23.804 1.15788 23.8847 0.677863 23.6488 0.328911C23.4129 -0.0200418 22.949 -0.105232 22.6118 0.140509L20.4412 1.71325C20.1039 1.95736 20.0232 2.43737 20.2591 2.78632C20.4032 3.00094 20.6343 3.11562 20.8702 3.11562V3.11398Z" fill="currentColor"/>
+      <path d="M4.70372 13.1172L2.53309 14.69C2.19586 14.9341 2.11512 15.4141 2.35102 15.763C2.49509 15.9777 2.72625 16.0923 2.96215 16.0923C3.10939 16.0923 3.25822 16.0465 3.38804 15.9531L5.55867 14.3803C5.8959 14.1362 5.97665 13.6562 5.74074 13.3073C5.50484 12.9583 5.04095 12.8731 4.70372 13.1189V13.1172Z" fill="currentColor"/>
+      <path d="M23.4668 14.6884L21.2961 13.1157C20.9589 12.8716 20.495 12.9567 20.2591 13.3041C20.0232 13.653 20.1055 14.133 20.4412 14.3771L22.6118 15.9499C22.7416 16.0449 22.8904 16.0891 23.0377 16.0891C23.272 16.0891 23.5032 15.9744 23.6488 15.7598C23.8847 15.4109 23.8024 14.9309 23.4668 14.6868V14.6884Z" fill="currentColor"/>
+      <path d="M5.55869 1.71322L3.38806 0.140478C3.05083 -0.103625 2.58694 -0.0184349 2.35104 0.328879C2.11513 0.677832 2.19746 1.15785 2.53311 1.40195L4.70374 2.97469C4.83356 3.06971 4.98239 3.11395 5.12963 3.11395C5.36395 3.11395 5.5951 2.99927 5.74076 2.78465C5.97666 2.4357 5.89434 1.95569 5.55869 1.71158V1.71322Z" fill="currentColor"/>
+    </symbol>
+  </svg>
+
+  <div id="app">
+
+    <!-- Report / Issue button — global, outside all .screen divs. -->
+    <button class="flag-btn" type="button" aria-label="هل وجدتم مشكلة؟">
+      <span class="flag-btn-icon">
+        <span class="flag-btn-glyph" aria-hidden="true">
+          <svg class="flag-btn-glyph-pole" viewBox="0 0 0.794329 17.0005" preserveAspectRatio="none" fill="none"><path d="M0.397164 17C0.177722 17 0 16.8239 0 16.6065V0.393501C0 0.176082 0.177722 0 0.397164 0C0.616607 0 0.794329 0.176082 0.794329 0.393501V16.607C0.794329 16.8245 0.616607 17.0005 0.397164 17.0005V17Z" fill="currentColor"/></svg>
+          <svg class="flag-btn-glyph-banner" viewBox="0 0 12 9.31542" preserveAspectRatio="none" fill="none"><path d="M2.76227 9.31542C1.91972 9.31542 1.06958 9.15545 0.213483 8.71363C0.0823588 8.64599 0 8.51124 0 8.36469V0.950975C0 0.814619 0.0715221 0.687925 0.188558 0.615989C0.305594 0.54459 0.45189 0.537611 0.574886 0.598811C0.577053 0.599884 0.578679 0.600958 0.580846 0.602032C2.31309 1.49586 4.05563 1.046 5.90003 0.569821C7.80946 0.0770055 9.78336 -0.431915 11.7865 0.601495C11.9176 0.669136 12 0.803882 12 0.950438V8.36415C12 8.4946 11.9344 8.617 11.8255 8.69001C11.7166 8.76302 11.5774 8.77805 11.4555 8.72974C11.443 8.7249 11.4311 8.71954 11.4197 8.71363C9.68745 7.8198 7.94491 8.26967 6.10051 8.7453C5.00709 9.02714 3.89199 9.31489 2.76281 9.31489L2.76227 9.31542ZM0.793787 8.11935C2.45559 8.87307 4.13094 8.44038 5.90003 7.98407C7.62469 7.53903 9.40191 7.08057 11.2062 7.75806V1.19631C9.54441 0.442591 7.86906 0.875281 6.09997 1.33159C4.37531 1.77663 2.59755 2.23509 0.793787 1.5576V8.11935Z" fill="currentColor"/></svg>
+        </span>
+      </span>
+      <span class="flag-btn-label">هل وجدتم مشكلة؟</span>
+    </button>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 01 (S0) — TransitionScreen kickoff into the remedial
+         "שאלת שיא" (climax question — 2 sub-parts). Only reached when
+         the learner failed part 06's own climax question. Source
+         slide85.xml is just the section divider with no learner-facing
+         copy of its own — this screen's text is producer-DICTATED
+         (2026-08-12 chat), not extracted from any slide: verbatim reuse
+         of part 06's own S0 copy (slide79), with only the sub-part
+         count/threshold line swapped (2 sub-parts / succeed in both,
+         vs. part 06's 4 sub-parts / succeed in 3+) — deliberately kept
+         as "כל הכבוד!" rather than this build's own first draft's
+         retry-toned "לא נורא!" opener.
+
+         Same `.s1-*` component set as part 06's S0, but with its own
+         per-character "rocket launch" video (Character-{1,2}-
+         Rocket.mp4, swapped in 2026-08-12 per producer decision — see
+         the header comment on `S0_CHARACTER` in js/main.js) rather
+         than part 06's own "climbing to the summit" clip. No Back
+         button: part 07's first screen. Continue ungated. -->
+    <section class="screen active" data-screen="0" id="s0">
+      <div class="s1-content">
+        <div class="s1-text" data-reveal="1">
+          <p class="s1-subtitle s1-subtitle--regular">كل الاحترام!</p>
+          <p class="s1-subtitle s1-subtitle--regular">إذا لم تنجحوا في الإجابة عن بعض الأسئلة بشكل صحيح،</p>
+          <p class="s1-subtitle s1-subtitle--regular">فمن المهم أن تفهموا ما الذي لا يزال غير واضح، وأن تتوجهوا إلى الدردشة أو إلى المعلّم للحصول على شرح إضافي.</p>
+          <h1 class="s1-title">والآن يأتي السؤال الأكبر</h1>
+          <p class="s1-subtitle">يحتوي السؤال على بندين. عليكم الإجابة عن كليهما بشكل صحيح.</p>
+        </div>
+        <!-- Video zone rule: companion-character video shares group 1 with
+             the text (no stagger) and reveals fade-only, never floated. -->
+        <div class="s1-video-wrap" data-reveal="1" data-reveal-fade>
+          <video class="s1-char-media" id="s0-char-video" autoplay muted playsinline disablepictureinpicture controlsList="nodownload noremoteplayback noplaybackrate"></video>
+          <img class="s1-char-media hidden" id="s0-char-img" alt="">
+        </div>
+      </div>
+      <button class="btn-continue" type="button" onclick="advanceFromS0()">
+        <span class="nav-label" data-label="متابعة"><span>متابعة</span></span>
+      </button>
+      <!-- Cross-part Back — see the identical block in part 02's S0.
+           Hidden until PartNav.mountBack() confirms a recorded crossing
+           into this part (here: only ever from part 06's climax-fail
+           edge). -->
+      <button class="scq-back hidden" id="s0-back" type="button" onclick="goBackFromS0()">
+        <span class="nav-label" data-label="عودة"><span>عودة</span></span>
+      </button>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 02 (S1) — scenario/context intro, slide86.xml. Item ref:
+         methodica-math-percent-02-07-001 (shared with S0/S2/S3 — this
+         slide isn't its own lettered sub-part, it sets up the scenario
+         both sub-parts reuse). No documented Figma template (notesSlide75's
+         own "תבנית בפיגמה" field is empty), same as part 06's own S1 —
+         reuses the established ValueInputQuestion layout shape minus
+         the input row.
+
+         Reference image: steps-app-phones.png (source image75.png,
+         1024×572), alt text copied verbatim from notesSlide75's own
+         explicit "אלט טקסט" field. Reused again on S2/S3 (same
+         producer-cited "see_b_1" reference).
+
+         Closing line ("כמה צעדים הם צעדו? מיד נראה...") confirmed via
+         the rendered slide export (slide86.png) as its own bold accent
+         line, same visual role as part 06's own closing `.viq-qstem`
+         line despite not literally being a question. -->
+    <section class="screen" data-screen="1" id="s1">
+      <div class="scq-question">
+        <div class="viq-text-col" data-reveal="1">
+          <p class="viq-context">قرّر وسام وسمر المشاركة في تحدٍّ صحي في المدرسة.</p>
+          <p class="viq-context">حدّد كل واحد منهما على هاتفه هدفًا يوميًا مختلفًا للخطوات‎:</p>
+          <p class="viq-context">الهدف اليومي الذي حددته <strong>سمر</strong> هو <strong>8,000</strong> خطوة،</p>
+          <p class="viq-context">والهدف اليومي الذي حدده <strong>وسام</strong> هو <strong>12,000</strong> خطوة.</p>
+          <div class="viq-context-gap" aria-hidden="true"></div>
+          <p class="viq-context">في نهاية اليوم الأول من التحدي، قارنا المعطيات الموجودة في هاتفيهما‎:</p>
+          <p class="viq-context">أكملت <strong>سمر</strong> <strong>%80</strong> من هدفها اليومي للخطوات‎.</p>
+          <p class="viq-context">أكمل <strong>وسام</strong> <strong>%60</strong> من هدفه اليومي للخطوات.</p>
+          <div class="viq-context-gap" aria-hidden="true"></div>
+          <p class="viq-qstem">كم خطوة مشيا؟</p>
+          <p class="viq-qstem">سنرى بعد قليل‎...</p>
+        </div>
+
+        <!-- This wrapper is cloned and re-measured (naturalWidth/Height) by
+             openImageZoom() on every zoom click — Rule precedence #1
+             (safety): fade-only, never float, so the reveal's transform
+             can never interfere with the zoom clone/measurement. -->
+        <div class="scq-img" data-reveal="2" data-reveal-fade>
+          <div class="scq-img-inner">
+            <button class="img-zoom-btn" type="button" aria-label="تكبير الصورة"
+                    data-zoom-src="assets/img/steps-app-phones.png">
+              <svg class="img-zoom-btn__icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <circle cx="8.5" cy="8.5" r="6.5" stroke="currentColor" stroke-width="1.6"/>
+                <path d="M13.3 13.3L17.6 17.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              </svg>
+            </button>
+            <img src="assets/img/steps-app-phones.png"
+                 alt="صورة أفقية لهاتفين ذكيين موضوعين على طاولة خشبية فاتحة، إلى جانب أدوات رياضية تشمل قنينة ماء وسوار لياقة وأحذية ركض. يعرض الهاتفان شاشة تطبيق لعد الخطوات بعنوان &quot;النشاط اليومي&quot;. في الهاتف الأيسر، بتصميم بدرجات الأزرق والأخضر، محدد &quot;الهدف: 8,000 خطوة&quot; ويظهر مخطط تقدم دائري يبيّن إنجاز %80 (%80 COMPLETE). في الهاتف الأيمن، بتصميم برتقالي، محدد &quot;الهدف: 12,000 خطوة&quot; ويظهر مخطط دائري يبيّن إنجاز %60 (%60 COMPLETE). ‎أسفل المخططين في الشاشتين تظهر عبارة &quot;الخطوات المنجزة اليوم‎&quot;.">
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-continue" id="s1-continue" type="button" onclick="advanceFromS1()"><span class="nav-label" data-label="متابعة"><span>متابعة</span></span></button>
+      <button class="scq-back" id="s1-back" type="button" onclick="goBackFromS1()"><span class="nav-label" data-label="عودة"><span>عودة</span></span></button>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 03 (S2) — SingleChoiceQuestion, slide87.xml. Item ref:
+         methodica-math-percent-02-07-001 sub-part א. Presenter notes
+         (notesSlide76.xml): Figma template SingleChoiceQuestion. Hint
+         IS present here (unlike part 06's S3-S5), hidden until first
+         wrong attempt (producer decision 2026-08-12 — see the header
+         comment on `#s2` in style.css for the full trail).
+
+         4 options, correctId 'b' (see style.css header comment for the
+         "two options both say שי טועה, only one's reasoning is right"
+         detail). Does NOT use the View My Answer Toggle — correct and
+         wrong options marked simultaneously on final wrong, same
+         contract as every other SCQ screen in this project. -->
+    <section class="screen" data-screen="2" id="s2">
+      <div class="scq-question">
+        <div class="viq-text-col" data-reveal="1">
+          <p class="viq-context">الهدف اليومي <strong>لسمر</strong> هو <strong>8,000</strong>  خطوة، وقد أنجزت <strong>%80</strong> منه.</p>
+          <p class="viq-context">الهدف اليومي <strong>لوسام</strong> هو <strong>12,000</strong>  خطوة، وقد أنجز <strong>%60</strong> منه.</p>
+          <p class="viq-context">ادّعت سمر: "بما أن نسبة إنجازي أعلى من نسبة إنجازك،</p>
+          <p class="viq-context">فهذا يعني أنني مشيت اليوم عددًا أكبر من الخطوات‎!"</p>
+          <p class="viq-qstem">أ. هل <strong>سمر</strong> على صواب أم مخطئة؟</p>
+          <div class="scq-answers" role="radiogroup" aria-label="اختاروا إجابة">
+            <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="a" onclick="s2qSelect('a')">
+              <span class="scq-opt-text">سمر على صواب - عند عَدّ الخطوات النسبة المئوية هي الحاسمة، و-%80 أكبر من %60.</span>
+              <span class="scq-radio" aria-hidden="true"></span>
+            </button>
+            <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="b" onclick="s2qSelect('b')">
+              <span class="scq-opt-text">سمر مخطئة - وسام وضعَ لنفسه هدفًا أكبر، ولذلك %60 من هدفه تساوي أكثر من %80 من هدف سمر.</span>
+              <span class="scq-radio" aria-hidden="true"></span>
+            </button>
+            <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="c" onclick="s2qSelect('c')">
+              <span class="scq-opt-text">سمر مخطئة - النسبة المئوية الأصغر (%60) من صحيح أكبر (12,000) قد تعطي كمية مساوية لنسبة مئوية أكبر من صحيح أصغر‎.</span>
+              <span class="scq-radio" aria-hidden="true"></span>
+            </button>
+            <button class="scq-opt" type="button" role="radio" aria-checked="false" data-id="d" onclick="s2qSelect('d')">
+              <span class="scq-opt-text">سمر على صواب - فقط إذا كانا قد مشيا بنفس السرعة بالضبط.</span>
+              <span class="scq-radio" aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
+
+        <!-- This wrapper is cloned and re-measured (naturalWidth/Height) by
+             openImageZoom() on every zoom click — Rule precedence #1
+             (safety): fade-only, never float, so the reveal's transform
+             can never interfere with the zoom clone/measurement. -->
+        <div class="scq-img" data-reveal="2" data-reveal-fade>
+          <div class="scq-img-inner">
+            <button class="img-zoom-btn" type="button" aria-label="تكبير الصورة"
+                    data-zoom-src="assets/img/steps-app-phones.png">
+              <svg class="img-zoom-btn__icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <circle cx="8.5" cy="8.5" r="6.5" stroke="currentColor" stroke-width="1.6"/>
+                <path d="M13.3 13.3L17.6 17.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              </svg>
+            </button>
+            <img src="assets/img/steps-app-phones.png"
+                 alt="صورة أفقية لهاتفين ذكيين موضوعين على طاولة خشبية فاتحة، إلى جانب أدوات رياضية تشمل قنينة ماء وسوار لياقة وأحذية ركض. يعرض الهاتفان شاشة تطبيق لعد الخطوات بعنوان &quot;النشاط اليومي&quot;. في الهاتف الأيسر، بتصميم بدرجات الأزرق والأخضر، محدد &quot;الهدف: 8,000 خطوة&quot; ويظهر مخطط تقدم دائري يبيّن إنجاز %80 (%80 COMPLETE). في الهاتف الأيمن، بتصميم برتقالي، محدد &quot;الهدف: 12,000 خطوة&quot; ويظهر مخطط دائري يبيّن إنجاز %60 (%60 COMPLETE). ‎أسفل المخططين في الشاشتين تظهر عبارة &quot;الخطوات المنجزة اليوم‎&quot;.">
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-continue" id="s2q-check" type="button" disabled onclick="s2qCheck()"><span class="nav-label" data-label="هل إجابتي صحيحة؟"><span>هل إجابتي صحيحة؟</span></span></button>
+      <button class="scq-hint hidden" id="s2q-hint" type="button" onclick="s2qOpenHint()">
+        <svg class="scq-hint-ico" viewBox="0 0 25.9999 22.2883" fill="none" aria-hidden="true">
+          <use href="#hint-bulb-glyph"/>
+        </svg>
+        <span class="nav-label" data-label="هل يمكنني الحصول على تلميح؟"><span>هل يمكنني الحصول على تلميح؟</span></span>
+      </button>
+      <button class="scq-back" type="button" onclick="goBackFromS2()"><span class="nav-label" data-label="عودة"><span>عودة</span></span></button>
+    </section>
+
+    <div class="scq-popup hidden m-popup" id="s2q-popup" role="status" aria-live="polite"
+         onpointerdown="popupPointerDown(event, 's2q-popup')">
+      <div class="scq-popup-header">
+        <p class="scq-popup-title" id="s2q-popup-title"></p>
+      </div>
+      <div class="scq-popup-body" id="s2q-popup-body"></div>
+    </div>
+
+    <div class="scq-hint-overlay hidden m-popup" id="s2q-hint-overlay" onclick="s2qCloseHintOnBackdrop(event)">
+      <div class="scq-hint-popup" role="dialog" aria-modal="true" aria-labelledby="s2q-hint-title">
+        <div class="scq-hint-content">
+          <h2 class="scq-hint-title" id="s2q-hint-title">تلميح
+            <svg class="scq-hint-title-ico" viewBox="0 0 25.9999 22.2883" fill="none" aria-hidden="true">
+              <use href="#hint-bulb-glyph"/>
+            </svg>
+          </h2>
+          <div class="scq-hint-body">
+            <p>لا يمكن استخلاص استنتاجات من مقارنة النسب المئوية دون النظر إلى الكمية الكاملة. اسألوا دائمًا: نسبة مئوية من ماذا؟</p>
+          </div>
+        </div>
+        <button class="scq-hint-close" type="button" onclick="s2qCloseHint()"><span class="nav-label" data-label="عودة إلى السؤال"><span>عودة إلى السؤال</span></span></button>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════
+         Screen 04 (S3) — ValueInputQuestion, slide88.xml. Item ref:
+         methodica-math-percent-02-07-001 sub-part ב (closes out the
+         item's 2 lettered sub-parts). Presenter notes (notesSlide77.xml):
+         Figma template ValueInputQuestion. Two INLINE blanks inside
+         running sentences — see the header comment on `#s3` in
+         style.css for why this is a new content shape in this project.
+
+         Both fields validated holistically (maxAttempts:2). DOES use
+         the View My Answer Toggle (see the header comment on `#s3` in
+         style.css and on the S3 section of js/main.js — corrected
+         2026-08-12, producer-reported bug). Hint hidden until first
+         wrong attempt (this project's own established ValueInputQuestion
+         convention). -->
+    <section class="screen" data-screen="3" id="s3">
+      <div class="scq-question">
+        <!-- Whole column reveals as one group. The "static repeated
+             text" rule (see part 01's S8/S12) applies only to text
+             carried over from the IMMEDIATELY PRECEDING screen, because
+             that is the text already on screen when the learner arrives.
+             S3 arrives from S2, which states the same facts in DIFFERENT
+             wording (S2 merges each pair into one sentence: "…8,000
+             צעדים, והיא השלימה 80% ממנו"), so every line here genuinely
+             changes on entry and animates normally. An earlier pass
+             wrongly compared against S1 — two screens back — and froze
+             four of these lines. -->
+        <div class="viq-text-col" data-reveal="1">
+          <p class="viq-context">الهدف اليومي الذي حددته <strong>سمر</strong> هو <strong>8,000</strong> خطوة،</p>
+          <p class="viq-context">والهدف اليومي الذي حدده <strong>وسام</strong> هو <strong>12,000</strong> خطوة.</p>
+          <p class="viq-context">في نهاية اليوم الأول من التحدي، قارنا المعطيات:</p>
+          <p class="viq-context">أكملت <strong>سمر</strong> <strong>%80</strong> من هدفها اليومي للخطوات‎.</p>
+          <p class="viq-context">أكمل <strong>وسام</strong> <strong>%60</strong> من هدفه اليومي للخطوات.</p>
+          <div class="viq-context-gap" aria-hidden="true"></div>
+          <p class="viq-qstem">ب. أكملوا‎:</p>
+
+          <p class="viq-context s3v-blank-line">
+            في اليوم الأول من التحدي مشت <strong>سمر</strong> 
+            <span class="viq-field viq-field--inline" id="s3v-field-shai">
+              <input id="s3v-input-shai" class="viq-input" type="text" inputmode="numeric"
+                     step="any" dir="ltr" aria-label="كم خطوة مشت سمر في اليوم الأول" oninput="s3vInputChange()">
+              <span class="viq-input-ico" id="s3v-ico-shai" aria-hidden="true"></span>
+            </span>
+            خطوة.
+          </p>
+          <p class="viq-context s3v-blank-line">
+            في اليوم الأول من التحدي مشى <strong>وسام</strong> 
+            <span class="viq-field viq-field--inline" id="s3v-field-alon">
+              <input id="s3v-input-alon" class="viq-input" type="text" inputmode="numeric"
+                     step="any" dir="ltr" aria-label="كم خطوة مشى وسام في اليوم الأول" oninput="s3vInputChange()">
+              <span class="viq-input-ico" id="s3v-ico-alon" aria-hidden="true"></span>
+            </span>
+            خطوة.
+          </p>
+        </div>
+
+        <!-- This wrapper is cloned and re-measured (naturalWidth/Height) by
+             openImageZoom() on every zoom click — Rule precedence #1
+             (safety): fade-only, never float, so the reveal's transform
+             can never interfere with the zoom clone/measurement. -->
+        <div class="scq-img" data-reveal="2" data-reveal-fade>
+          <div class="scq-img-inner">
+            <button class="img-zoom-btn" type="button" aria-label="تكبير الصورة"
+                    data-zoom-src="assets/img/steps-app-phones.png">
+              <svg class="img-zoom-btn__icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <circle cx="8.5" cy="8.5" r="6.5" stroke="currentColor" stroke-width="1.6"/>
+                <path d="M13.3 13.3L17.6 17.6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+              </svg>
+            </button>
+            <img src="assets/img/steps-app-phones.png"
+                 alt="صورة أفقية لهاتفين ذكيين موضوعين على طاولة خشبية فاتحة، إلى جانب أدوات رياضية تشمل قنينة ماء وسوار لياقة وأحذية ركض. يعرض الهاتفان شاشة تطبيق لعد الخطوات بعنوان &quot;النشاط اليومي&quot;. في الهاتف الأيسر، بتصميم بدرجات الأزرق والأخضر، محدد &quot;الهدف: 8,000 خطوة&quot; ويظهر مخطط تقدم دائري يبيّن إنجاز %80 (%80 COMPLETE). في الهاتف الأيمن، بتصميم برتقالي، محدد &quot;الهدف: 12,000 خطوة&quot; ويظهر مخطط دائري يبيّن إنجاز %60 (%60 COMPLETE). ‎أسفل المخططين في الشاشتين تظهر عبارة &quot;الخطوات المنجزة اليوم‎&quot;.">
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-continue" id="s3v-check" type="button" disabled onclick="s3vCheck()"><span class="nav-label" data-label="هل إجابتي صحيحة؟"><span>هل إجابتي صحيحة؟</span></span></button>
+      <button class="scq-hint hidden" id="s3v-hint" type="button" onclick="s3vOpenHint()">
+        <svg class="scq-hint-ico" viewBox="0 0 25.9999 22.2883" fill="none" aria-hidden="true">
+          <use href="#hint-bulb-glyph"/>
+        </svg>
+        <span class="nav-label" data-label="هل يمكنني الحصول على تلميح؟"><span>هل يمكنني الحصول على تلميح؟</span></span>
+      </button>
+      <button class="scq-back" type="button" onclick="goBackFromS3()"><span class="nav-label" data-label="عودة"><span>عودة</span></span></button>
+    </section>
+
+    <div class="scq-popup hidden m-popup" id="s3v-popup" role="status" aria-live="polite"
+         onpointerdown="popupPointerDown(event, 's3v-popup')">
+      <div class="scq-popup-header">
+        <p class="scq-popup-title" id="s3v-popup-title"></p>
+      </div>
+      <div class="scq-popup-body" id="s3v-popup-body"></div>
+    </div>
+
+    <div class="scq-hint-overlay hidden m-popup" id="s3v-hint-overlay" onclick="s3vCloseHintOnBackdrop(event)">
+      <div class="scq-hint-popup" role="dialog" aria-modal="true" aria-labelledby="s3v-hint-title">
+        <div class="scq-hint-content">
+          <h2 class="scq-hint-title" id="s3v-hint-title">تلميح
+            <svg class="scq-hint-title-ico" viewBox="0 0 25.9999 22.2883" fill="none" aria-hidden="true">
+              <use href="#hint-bulb-glyph"/>
+            </svg>
+          </h2>
+          <div class="scq-hint-body">
+            <p>احسبوا عدد الخطوات التي مشاها كل واحد منهما فعليًا من هدفه اليومي‎.</p>
+          </div>
+        </div>
+        <button class="scq-hint-close" type="button" onclick="s3vCloseHint()"><span class="nav-label" data-label="عودة إلى السؤال"><span>عودة إلى السؤال</span></span></button>
+      </div>
+    </div>
+
+    <!-- Shared image-zoom modal — ONE per part, outside all .screen
+         divs, standard clone-based behavior (720-templates →
+         _global-components.md → "Image zoom"). -->
+    <div id="img-zoom-modal" class="img-zoom-modal hidden">
+      <div class="img-zoom-backdrop" data-zoom-close="true"></div>
+      <div class="img-zoom-panel" role="dialog" aria-modal="true" aria-label="تكبير الصورة">
+        <button class="img-zoom-close-btn" type="button" id="img-zoom-close" aria-label="إغلاق" data-zoom-close="true">
+          <svg viewBox="0 0 15 15" fill="none" aria-hidden="true">
+            <path d="M1 1L14 14M14 1L1 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <div class="img-zoom-stage" id="img-zoom-stage"></div>
+      </div>
+    </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       "מצאתם בעיה?" — שלושה דיאלוגים.
+       יושבים בתוך #app ומחוץ לכל .screen: ‎.report-modal-overlay הוא
+       position:absolute; inset:0, ו-#app הוא האב הממוקם שלו — מחוץ ל-#app
+       הכיסוי לא היה מתיישר לקנבס המוקטן.
+       ההתנהגות כולה ב-../unit-js/25-report.js, העיצוב ב-../unit-css/25-report.css.
+       כפתור ה-.flag-btn עצמו כבר קיים בכל סין ומחווט ב-delegation.
+  ════════════════════════════════════════════════════════════════ -->
+  <div id="report-modal"
+       class="report-modal-overlay"
+       hidden
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="report-modal-title">
+    <div class="report-modal-box">
+      <button class="report-close-btn" type="button" onclick="tryCloseReportModal()" aria-label="إغلاق">&#10005;</button>
+      <h2 class="report-modal-title" id="report-modal-title">דיווח על בעיה</h2>
+      <p class="report-modal-body">משהו לא ברור או לא עובד כמו שצריך?<br>ספרו לנו מה קרה כדי שנטפל.</p>
+
+      <div class="report-field">
+        <label class="report-label" for="report-type"><span class="required-star">*</span> מה סוג הבעיה</label>
+        <div class="report-custom-select" id="report-type-wrapper">
+          <button class="report-select-btn is-placeholder" type="button" aria-haspopup="listbox" aria-expanded="false">
+            <span class="report-select-value">בחרו סוג בעיה</span>
+          </button>
+          <ul class="report-select-list" role="listbox" hidden>
+            <li class="report-select-option" data-value="technical" role="option">תקלה טכנית או שמשהו לא עובד</li>
+            <li class="report-select-option" data-value="unclear" role="option">משהו לא ברור לי</li>
+            <li class="report-select-option" data-value="other" role="option">آخر</li>
+          </ul>
+          <input type="hidden" id="report-type" value="">
+        </div>
+        <span class="report-field-error" id="report-type-error" hidden>בחרו את סוג הבעיה</span>
+      </div>
+
+      <div class="report-field">
+        <label class="report-label" for="report-text"><span class="required-star">*</span> מה קרה?</label>
+        <textarea class="report-textarea" id="report-text" maxlength="250" rows="4" placeholder="פרטו מה קרה כדי שנוכל להבין את הבעיה" onblur="reportTextBlur()"></textarea>
+        <span class="report-field-error" id="report-text-error" hidden>כתבו מה קרה</span>
+        <span class="report-char-count" id="report-char-count">0 / 250</span>
+      </div>
+
+      <div class="report-actions">
+        <button class="report-cancel-btn" type="button" onclick="tryCloseReportModal()">ביטול</button>
+        <button class="report-submit-btn" type="button" onclick="submitReport()" disabled>שליחת דיווח</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- מצב "הדיווח נשלח". דיאלוג נפרד מדיאלוג הנטישה שמתחתיו — אין לאחד ביניהם. -->
+  <div id="report-thanks-modal"
+       class="report-modal-overlay"
+       hidden
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="report-thanks-title">
+    <div class="report-modal-box report-confirm-box">
+      <h2 class="report-modal-title" id="report-thanks-title">הדיווח נשלח, תודה!</h2>
+      <p class="report-modal-body">קיבלנו את הדיווח שלכם ונטפל בו בהקדם.</p>
+      <div class="report-actions">
+        <button class="report-submit-btn" type="button" onclick="closeReportThanks()">إغلاق</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- אישור נטישה: נפתח רק כשיש קלט שלא נשלח. -->
+  <div id="report-confirm-modal"
+       class="report-modal-overlay"
+       hidden
+       role="dialog"
+       aria-modal="true"
+       aria-labelledby="report-confirm-title">
+    <div class="report-modal-box report-confirm-box">
+      <h2 class="report-modal-title" id="report-confirm-title">בטוח לסגור את החלון?</h2>
+      <p class="report-modal-body">בלחיצה על סגירה לא יישלח דיווח</p>
+      <div class="report-actions">
+        <button class="report-cancel-btn" type="button" onclick="forceCloseReportModal()">סגור חלון</button>
+        <button class="report-submit-btn" type="button" onclick="backToReportForm()">אני רוצה לדווח</button>
+      </div>
+    </div>
+  </div>
+
+  </div>
+
+  <script src="../unit-js/05-motion.js?v=3"></script>
+  <script src="../unit-js/08-partnav.js?v=4"></script>
+  <script src="../unit-js/10-identity.js?v=4"></script>
+  <script src="../unit-js/15-ui.js?v=3"></script>
+  <script src="../unit-js/18-numeric-input.js?v=3"></script>
+  <script src="../unit-js/20-xapi.js?v=5"></script>
+  <script src="../unit-js/25-report.js?v=3"></script>
+  <script src="../unit-js/30-nav.js?v=3"></script>
+  <script src="../unit-js/35-charts.js?v=3"></script>
+  <script src="../unit-js/40-resume.js?v=4"></script>
+  <script src="../unit-js/45-painters.js?v=3"></script>
+  <script src="../unit-js/50-loader.js?v=4"></script>
+  <script src="../unit-js/60-devbridge.js?v=3"></script>
+  <script src="js/main.js?v=5"></script>
+  <script src="../unit-js/90-boot.js?v=4"></script>
+</body>
+</html>

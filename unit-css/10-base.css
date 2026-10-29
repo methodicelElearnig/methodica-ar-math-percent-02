@@ -1,0 +1,137 @@
+/* ═══════════════════ unit-css/10-base.css ═══════════════════
+   Base layout and the global report/issue button. THE one copy for this
+   unit; loaded as ../unit-css/10-base.css, after 00-tokens.css and before
+   each part's css/style.css.
+
+   Same provenance and the same cascade-safety argument as 00-tokens.css:
+   these were byte-identical rules 7-21 of every part's style.css, in this
+   order, before any part-specific rule.
+
+   ⚠️ .flag-btn* lives here rather than in each part's own stylesheet,
+   which is a deliberate departure from the family note in §7.4. That note
+   assumes each part ships its own icon images; in this unit the flag glyph
+   is drawn in CSS (.flag-btn-glyph-pole / -banner) and the rules were
+   identical in all seven parts, so one copy is correct. The button is
+   still wired per part — see §7.4 on using event delegation. ══════════ */
+
+/* ─── Global utility ───────────────────────────────────── */
+.hidden { display: none !important; }
+
+/* ─── Global ────────────────────────────────────────────── */
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  direction: rtl;
+  font-family: Calibri, Arial, sans-serif;
+  background: #fff;
+}
+
+/* ─── App Canvas ────────────────────────────────────────── */
+#app {
+  position: absolute;
+  /* Width/height are set dynamically by scaleApp() to fill the viewport
+     (in design coords). The 1280×710 fallback keeps the page sensible if JS
+     is still booting. */
+  width: 1280px; height: 710px;
+  transform-origin: top left;
+  background: #fff;
+  overflow: hidden;
+}
+
+/* ─── Screens ───────────────────────────────────────────── */
+/* .screen fills #app (which fills the viewport) so chrome anchored to its
+   bottom/top edges (flag button, bottom bar) reaches the actual screen
+   edges on tablet aspect ratios. Per-screen content stays positioned via
+   absolute/centered layout against the 1280-wide design grid. */
+.screen {
+  position: absolute; inset: 0;
+  display: none; overflow: hidden;
+}
+.screen.active { display: block; }
+
+/* 74px white feedback bar at the bottom of every screen (Figma standard). */
+.screen::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 74px;
+  background: #fff;
+  border-top: 0.4px solid #AEAEAE;
+  pointer-events: none;
+  z-index: 9;
+}
+
+/* ═══════════════════════════════════════════════════════
+   GLOBAL COMPONENT — Report / Issue button (top-left).
+   Figma "issue button" component set (node 207:3590): state=default
+   (207:3588) and state=hover (207:3589). Appears on every screen.
+   Visual only for now (no behavior).
+   - default: #ececec circle, rgba(0,0,0,.06) border, #484848 glyph
+   - hover:   white circle, Subject/500 border + glyph + label
+
+   THEME-AWARE, NOT BAKED. Verified in Figma: the hover state binds
+   Subject/500 on FOUR properties — circle stroke (207:3566), flag-pole
+   vector (207:3558), flag-banner vector (207:3559) and the label
+   (201:3552). state=default returns zero variable bindings, so its
+   greys are Natural, not subject. The component therefore re-colours
+   purely by switching the Figma Subject mode and has no Type=Math
+   variant (and correctly needs none).
+
+   The former btn-flag-hover.png was a stale SCIENCE-mode export
+   (pixel-verified: dominant #019DE5), which is why the glyph is now
+   live inline SVG driven by `currentColor` instead of a raster. Glyph
+   paths + geometry are the exact Figma vector exports; the two states
+   share identical viewBoxes, so one markup serves both.
+   Deviation on record: _global-components.md still specifies these
+   icon shapes as "the exact Figma PNG exports" — superseded here by
+   the higher-order rule never to bake a subject colour into an asset.
+   ═══════════════════════════════════════════════════════ */
+.flag-btn {
+  position: absolute; top: 16px; left: 16px;
+  width: 88px;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  background: none; border: none; padding: 0; cursor: pointer;
+  z-index: 30;          /* above screen content + feedback bar */
+}
+.flag-btn-icon {
+  position: relative;
+  width: 38px; height: 38px; flex-shrink: 0;
+  border-radius: 1000px;
+  overflow: hidden;
+  background: #ececec;
+  border: 0.5px solid rgba(0, 0, 0, 0.06);
+  color: #484848;               /* glyph colour — Natural, theme-independent */
+}
+.flag-btn:hover .flag-btn-icon,
+.flag-btn:focus-visible .flag-btn-icon {
+  background: #fff;
+  border: 0.7px solid var(--subject-500);
+  color: var(--subject-500);    /* glyph follows the Subject token */
+}
+/* Glyph box — Figma "icon" frame: aspect 28/40, left calc(50% + 1px),
+   top calc(31.58% - 0.26px), bottom calc(23.68% - 0.37px) of the 38px
+   circle. Resolved to px for determinism: top 11.74, height
+   38 - 11.74 - 8.63 = 17.63, width 17.63 x 28/40 = 12.34.
+   (Figma's default state differs from hover by <0.12px on these
+   offsets — below one rendered pixel, so one geometry serves both.) */
+.flag-btn-glyph {
+  position: absolute;
+  top: 11.74px;
+  left: calc(50% + 1px);
+  transform: translateX(-50%);
+  width: 12.34px; height: 17.63px;
+}
+/* Each vector keeps its own Figma inset box and stretches into it,
+   exactly as the original <img size-full> exports did. */
+.flag-btn-glyph-pole,
+.flag-btn-glyph-banner { position: absolute; display: block; }
+.flag-btn-glyph-pole   { inset: 0 93.38% 0 0; }
+.flag-btn-glyph-banner { inset: 3.49% 0 41.72% 0; }
+.flag-btn-label {
+  font-family: Calibri, Arial, sans-serif;
+  font-weight: 600; font-size: 14px; color: var(--subject-500);
+  text-align: center; width: 80px; line-height: normal;
+  direction: rtl; display: none;
+}
+.flag-btn:hover .flag-btn-label,
+.flag-btn:focus-visible .flag-btn-label { display: block; }

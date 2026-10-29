@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>DEV — אחוזים 02-03</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #111; overflow: hidden; }
+    #lomdah-frame { width: 100vw; height: 100vh; border: none; display: block; }
+    #dev-bar {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      background: rgba(0,0,0,0.88); color: #fff; border: 2px solid #ffe600;
+      border-radius: 32px; padding: 10px 22px;
+      display: flex; align-items: center; gap: 14px;
+      z-index: 9999; font-family: monospace; font-size: 15px; user-select: none;
+      white-space: nowrap;
+    }
+    #dev-label { color: #ffe600; font-weight: 700; font-size: 13px; letter-spacing: 1px;
+      padding-right: 4px; border-right: 1px solid #444; margin-right: 2px; }
+    #dev-bar button { background: transparent; border: 1px solid #ffe600; color: #ffe600;
+      border-radius: 8px; padding: 5px 14px; cursor: pointer; font-size: 17px; }
+    #dev-bar button:hover { background: #ffe600; color: #000; }
+    #dev-bar button:disabled { opacity: 0.3; cursor: default; }
+    #dev-screen-input { width: 46px; text-align: center; background: #1a1a1a;
+      color: #ffe600; border: 1px solid #ffe600; border-radius: 6px; font-size: 16px;
+      font-family: monospace; padding: 4px; }
+    #dev-total { color: #aaa; font-size: 14px; }
+    #dev-hint { color: #555; font-size: 11px; border-left: 1px solid #333; padding-left: 12px; }
+  </style>
+</head>
+<body>
+  <iframe id="lomdah-frame" src="index.html"></iframe>
+  <div id="dev-bar">
+    <span id="dev-label">DEV</span>
+    <!-- RTL: next (◀) on LEFT, prev (▶) on RIGHT -->
+    <button id="btn-next" onclick="devNext()" title="מסך הבא (Ctrl+←)">◀</button>
+    <input id="dev-screen-input" type="number" min="0" max="10" value="0"
+           title="הקלד מספר מסך לקפיצה ישירה" onchange="devJump(this.value)">
+    <span id="dev-total">/ 0</span>
+    <button id="btn-prev" onclick="devPrev()" title="מסך קודם (Ctrl+→)">▶</button>
+    <span id="dev-hint">Ctrl+← / Ctrl+→</span>
+  </div>
+  <script>
+    'use strict';
+    const frame      = document.getElementById('lomdah-frame');
+    const inputEl    = document.getElementById('dev-screen-input');
+    const totalLabel = document.getElementById('dev-total');
+    const btnPrev    = document.getElementById('btn-prev');
+    const btnNext    = document.getElementById('btn-next');
+    let devCurrent = 0;
+    let TOTAL      = 1;
+
+    // Receive actual screen count from main.js via DEV_READY
+    window.addEventListener('message', (e) => {
+      if (e.data && e.data.type === 'DEV_READY') {
+        TOTAL = e.data.total || TOTAL;
+        totalLabel.textContent = '/ ' + (TOTAL - 1);
+        inputEl.max = TOTAL - 1;
+        updateButtons();
+      }
+    });
+
+    frame.addEventListener('load', () => {
+      devCurrent = 0; inputEl.value = 0; updateButtons();
+    });
+
+    function devGoTo(n) {
+      n = Math.max(0, Math.min(TOTAL - 1, n));
+      frame.contentWindow.postMessage({ type: 'DEV_GOTO', screen: n }, '*');
+      devCurrent = n; inputEl.value = n; updateButtons();
+    }
+    function devNext() { devGoTo(devCurrent + 1); }
+    function devPrev() { devGoTo(devCurrent - 1); }
+    function devJump(val) { const n = parseInt(val,10); if (!isNaN(n)) devGoTo(n); }
+    function updateButtons() {
+      btnPrev.disabled = (devCurrent <= 0);
+      btnNext.disabled = (devCurrent >= TOTAL - 1);
+    }
+    // RTL keyboard: Ctrl+← = forward (next), Ctrl+→ = backward (prev)
+    window.addEventListener('keydown', (e) => {
+      if (!e.ctrlKey) return;
+      if (e.key === 'ArrowLeft')  { e.preventDefault(); devNext(); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); devPrev(); }
+    });
+    inputEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') devJump(inputEl.value);
+    });
+  </script>
+</body>
+</html>

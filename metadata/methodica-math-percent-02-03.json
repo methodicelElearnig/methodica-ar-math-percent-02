@@ -1,0 +1,170 @@
+{
+  "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-03/",
+  "title": "זמן תרגול 2",
+  "learningUnitId": "methodica-math-percent-02",
+  "componentPurpose": "practice",
+  "isAssessment": false,
+  "recommendedAfterFail": [
+    "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-02/"
+  ],
+  "isRequired": false,
+  "relativeDifficulty": 2,
+  "masteryLevel": null,
+  "order": 3,
+  "depthLevel": "core-curriculum-basic",
+  "cognitiveLevels": ["algorithmic-thinking"],
+  "languages": ["Hebrew"],
+  "skills": [],
+  "estimatedTimeInMinutes": 26,
+  "createdAt": "2026-07-29T00:00:00.000Z",
+  "updatedAt": "2026-09-09T00:00:00.000Z",
+  "subContent": [
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-03/methodica-math-percent-02-03-001/",
+      "title": "חישוב אחוז משתי כמויות",
+      "informationToBot": "מטרת הפריט: תרגול תגבור בסיסי בשתי השיטות שנלמדו, על מספרים פשוטים. מה התלמיד אמור להבין/לתרגל: סעיף א - 20% מתוך 65 באמצעות המרת אחוז לשבר (=13). סעיף ב - 20% מתוך 130 באמצעות טבלת פרופורציה (=26). כיווני חשיבה ואסטרטגיות: יישום ישיר של אחת מהשיטות שנלמדו בהקנייה. טעויות נפוצות: בסעיף ב - הצבה הפוכה בטבלה (למשל 130 מול 20% ישירות). מידע נוסף: פריט זה נפתח את סבב 5 התרגילים הבסיסיים ('ענו נכון על 4 שאלות ומעלה (80%) כדי להתקדם'). צילום מסך: לא צורף.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-03/methodica-math-percent-02-03-001/q1",
+          "questionType": "numeric",
+          "questionText": "א. כמה הם 20% מתוך 65? פתרו באמצעות המרת האחוז לשבר פשוט/עשרוני.",
+          "answers": [],
+          "correctAnswers": [13]
+        },
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-03/methodica-math-percent-02-03-001/q2",
+          "questionType": "choice",
+          "questionText": "ב. כמה הם 20% מתוך 130? פתרו בעזרת טבלת הפרופורציה.",
+          "answers": ["20", "24", "26", "40"],
+          "correctAnswers": ["26"]
+        }
+      ]
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-03/methodica-math-percent-02-03-002/",
+      "title": "צפיות ברשתות חברתיות בשעשועון",
+      "informationToBot": "מטרת הפריט: תרגול בסיסי נוסף בחישוב ערך אחוז מתוך כמות, באמצעות טבלת פרופורציה. מה התלמיד אמור להבין/לתרגל: מתוך 800 שנשאלו, 55% צופים ברשתות חברתיות - 55%·800=440. כיווני חשיבה ואסטרטגיות: בניית משוואת הפרופורציה ופתרונה. טעויות נפוצות: שכחת המרת האחוזים במשוואה. מידע נוסף: הקשר - סקר צפייה בשעשועון טלוויזיה. צילום מסך: לא צורף.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-03/methodica-math-percent-02-03-002/q1",
+          "questionType": "numeric",
+          "questionText": "יוצרי השעשועון 'המרוץ אל בטן האדמה' פנו ל-800 איש. 55% מהם אמרו שהם צופים ברשתות חברתיות. כמה אנשים צופים בפרקים מלאים ברשתות החברתיות? פתרו באמצעות טבלת פרופורציה.",
+          "answers": [],
+          "correctAnswers": [440]
+        }
+      ]
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-03/methodica-math-percent-02-03-003/",
+      "title": "סידן בכוס חלב",
+      "informationToBot": "מטרת הפריט: תרגול בסיסי בחישוב ערך אחוז מתוך כמות עם יחידות מ\"ג, באמצעות טבלת פרופורציה. מה התלמיד אמור להבין/לתרגל: כוס חלב מכילה כ-15% מכמות הסידן היומית המומלצת (1,300 מ\"ג) - 15%·1300=195 מ\"ג. כיווני חשיבה ואסטרטגיות: בניית משוואת הפרופורציה ופתרונה. טעויות נפוצות: אין. מידע נוסף: הערת הפקה בשקף המקורי מציינת בעיית עיצוב בתמונת כוס החלב - אינה משפיעה על תוכן המטא-דאטה. צילום מסך: לא צורף.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-03/methodica-math-percent-02-03-003/q1",
+          "questionType": "numeric",
+          "questionText": "בכוס חלב יש כ-15% מכמות הסידן היומית המומלצת לבני נוער, שהיא 1,300 מ\"ג. כמה מיליגרם סידן יש בכוס חלב? חשבו באמצעות טבלת הפרופורציה.",
+          "answers": [],
+          "correctAnswers": [195]
+        }
+      ]
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-03/methodica-math-percent-02-03-004/",
+      "title": "מיחזור אריזות קרטון",
+      "informationToBot": "מטרת הפריט: תרגול בסיסי בחישוב ערך אחוז מתוך כמות גדולה, באמצעות המרת אחוז לשבר. מה התלמיד אמור להבין/לתרגל: מתוך 2,400 פריטים שנאספו, 35% היו אריזות קרטון - 35%·2400=840. כיווני חשיבה ואסטרטגיות: המרת האחוז לשבר עשרוני וכפל בכמות השלמה. טעויות נפוצות: אין. מידע נוסף: הקשר - שבוע קיימות ואיכות הסביבה, תחנת מיחזור. צילום מסך: לא צורף.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-03/methodica-math-percent-02-03-004/q1",
+          "questionType": "numeric",
+          "questionText": "בשבוע קיימות ואיכות הסביבה הקימה מועצת התלמידים תחנת מיחזור, ואספה 2,400 אריזות ובקבוקים בסך הכל. נמצא ש-35% מכלל הפריטים היו אריזות קרטון. כמה אריזות קרטון אספו התלמידים? חשבו באמצעות המרת האחוז לשבר פשוט/עשרוני.",
+          "answers": [],
+          "correctAnswers": [840]
+        }
+      ]
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-03/methodica-math-percent-02-03-005/",
+      "title": "התנדבות שכבתית לפי דיאגרמת עיגול (4 סעיפים)",
+      "informationToBot": "מטרת הפריט: תרגול בסיסי רב-סעיפי המבוסס על דיאגרמת עיגול (נתוני אחוזים ניתנים גם כטקסט בהסברי התשובה הנכונה). מה התלמיד אמור להבין/לתרגל: 120 תלמידי ח' מתנדבים באחד מ-4 מוקדים. סעיף א - 15% ביקשו אריזת מזון = 18 תלמידים. סעיף ב - 65% (35%+30%) נרשמו לבית הקשיש וחונכות חברתית יחד = 78 תלמידים. סעיף ג - חלוקה שווה של 25% לכל מוקד (=30 תלמידים למוקד) יוצרת עודף בשני המוקדים הפופולריים. סעיף ד - הפרש: 78-60=18 תלמידים יצטרכו לבחור מוקד אחר. כיווני חשיבה ואסטרטגיות: חיבור אחוזים של כמה פרוסות עוגה לפני חישוב הכמות, והשוואת כמות בפועל לכמות מוקצית. טעויות נפוצות: שכחת חיבור האחוזים של שני מוקדי ההתנדבות בסעיף ב לפני הכפל. מידע נוסף: נתוני האחוזים לכל סעיף מופיעים גם בטקסט הסבר התשובה, ולא רק בדיאגרמת העיגול עצמה. צילום מסך: לא צורף.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-03/methodica-math-percent-02-03-005/q1",
+          "questionType": "choice",
+          "questionText": "כל אחד מ-120 התלמידים בשכבת ח' בבית ספר 'אלון' מחויב להתנדב השנה באחד מארבעה מוקדי התנדבות - סיוע בבית הקשיש, אריזת מזון לנזקקים, סיוע לימודי למתקשים וחונכות חברתית. בדיאגרמת העיגול מצויים נתוני הרישום. א. כמה תלמידים ביקשו להתנדב באריזות מזון?",
+          "answers": ["48", "24", "18", "36"],
+          "correctAnswers": ["18"]
+        },
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-03/methodica-math-percent-02-03-005/q2",
+          "questionType": "numeric",
+          "questionText": "ב. כמה תלמידים נרשמו להתנדבות בבית הקשיש ולחונכות חברתית (יחד)?",
+          "answers": [],
+          "correctAnswers": [78]
+        },
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-03/methodica-math-percent-02-03-005/q3",
+          "questionType": "choice",
+          "questionText": "גילינו ש-78 תלמידים נרשמו להתנדבות בבית הקשיש ובחונכות חברתית. בית הספר החליט שהתלמידים יחולקו באופן שווה בין כל מוקדי ההתנדבות - 25% מהתלמידים לכל מוקד. ג. האם כל התלמידים יקבלו את מוקד ההתנדבות אליו נרשמו?",
+          "answers": ["כן", "לא", "לא ניתן לדעת"],
+          "correctAnswers": ["לא"]
+        },
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-03/methodica-math-percent-02-03-005/q4",
+          "questionType": "numeric",
+          "questionText": "ד. כמה תלמידים שנרשמו לסיוע בבית הקשיש ולחונכות חברתית יהיו צריכים לבחור מוקד התנדבות אחר?",
+          "answers": [],
+          "correctAnswers": [18]
+        }
+      ]
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-03/methodica-math-percent-02-03-006/",
+      "title": "מעקב ארוחות בוקר עתירות חלבון (2 סעיפים)",
+      "informationToBot": "מטרת הפריט: תרגול חישוב מספר ערכי אחוז מאותה כמות שלמה (50 ימי אימון), ולאחר מכן מתן המלצה פתוחה. מה התלמיד אמור להבין/לתרגל: סעיף א - השלמת טבלה: כריך חביתה 40% (=20 ימים), דגני בוקר 20% (=10), יוגורט חלבון 10% (=5), פרי 30% (=15), מתוך 50 ימי אימון. סעיף ב - שאלה פתוחה (ללא ניקוד/תשובה קבועה מראש בתסריט): המלצה לעדי כיצד לוודא שהוא אוכל מספיק ארוחות עתירות חלבון (הוא אוכל כאלה רק 50% מהזמן). כיווני חשיבה ואסטרטגיות: המרת אחוז לשבר וכפל ב-50 לכל שורה. טעויות נפוצות: בלבול בין אחוז לכמות ימים בפועל. מידע נוסף: סעיף ב הוא שאלת רפלקציה פתוחה - התסריט אינו מציג תשובה נכונה/הזנת ניקוד עבורה (אין ענף 'נכון!/טעית'), ולכן סומנה כשאלה מסוג 'other' ללא correctAnswers קבועים. צילום מסך: לא צורף.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-03/methodica-math-percent-02-03-006/q1",
+          "questionType": "other",
+          "questionText": "עדי רשם מה אכל בארוחות הבוקר במשך 50 ימי אימון. השלימו את עמודת ה'כמות מתוך כלל ארוחות הבוקר' בטבלה לפי האחוזים הנתונים: כריך חביתה עתיר חלבון 40%, דגני בוקר 20%, יוגורט חלבון 10%, פרי 30%. השתמשו בהמרת האחוז לשבר פשוט/עשרוני.",
+          "answers": "כריך חביתה עתיר חלבון (40%): 20, דגני בוקר (20%): 10, יוגורט חלבון (10%): 5, פרי (30%): 15",
+          "correctAnswers": []
+        }
+      ]
+    },
+    {
+      "id": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-03/methodica-math-percent-02-03-007/",
+      "title": "שימוש בטלפון לפני השינה ואיכות שינה",
+      "informationToBot": "מטרת הפריט: תרגול חישוב אחוז מתוך אחוז (שרשור שני חישובי אחוזים עוקבים), באמצעות טבלת פרופורציה. מה התלמיד אמור להבין/לתרגל: ממחקר בקרב 2,000 בני נוער - סעיף א: 70% ממשיכים לגלוש בטלפון אחרי כיבוי אורות = 1,400 בני נוער. סעיף ב: מתוכם 75% סובלים מעייפות כרונית וקשיי ריכוז = 1,050 בני נוער (75% מתוך 1,400, לא מתוך 2,000 המקורי). כיווני חשיבה ואסטרטגיות: זיהוי שהשלם החדש בסעיף ב הוא התוצאה של סעיף א (1,400) ולא המספר המקורי (2,000). טעויות נפוצות: חישוב 75% מתוך 2,000 במקום מתוך 1,400. מידע נוסף: הקשר - מחקר על טלפון נייד ואיכות שינה בקרב בני נוער. צילום מסך: לא צורף.",
+      "contentType": "practice",
+      "mediaFormat": "interactive-content",
+      "questions": [
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-03/methodica-math-percent-02-03-007/q1",
+          "questionType": "numeric",
+          "questionText": "במחקר על הרגלי שימוש בטלפון הנייד לפני השינה השתתפו 2,000 בני נוער בגילאי חטיבת ביניים. 70% מהם ממשיכים לגלוש בטלפון במיטה לאחר כיבוי האורות. א. כמה בני נוער מתוך המשתתפים במחקר גולשים בטלפון במיטה לאחר כיבוי האורות? פתרו באמצעות טבלת הפרופורציה.",
+          "answers": [],
+          "correctAnswers": [1400]
+        },
+        {
+          "questionId": "https://lomdot.education.gov.il/metodica/720active/math/percent/02/methodica-math-percent-02-03/methodica-math-percent-02-03-007/q2",
+          "questionType": "numeric",
+          "questionText": "מצאנו ש-1,400 בני נוער ממשיכים לגלוש אחרי כיבוי האורות. ל-75% מהם נמצא שסובלים מעייפות כרונית וקושי בריכוז. ב. כמה מבני הנוער במחקר חווים קשיים אלו?",
+          "answers": [],
+          "correctAnswers": [1050]
+        }
+      ]
+    }
+  ]
+}
